@@ -18,6 +18,29 @@ export const enumerateTriumphState = state => ({
   canEquipTitle: flagEnum(state, 64)
 });
 
+export const enumerateCollectibleState = state => ({
+  none: flagEnum(state, 0),
+  notAcquired: flagEnum(state, 1),
+  obscured: flagEnum(state, 2),
+  invisible: flagEnum(state, 4),
+  cannotAffordMaterialRequirements: flagEnum(state, 8),
+  inventorySpaceUnavailable: flagEnum(state, 16),
+  uniquenessViolation: flagEnum(state, 32),
+  purchaseDisabled: flagEnum(state, 64)
+});
+
+export function profileHasCollectible(profile, collectibleHash) {
+  const collectible =
+    profile.profileCollectibles.data &&
+    profile.profileCollectibles.data.collectibles[collectibleHash];
+
+  if (!collectible) {
+    return false;
+  }
+
+  return !enumerateCollectibleState(collectible.state).notAcquired;
+}
+
 export function profileHasCompletedTriumph(profile, triumphHash) {
   const triumphState = get(
     profile,

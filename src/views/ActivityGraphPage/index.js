@@ -61,7 +61,7 @@ class ActivityGraphPage extends Component {
   }
 
   render() {
-    const { pgcrs, pgcrDetailsForPlayer } = this.props;
+    const { pgcrs } = this.props;
 
     return (
       <div className={s.root}>

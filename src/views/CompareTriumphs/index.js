@@ -79,7 +79,7 @@ const ComparisonTable = React.memo(
                   <td className={s.playerCell} key={playerKey}>
                     {player
                       ? player.profile.profile.data.userInfo.displayName
-                      : 'Loading...'}
+                      : 'Loading...'}{' '}
 
                     {player ? (
                       <div className={s.score}>

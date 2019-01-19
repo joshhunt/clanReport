@@ -125,7 +125,7 @@ export function getProfile({ membershipType, membershipId }, accessToken) {
   const getFn = CACHE_PROFILES ? getCacheableDestiny : getDestiny;
 
   return getFn(
-    `/Destiny2/${membershipType}/Profile/${membershipId}/?components=100,200,204,900`,
+    `/Destiny2/${membershipType}/Profile/${membershipId}/?components=100,200,204,800,900`,
     {
       accessToken
     }

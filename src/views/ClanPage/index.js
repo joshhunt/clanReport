@@ -6,7 +6,10 @@ import { memoize } from 'lodash';
 import { AllHtmlEntities } from 'html-entities';
 import 'react-table/react-table.css';
 
-import { profileHasCompletedTriumph } from 'src/lib/destinyUtils';
+import {
+  profileHasCompletedTriumph,
+  profileHasCollectible
+} from 'src/lib/destinyUtils';
 
 import {
   getClanDetails,
@@ -25,41 +28,7 @@ import s from './styles.styl';
 const entities = new AllHtmlEntities();
 const decode = memoize(string => entities.decode(string));
 
-const COOKIE_TRIUMPHS = [
-  3055480592, // The Dawning: Three Guardians
-  3055480593, // The Dawning: Faraway Friends
-  3055480594 // The Dawning: Nearby Friends
-];
-
-const getCookieCount = memoize(d => {
-  if (
-    !(
-      d.profile &&
-      d.profile.characterRecords &&
-      d.profile.characterRecords.data
-    )
-  ) {
-    return null;
-  }
-
-  const total = Object.values(d.profile.characterRecords.data)
-    .map(({ records }) => {
-      return COOKIE_TRIUMPHS.map(hash => records && records[hash]).filter(
-        Boolean
-      );
-    })
-    .find(found => found.length === COOKIE_TRIUMPHS.length)
-    .reduce((acc, record) => {
-      return (
-        acc +
-        record.objectives.reduce((counter, objective) => {
-          return counter + objective.progress;
-        }, 0)
-      );
-    }, 0);
-
-  return total;
-});
+const NIOBE_EMBLEM_COLLECTIBLE = 888672408;
 
 const TITLES = [
   { title: 'Gambit', hash: 3798931976 },
@@ -98,6 +67,16 @@ const maxLight = member =>
 
 const k = ({ membershipType, membershipId }) =>
   [membershipType, membershipId].join('/');
+
+const makeCollectibleCell = (name, collectibleHash) => ({
+  name,
+  cell: d =>
+    d.profile && profileHasCollectible(d.profile, collectibleHash) ? 'Yes' : ''
+});
+
+const EGO_COLUMNS = [
+  makeCollectibleCell('niobe labs', NIOBE_EMBLEM_COLLECTIBLE)
+];
 
 class ClanPage extends Component {
   componentDidMount() {
@@ -157,6 +136,8 @@ class ClanPage extends Component {
       profile: profiles[k(m.destinyUserInfo)]
     }));
 
+    const EGO = window.location.search.includes('ego');
+
     const columns = [
       {
         name: 'gamertag',
@@ -192,12 +173,7 @@ class ClanPage extends Component {
           d.profile.profileRecords.data &&
           d.profile.profileRecords.data.score
       },
-      // {
-      //   name: 'cookies baked',
-      //   cell: getCookieCount,
-      //   sortValue: baseSort2(getCookieCount),
-      //   hasTotal: true
-      // },
+      ...(EGO ? EGO_COLUMNS : []),
       {
         name: 'seals',
         cell: d => {

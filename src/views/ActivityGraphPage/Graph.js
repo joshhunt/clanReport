@@ -63,28 +63,14 @@ export default class Graph extends Component {
 
     await raf();
 
-    // svg.attr('viewBox', [-width / 2, -height / 2, width, height]);
-
     const colourScale = d3.scaleOrdinal(d3.schemeCategory10);
     const color = d => colourScale(d.group);
 
     const simulation = d3
       .forceSimulation(nodes)
-      .force(
-        'link',
-        d3.forceLink(links).id(d => d.id)
-        // .strength(0.1)
-        // .distance(50)
-      )
+      .force('link', d3.forceLink(links).id(d => d.id))
       .force('charge', d3.forceManyBody().strength(() => -200))
       .force('center', d3.forceCenter(width / 2, height / 2));
-
-    // const simulation = d3
-    //   .forceSimulation(nodes)
-    //   .force('link', d3.forceLink(links).id(d => d.id))
-    //   .force('charge', d3.forceManyBody())
-    //   .force('x', d3.forceX())
-    //   .force('y', d3.forceY());
 
     const isMe = d =>
       d.source.membershipId === '4611686018469271298' ||
@@ -101,7 +87,6 @@ export default class Graph extends Component {
       .attr('stroke-width', d => {
         if (isMe(d)) {
           return Math.sqrt(d.value);
-          return 0;
         } else {
           return Math.sqrt(d.value);
         }
