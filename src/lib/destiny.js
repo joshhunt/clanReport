@@ -33,7 +33,10 @@ export function get(url, opts) {
 }
 
 export function getDestiny(_pathname, opts = {}, postBody) {
-  let url = `https://www.bungie.net/Platform${_pathname}`;
+  let url = _pathname.includes('http')
+    ? _pathname
+    : `https://www.bungie.net/Platform${_pathname}`;
+
   url = url.replace('/Platform/Platform/', '/Platform/');
 
   const { pathname } = new URL(url);
@@ -158,7 +161,7 @@ export function getCharacterPGCRHistory({
 
 export function getCacheablePGCRDetails(pgcrId) {
   return getCacheableDestiny(
-    `/Destiny2/Stats/PostGameCarnageReport/${pgcrId}/`
+    `https://stats.bungie.net/Platform/Destiny2/Stats/PostGameCarnageReport/${pgcrId}/`
   );
 }
 
