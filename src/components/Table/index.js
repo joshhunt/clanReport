@@ -40,7 +40,8 @@ export default class Table extends Component {
       return data;
     }
 
-    const colToSortBy = columns.find(col => col.name === sortField);
+    const colToSortBy =
+      columns.find(col => col.name === sortField) || columns[0];
     const sortValueFn = colToSortBy.sortValue || colToSortBy.cell;
 
     const sorted = sortBy(data, item => {
@@ -70,7 +71,9 @@ export default class Table extends Component {
           {rows.map(rowData => {
             return (
               <tr>
-                {columns.map(c => <td key={c.name}>{c.cell(rowData)}</td>)}
+                {columns.map(c => (
+                  <td key={c.name}>{c.cell(rowData)}</td>
+                ))}
               </tr>
             );
           })}

@@ -48,7 +48,16 @@ export function profileHasCompletedTriumph(profile, triumphHash) {
   );
 
   if (triumphState === undefined) {
-    return false;
+    const completedCharacter = Object.values(
+      get(profile, 'characterRecords.data', {})
+    ).find(data => {
+      const enumeratedState = enumerateTriumphState(
+        data.records[triumphHash].state
+      );
+      return enumeratedState && !enumeratedState.objectiveNotCompleted;
+    });
+
+    return completedCharacter ? true : false;
   }
 
   const enumeratedState = enumerateTriumphState(triumphState);

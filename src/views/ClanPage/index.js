@@ -30,6 +30,8 @@ const decode = memoize(string => entities.decode(string));
 
 const NIOBE_EMBLEM_COLLECTIBLE = 888672408;
 
+window.__profileHasCompletedTriumph = profileHasCompletedTriumph;
+
 const TITLES = [
   { title: 'Gambit', hash: 3798931976 },
   { title: 'Crucible', hash: 3369119720 },
@@ -74,8 +76,16 @@ const makeCollectibleCell = (name, collectibleHash) => ({
     d.profile && profileHasCollectible(d.profile, collectibleHash) ? 'Yes' : ''
 });
 
+const makeTriumphCell = (name, triumphHash) => ({
+  name,
+  cell: d =>
+    d.profile && profileHasCompletedTriumph(d.profile, triumphHash) ? 'Yes' : ''
+});
+
 const EGO_COLUMNS = [
-  makeCollectibleCell('niobe labs', NIOBE_EMBLEM_COLLECTIBLE)
+  makeCollectibleCell('niobe labs', NIOBE_EMBLEM_COLLECTIBLE),
+  makeTriumphCell('solo ST', 851701008), // Solo Shattered Throne
+  makeTriumphCell('solo ST flawless', 1290451257) // Solo Shattered Throne
 ];
 
 class ClanPage extends Component {
@@ -173,68 +183,74 @@ class ClanPage extends Component {
           d.profile.profileRecords.data &&
           d.profile.profileRecords.data.score
       },
-      ...(EGO ? EGO_COLUMNS : []),
-      {
-        name: 'seals',
-        cell: d => {
-          return TITLES.filter(({ hash }) =>
-            profileHasCompletedTriumph(d.profile, hash)
-          )
-            .map(({ title }) => title)
-            .join(', ');
-        }
-      },
-      {
-        name: 'current activity',
-        sortValue: baseSort(member => {
-          const currentActivity =
-            member.profile && getCurrentActivity(member.profile);
+      ...(EGO
+        ? EGO_COLUMNS
+        : [
+            {
+              name: 'seals',
+              cell: d => {
+                return TITLES.filter(({ hash }) =>
+                  profileHasCompletedTriumph(d.profile, hash)
+                )
+                  .map(({ title }) => title)
+                  .join(', ');
+              }
+            },
+            {
+              name: 'current activity',
+              sortValue: baseSort(member => {
+                const currentActivity =
+                  member.profile && getCurrentActivity(member.profile);
 
-          return currentActivity
-            ? currentActivity.dateActivityStarted
-            : member.profile.profile.data.dateLastPlayed;
-        }),
-        cell: member => {
-          const profile = member.profile;
-          const currentActivity =
-            member.profile && getCurrentActivity(member.profile);
+                return currentActivity
+                  ? currentActivity.dateActivityStarted
+                  : member.profile.profile.data.dateLastPlayed;
+              }),
+              cell: member => {
+                const profile = member.profile;
+                const currentActivity =
+                  member.profile && getCurrentActivity(member.profile);
 
-          let currentActivityDef =
-            activityDefs &&
-            currentActivity &&
-            activityDefs[currentActivity.currentActivityHash];
+                let currentActivityDef =
+                  activityDefs &&
+                  currentActivity &&
+                  activityDefs[currentActivity.currentActivityHash];
 
-          const currentActivityModeDef =
-            activityModeDefs &&
-            currentActivity &&
-            activityModeDefs[currentActivity.currentActivityModeHash];
+                const currentActivityModeDef =
+                  activityModeDefs &&
+                  currentActivity &&
+                  activityModeDefs[currentActivity.currentActivityModeHash];
 
-          return (
-            <span>
-              {currentActivityDef && (
-                <span>
-                  {currentActivityModeDef &&
-                    `${currentActivityModeDef.displayProperties.name}: `}
-                  {currentActivityDef.displayProperties.name}{' '}
-                  <span className={s.started}>
-                    (Started{' '}
-                    <PrettyDate date={currentActivity.dateActivityStarted} />)
+                return (
+                  <span>
+                    {currentActivityDef && (
+                      <span>
+                        {currentActivityModeDef &&
+                          `${currentActivityModeDef.displayProperties.name}: `}
+                        {currentActivityDef.displayProperties.name}{' '}
+                        <span className={s.started}>
+                          (Started{' '}
+                          <PrettyDate
+                            date={currentActivity.dateActivityStarted}
+                          />
+                          )
+                        </span>
+                      </span>
+                    )}
+
+                    {!currentActivityDef && profile && profile.profile.data && (
+                      <span className={s.lastPlayed}>
+                        Last played{' '}
+                        <PrettyDate
+                          date={profile.profile.data.dateLastPlayed}
+                        />
+                      </span>
+                    )}
                   </span>
-                </span>
-              )}
-
-              {!currentActivityDef &&
-                profile &&
-                profile.profile.data && (
-                  <span className={s.lastPlayed}>
-                    Last played{' '}
-                    <PrettyDate date={profile.profile.data.dateLastPlayed} />
-                  </span>
-                )}
-            </span>
-          );
-        }
-      }
+                );
+              }
+            }
+          ])
     ];
 
     return (
@@ -285,4 +301,7 @@ const mapDispatchToActions = {
   getRecentActivitiesForAccount
 };
 
-export default connect(mapStateToProps, mapDispatchToActions)(ClanPage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToActions
+)(ClanPage);
