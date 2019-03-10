@@ -93,9 +93,13 @@ const GAMBIT_FIELDS = [
 
 const FALLBACK_FIELDS = [WEAPONS_FIELD];
 
+const activityHashIs = (pgcr, hash) =>
+  pgcr.activityDetails.directorActivityHash === hash;
+
 export default [
   {
-    test: pgcr => pgcr.activityDetails.directorActivityHash === 3577607128,
+    test: pgcr =>
+      activityHashIs(pgcr, 3577607128) || activityHashIs(pgcr, 1183187383),
     fields: GAMBIT_FIELDS
   },
 
