@@ -1,28 +1,43 @@
-import React, { Fragment } from 'react';
-import { connect } from 'react-redux';
-import { Tooltip } from 'react-tippy';
+import React, { Fragment } from "react";
+import { connect } from "react-redux";
+import { Tooltip } from "react-tippy";
 
-import BungieImage from 'src/components/BungieImage';
+import BungieImage from "src/components/BungieImage";
 
-import s from './styles.styl';
+import s from "./styles.styl";
 
-const NO_ICON = '/img/misc/missing_icon_d2.png';
+const NO_ICON = "/img/misc/missing_icon_d2.png";
 
-function Item({ item, className }) {
-  const icon = (item && item.displayProperties.icon) || NO_ICON;
+export function ImageWithTooltip({
+  src,
+  className,
+  children,
+  containerClassName
+}) {
   return (
     <Tooltip
       html={
         <Fragment>
-          <div className={s.name}>{item && item.displayProperties.name}</div>
+          <div className={s.name}>{children}</div>
         </Fragment>
       }
       position="top"
       arrow
       followCursor
+      className={containerClassName}
     >
-      <BungieImage className={className} src={icon} />
+      <BungieImage className={className} src={src} />
     </Tooltip>
+  );
+}
+
+function Item({ item, className }) {
+  const icon = (item && item.displayProperties.icon) || NO_ICON;
+
+  return (
+    <ImageWithTooltip className={className} src={icon}>
+      {item && item.displayProperties.name}
+    </ImageWithTooltip>
   );
 }
 
