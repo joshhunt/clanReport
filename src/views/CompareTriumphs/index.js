@@ -1,27 +1,29 @@
-import React, { Component, Fragment } from 'react';
-import cx from 'classnames';
-import { flatMapDeep, get, mapValues } from 'lodash';
-import { connect } from 'react-redux';
-import _LazyLoad from 'react-lazyload';
+import React, { Component } from "react";
+import cx from "classnames";
+import { flatMapDeep, get, mapValues } from "lodash";
+import { connect } from "react-redux";
+import _LazyLoad from "react-lazyload";
 
-import TriumphSummary from 'src/components/TriumphSummary';
-import { enumerateTriumphState } from 'src/lib/destinyUtils';
-import Icon from 'src/components/Icon';
-import Modal from 'src/components/Modal';
-import SearchForPlayer from 'src/components/SearchForPlayer';
-import { getProfile } from 'src/store/clan';
+import TriumphSummary from "src/components/TriumphSummary";
+import { enumerateTriumphState } from "src/lib/destinyUtils";
+import Icon from "src/components/Icon";
+import Modal from "src/components/Modal";
+import SearchForPlayer from "src/components/SearchForPlayer";
+import { getProfile } from "src/store/clan";
 
-import tableStyles from 'app/components/Table/styles.styl';
+import tableStyles from "app/components/Table/styles.styl";
 
-import s from './styles.styl';
-import Objectives from './Objectives';
+import s from "./styles.styl";
+import Objectives from "./Objectives";
 
 const AsyncMode = React.unstable_ConcurrentMode;
 
 window.React = React;
 
+const Noop = ({ children }) => children;
+
 const USE_LAZY_LOAD = false;
-const LazyLoad = USE_LAZY_LOAD ? _LazyLoad : Fragment;
+const LazyLoad = USE_LAZY_LOAD ? _LazyLoad : Noop;
 
 function chunkArray(myArray, chunkSize) {
   var index = 0;
@@ -51,6 +53,34 @@ function AddPlayer({ onClick }) {
 const CHUNK_SIZE = 10;
 const ROW_HEIGHT = 50;
 
+function getLower(obj, key) {
+  return get(obj, key, "").toLowerCase();
+}
+
+function searchNode(node, searchText) {
+  if (!searchText || searchText.length < 3) {
+    return false;
+  }
+
+  const lowerSearch = searchText.toLowerCase();
+
+  if (
+    getLower(node, "headingNode.displayProperties.name").includes(lowerSearch)
+  ) {
+    return true;
+  }
+
+  if (getLower(node, "displayProperties.name").includes(lowerSearch)) {
+    return true;
+  }
+
+  const foundInParent = get(node, "$tree", []).find(parent => {
+    return getLower(parent, "displayProperties.name").includes(lowerSearch);
+  });
+
+  return !!foundInParent;
+}
+
 const ComparisonTable = React.memo(
   ({
     searchText,
@@ -79,8 +109,7 @@ const ComparisonTable = React.memo(
                   <td className={s.playerCell} key={playerKey}>
                     {player
                       ? player.profile.profile.data.userInfo.displayName
-                      : 'Loading...'}{' '}
-
+                      : "Loading..."}{" "}
                     {player ? (
                       <div className={s.score}>
                         {player.profile.profileRecords.data.score} pts
@@ -133,28 +162,22 @@ const ComparisonTable = React.memo(
                     }
 
                     let content;
-                    let searchableContent;
 
                     if (node.headingNode) {
                       currentDepth = node.depth;
-                      searchableContent = node.headingNode.displayProperties.name.toLowerCase();
                       content = (
                         <a className={s.heading} href={`#${anchorId}`}>
                           {node.headingNode.displayProperties.name}
                         </a>
                       );
                     } else {
-                      searchableContent = node.displayProperties.name.toLowerCase();
-
                       content = (
                         <TriumphSummary record={node} anchorLink={anchorId} />
                       );
                     }
 
                     if (searchText && searchText.length) {
-                      const thisMatches = searchableContent.includes(
-                        searchText
-                      );
+                      const thisMatches = searchNode(node, searchText);
 
                       if (!thisMatches) {
                         return null;
@@ -201,10 +224,9 @@ const ComparisonTable = React.memo(
                                 <Icon className={s.icon} name="times" />
                               )}
 
-                              {!record.$hasCompleted &&
-                                record.objectives && (
-                                  <Objectives objectives={record.objectives} />
-                                )}
+                              {!record.$hasCompleted && record.objectives && (
+                                <Objectives objectives={record.objectives} />
+                              )}
                             </td>
                           );
                         })}
@@ -255,7 +277,7 @@ class CompareTriumphs extends Component {
     playersToCompare
       .filter(playerKey => !this.props.recordsByPlayerKey[playerKey])
       .forEach(playerKey => {
-        const [membershipType, membershipId] = playerKey.split('/');
+        const [membershipType, membershipId] = playerKey.split("/");
         this.props.getProfile({ membershipType, membershipId });
       });
   }
@@ -297,9 +319,9 @@ class CompareTriumphs extends Component {
         >
           <Icon
             className={s.addPlayerIcon}
-            name={hideAllCompleted ? 'eye' : 'eye-slash'}
+            name={hideAllCompleted ? "eye" : "eye-slash"}
           />
-          {hideAllCompleted ? 'Show all completed' : 'Hide all completed'}
+          {hideAllCompleted ? "Show all completed" : "Hide all completed"}
         </button>
 
         <button
@@ -308,11 +330,11 @@ class CompareTriumphs extends Component {
         >
           <Icon
             className={s.addPlayerIcon}
-            name={hideZeroPointRecords ? 'eye' : 'eye-slash'}
+            name={hideZeroPointRecords ? "eye" : "eye-slash"}
           />
           {hideZeroPointRecords
-            ? 'Show all Triumphs'
-            : 'Hide zero-point Triumphs'}
+            ? "Show all Triumphs"
+            : "Hide zero-point Triumphs"}
         </button>
 
         <input placeholder="filter" onChange={this.onFilterChange} />
@@ -340,9 +362,26 @@ class CompareTriumphs extends Component {
 
 const TRIUMPHS_PRESENTATION_NODE = 1024788583;
 
-function recursiveRecords(node, definitions, depth = -1) {
+function recordWithTree(definitions, tree) {
+  return child => {
+    const record =
+      definitions.DestinyRecordDefinition &&
+      definitions.DestinyRecordDefinition[child.recordHash];
+
+    if (!record) {
+      return null;
+    }
+
+    return {
+      ...record,
+      $tree: tree
+    };
+  };
+}
+
+function recursiveRecords(node, definitions, depth = -1, tree = []) {
   if (!node || !node.children) {
-    console.log('bailing early for', node);
+    console.log("bailing early for", node);
     return [];
   }
 
@@ -354,6 +393,8 @@ function recursiveRecords(node, definitions, depth = -1) {
           childNode.presentationNodeHash
         ];
 
+      const thisTree = [...tree, childPresentationNode];
+
       if (
         childPresentationNode &&
         childPresentationNode.children &&
@@ -363,34 +404,31 @@ function recursiveRecords(node, definitions, depth = -1) {
         return [
           { headingNode: childPresentationNode, depth: depth + 1 },
           ...childPresentationNode.children.records
-            .map(
-              c =>
-                definitions.DestinyRecordDefinition &&
-                definitions.DestinyRecordDefinition[c.recordHash]
-            )
+            .map(recordWithTree(definitions, thisTree))
             .filter(Boolean)
         ];
       }
 
-      return recursiveRecords(childPresentationNode, definitions, depth + 1);
+      return recursiveRecords(
+        childPresentationNode,
+        definitions,
+        depth + 1,
+        thisTree
+      );
     }
   );
 
   const fromThis = node.children.records
-    .map(
-      c =>
-        definitions.DestinyRecordDefinition &&
-        definitions.DestinyRecordDefinition[c.recordHash]
-    )
+    .map(recordWithTree(definitions, tree))
     .filter(Boolean);
 
   return [{ headingNode: node, depth }, ...fromThis, ...fromChildren];
 }
 
 const enumeratedRecordsFromProfile = profile => {
-  const profileRecords = get(profile, 'profileRecords.data.records', {});
+  const profileRecords = get(profile, "profileRecords.data.records", {});
   const characterRecords = Object.values(
-    get(profile, 'characterRecords.data', {})
+    get(profile, "characterRecords.data", {})
   ).reduce((acc, { records }) => {
     return {
       ...acc,
@@ -424,7 +462,7 @@ function mapStateToProps(state, ownProps) {
   } = state.definitions;
 
   const { players } = ownProps.router.location.query;
-  const playersToCompare = players ? players.split(',') : [];
+  const playersToCompare = players ? players.split(",") : [];
 
   const triumphNode =
     presentationNodeDefs && presentationNodeDefs[TRIUMPHS_PRESENTATION_NODE];
@@ -469,4 +507,7 @@ function mapStateToProps(state, ownProps) {
 
 const mapDispatchToActions = { getProfile };
 
-export default connect(mapStateToProps, mapDispatchToActions)(CompareTriumphs);
+export default connect(
+  mapStateToProps,
+  mapDispatchToActions
+)(CompareTriumphs);
