@@ -102,7 +102,7 @@
 .objective
   display: flex
   width: 100%
-  background: rgba(white, .3)
+  background: rgba(white, .2)
   text-align: left
   margin-bottom: 4px
   max-width: 200px
@@ -124,10 +124,27 @@
   composes: checkboxBase
   border: 1px solid rgba(white, .8)
 
+.objectiveMain
+  display: flex
+  flex: 1
+  overflow: hidden
+  position: relative
+
+.objectiveTrack
+  background: rgba(white, .3)
+  height: 100%
+  position absolute
+  top: 0
+  left: 0
+  bottom: 0
+  z-index: 1
+
 .objectiveText
 .objectiveProgress
   font-size: 12px
   padding-left: 4px
+  position: relative
+  z-index: 2
 
 .objectiveText
   whitespace: no-wrap
@@ -139,12 +156,6 @@
   display: inline-flex
   padding-right: 3px
   align-items: center
-
-// .playerCell
-//   width: 250px
-
-// .table
-//   table-layout: fixed
 
 .slash
   font-size: 0.8em

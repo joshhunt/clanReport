@@ -1,22 +1,30 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React from "react";
+import { connect } from "react-redux";
 
-import Icon from 'src/components/Icon';
+import Icon from "src/components/Icon";
 
-import s from './styles.styl';
+import s from "./styles.styl";
 
 function Objective({ def, instance }) {
+  const percentage =
+    Math.min(instance.progress / instance.completionValue, 1) * 100;
+
   return (
     <div className={s.objective}>
       <div className={instance.complete ? s.checkboxTicked : s.checkboxEmpty} />
-      <div className={s.objectiveText}>
-        {(def && def.progressDescription) || 'Completed'}
-      </div>
 
-      <div className={s.objectiveProgress}>
-        {instance.progress}
-        <span className={s.slash}> / </span>
-        {instance.completionValue}
+      <div className={s.objectiveMain}>
+        <div className={s.objectiveTrack} style={{ width: `${percentage}%` }} />
+
+        <div className={s.objectiveText}>
+          {(def && def.progressDescription) || "Completed"}
+        </div>
+
+        <div className={s.objectiveProgress}>
+          {instance.progress}
+          <span className={s.slash}> / </span>
+          {instance.completionValue}
+        </div>
       </div>
     </div>
   );
