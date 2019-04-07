@@ -1,3 +1,5 @@
+@import '../../lib/toolbox.styl'
+
 $bgColor = #f1f1f1
 
 .root
@@ -9,6 +11,9 @@ $bgColor = #f1f1f1
   font-size: 14px
   border-radius: 3px
 
+  +darkMode()
+    background: $dm-background-alt
+
   &:after
     _size = 10px
     content: ''
@@ -17,6 +22,9 @@ $bgColor = #f1f1f1
     left: (_size * 2)
     border: _size solid transparent
     border-bottom-color: $bgColor
+
+    +darkMode()
+      border-bottom-color: $dm-background-alt
 
   table
     margin-bottom: 0

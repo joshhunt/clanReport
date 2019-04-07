@@ -29,7 +29,11 @@ export default function GamesTable({
         <tbody>
           {games.map((game, index) => (
             <Fragment key={index}>
-              <GameRow game={game} onClick={onGameRowClick} />
+              <GameRow
+                game={game}
+                onClick={onGameRowClick}
+                isActive={activePgcrs[game.activityDetails.instanceId]}
+              />
 
               {activePgcrs[game.activityDetails.instanceId] && (
                 <tr>

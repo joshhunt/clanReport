@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { debounce } from 'lodash';
-import { Link } from 'react-router';
 
 import { getCacheableSearch } from 'src/lib/destiny';
 import { addRecentProfile, getRecentProfiles } from 'src/lib/ls';
-import { PlatformIcon } from 'src/components/Icon';
+import PlayerLink from 'src/components/PlayerLink';
 
 import s from './styles.styl';
 
@@ -21,38 +20,13 @@ function ProfileResultsList({
 }) {
   return (
     <div>
-      {results.map(result => {
-        let link;
-
-        if (compareTriumphsLink) {
-          if (window.location.href.includes('?players=')) {
-            link = `/compare-triumphs/${window.location.search},${
-              result.membershipType
-            }/${result.membershipId}`;
-          } else {
-            link = `/compare-triumphs/?players=${result.membershipType}/${
-              result.membershipId
-            }`;
-          }
-        } else {
-          link = `/${result.membershipType}/${result.membershipId}`;
-        }
-
-        return (
-          <Link
-            className={s.resultPlayer}
-            key={result.membershipId}
-            to={link}
-            onClick={() => saveRecentPlayer(result)}
-          >
-            <PlatformIcon
-              className={s.platformIcon}
-              membershipType={result.membershipType}
-            />
-            {result.displayName}
-          </Link>
-        );
-      })}
+      {results.map(result => (
+        <PlayerLink
+          player={result}
+          compareTriumphsLink={compareTriumphsLink}
+          saveRecentPlayer={saveRecentPlayer}
+        />
+      ))}
     </div>
   );
 }
