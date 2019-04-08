@@ -1,15 +1,19 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { useDarkMode } from "src/lib/hooks";
 
-import destinyAuth from 'src/lib/destinyAuth';
-import { setAuth, getMembership } from 'src/store/auth';
+import destinyAuth from "src/lib/destinyAuth";
+import { setAuth, getMembership } from "src/store/auth";
+import Icon from "src/components/Icon";
 
-import s from './styles.styl';
+import s from "./styles.styl";
 
 const CLIENT_ID = process.env.REACT_APP_BUNGIE_CLIENT_ID;
 const AUTH_URL = `https://www.bungie.net/en/OAuth/Authorize?client_id=${CLIENT_ID}&response_type=code`;
 
 export default function App({ children }) {
+  const [darkMode, toggleDarkMode] = useDarkMode();
+
   return (
     <div className={s.root}>
       <div className={s.header}>
@@ -18,17 +22,29 @@ export default function App({ children }) {
 
       {children}
 
-      <div className={s.footer}>
-        clan.report is made by{' '}
+      <p className={s.footer}>
+        <button
+          className={s.darkModeButton}
+          onClick={() => toggleDarkMode(!darkMode)}
+        >
+          <Icon icon={darkMode ? "sun" : "moon"} />{" "}
+          {darkMode ? "Light" : "Dark"} Mode{" "}
+        </button>
+      </p>
+
+      <p className={s.footer}>
+        clan.report is made by{" "}
         <a
           href="https://twitter.com/joshhunt"
           target="_blank"
           rel="noopener noreferrer"
         >
           joshhunt
-        </a>, who also made <a href="https://destinysets.com">Destiny Sets</a> and the <a href="https://data.destinysets.com">Destiny Data Explorer</a>.
+        </a>
+        , who also made <a href="https://destinysets.com">Destiny Sets</a> and
+        the <a href="https://data.destinysets.com">Destiny Data Explorer</a>.
         All content is owned by their respective owners, most probably Bungie.
-      </div>
+      </p>
     </div>
   );
 }
@@ -61,6 +77,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToActions = { setAuth, getMembership };
 
-export const AuthRequired = connect(mapStateToProps, mapDispatchToActions)(
-  _AuthRequired
-);
+export const AuthRequired = connect(
+  mapStateToProps,
+  mapDispatchToActions
+)(_AuthRequired);

@@ -4,5 +4,9 @@ $dm-text-color = #dedee0;
 $dm-border-color = #6e788b;
 
 darkMode()
-  @media (prefers-color-scheme: dark)
+  &:global(.dark-mode)
+  :global(.dark-mode) &
     {block}
+
+  // @media (prefers-color-scheme: dark)
+  //   {block}

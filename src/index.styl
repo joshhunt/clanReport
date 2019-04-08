@@ -6,6 +6,12 @@ body
   font-family: sans-serif
   background: white
   color: #222222
+  transition: all 200ms ease-in-out
+  transition-property: background, color
+
+  a
+    transition: all 200ms ease-in-out
+    transition-property: color
 
   +darkMode()
     background: $dm-background
