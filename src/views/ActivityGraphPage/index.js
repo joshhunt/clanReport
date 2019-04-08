@@ -4,7 +4,6 @@ import _ from 'lodash';
 
 import { getClansForUser, getProfile } from 'src/store/clan';
 import { getCharacterPGCRHistory } from 'src/store/pgcr';
-import tableStyles from 'app/components/Table/styles.styl';
 import Graph from './Graph';
 
 import s from './styles.styl';
@@ -13,19 +12,6 @@ const getFireteamId = member => member.values.fireteamId.basic.value;
 
 const k = ({ membershipType, membershipId }) =>
   [membershipType, membershipId].join('/');
-
-const MemberLine = ({ member }) => (
-  <tr>
-    <td>{member.player.destinyUserInfo.displayName} </td>
-    <td>{member.isInOurFireteam ? 'member' : 'stranger'}</td>
-    <td>
-      <code>{member.values.fireteamId.basic.value}</code>
-    </td>
-    <td>
-      <code>{member.values.fireteamId.basic.displayValue}</code>
-    </td>
-  </tr>
-);
 
 class ActivityGraphPage extends Component {
   constructor(...args) {
@@ -185,6 +171,7 @@ const mapDispatchToActions = {
   getCharacterPGCRHistory
 };
 
-export default connect(mapStateToProps, mapDispatchToActions)(
-  ActivityGraphPage
-);
+export default connect(
+  mapStateToProps,
+  mapDispatchToActions
+)(ActivityGraphPage);

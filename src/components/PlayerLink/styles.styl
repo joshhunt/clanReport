@@ -1,15 +1,7 @@
+@import '../../lib/toolbox.styl'
+
 .root
-  width: 500px
-  max-width: 100%
-
-.playerSearch
-  margin-top: 50px
-  width: 500px
-  max-width: 100%
-
-.resultPlayer
   display: block
-  max-width: 500px
   color: inherit
   text-decoration: none
   padding: 8px 10px
@@ -20,9 +12,11 @@
   &:hover
     background: lighten(#ececec, 10%)
 
+  +darkMode()
+    background: $dm-background-alt;
+
+    &:hover
+      background: lighten($dm-background, 7%)
+
 .platformIcon
   margin-right: 5px
-
-.authLink
-  color: inherit
-  font-weight: 500

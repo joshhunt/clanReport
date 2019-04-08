@@ -1,8 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import Icon from "src/components/Icon";
-
 import s from "./styles.styl";
 
 function Objective({ def, instance }) {

@@ -24,9 +24,13 @@ function Stat({ name, value }) {
   );
 }
 
-function GameRow({ game, modeDef, activityDef, onClick }) {
+function GameRow({ game, modeDef, activityDef, onClick, isActive }) {
   return (
-    <tr onClick={() => onClick(game.activityDetails.instanceId)}>
+    <tr
+      className={isActive && s.isActive}
+      data-lol
+      onClick={() => onClick(game.activityDetails.instanceId)}
+    >
       <td>
         <div
           className={

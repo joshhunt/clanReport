@@ -140,33 +140,11 @@ class NewCollections extends Component {
   }
 
   render() {
-    const {
-      prevCollectiblesGrouped,
-      currentCollectiblesGrouped,
-      payload
-    } = this.state;
+    const { currentCollectiblesGrouped, payload } = this.state;
 
     return (
       <div>
         <h2>New Collections</h2>
-
-        {/*          <div className={s.half}>
-            <h2>prevCollectibles</h2>
-            {prevCollectiblesGrouped &&
-              Object.entries(prevCollectiblesGrouped).map(
-                ([sourceString, collectibles]) => (
-                  <div>
-                    <h3>{sourceString || <em>no source</em>}</h3>
-                    {collectibles.map(c => (
-                      <CollectibleLockup
-                        itemDefs={this.props.DestinyInventoryItemDefinition}
-                        collectible={c}
-                      />
-                    ))}
-                  </div>
-                )
-              )}
-          </div>*/}
 
         {currentCollectiblesGrouped &&
           payload.map(obj => (
