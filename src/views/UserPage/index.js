@@ -1,20 +1,20 @@
-import { orderBy } from 'lodash';
-import React, { Component } from 'react';
-import { Link } from 'react-router';
-import { connect } from 'react-redux';
+import { orderBy } from "lodash";
+import React, { Component } from "react";
+import { Link } from "react-router";
+import { connect } from "react-redux";
 
-import { getClansForUser, getProfile } from 'src/store/clan';
+import { getClansForUser, getProfile } from "src/store/clan";
 import {
   getCharacterPGCRHistory,
   toggleViewPGCRDetails,
   getPGCRDetails
-} from 'src/store/pgcr';
-import GamesTable from 'app/components/GamesTable';
+} from "src/store/pgcr";
+import GamesTable from "app/components/GamesTable";
+import CurrentActivity from "app/components/CurrentActivity";
 
-import s from './styles.styl';
+import { getCurrentActivity } from "src/lib/destinyUtils";
 
-const k = ({ membershipType, membershipId }) =>
-  [membershipType, membershipId].join('/');
+import s from "./styles.styl";
 
 class UserPage extends Component {
   componentDidMount() {
@@ -26,15 +26,9 @@ class UserPage extends Component {
     });
   }
 
-  getProfile() {
-    const key = k(this.props.routeParams);
-    const profile = this.props.profiles[key];
-    return { profile, key };
-  }
-
   renderName() {
-    const { profile, key } = this.getProfile();
-    return profile ? profile.profile.data.userInfo.displayName : key;
+    const { profile, pKey } = this.props;
+    return profile ? profile.profile.data.userInfo.displayName : pKey;
   }
 
   viewPGCRDetails = pgcrId => {
@@ -43,12 +37,17 @@ class UserPage extends Component {
   };
 
   render() {
-    const games = this.props.gameHistory;
+    const { gameHistory, profile } = this.props;
     const clans = this.props.clans || [];
+    const currentActivity = profile && getCurrentActivity(profile);
 
     return (
       <div className={s.root}>
         <h2>Clans for {this.renderName()}</h2>
+
+        {currentActivity && (
+          <CurrentActivity currentActivity={currentActivity} />
+        )}
 
         {clans.map(clan => (
           <p key={clan.group.groupId}>
@@ -57,7 +56,7 @@ class UserPage extends Component {
         ))}
 
         <GamesTable
-          games={games}
+          games={gameHistory}
           pgcrDetails={this.props.pgcrDetails}
           onGameRowClick={this.viewPGCRDetails}
           activePgcrs={this.props.activePgcrs}
@@ -68,21 +67,24 @@ class UserPage extends Component {
 }
 
 function mapStateToProps(state, ownProps) {
-  const key = `${ownProps.routeParams.membershipType}/${
+  const pKey = `${ownProps.routeParams.membershipType}/${
     ownProps.routeParams.membershipId
   }`;
 
-  const byCharacter = Object.values(state.pgcr.histories[key] || {});
+  const profile = state.clan.profiles[pKey];
+
+  const byCharacter = Object.values(state.pgcr.histories[pKey] || {});
   const allGames = [].concat(...byCharacter).filter(Boolean);
-  const gameHistory = orderBy(allGames, g => new Date(g.period), ['desc']);
+  const gameHistory = orderBy(allGames, g => new Date(g.period), ["desc"]);
 
   return {
     isAuthenticated: state.auth.isAuthenticated,
     clans: state.clan.clanResults,
-    profiles: state.clan.profiles,
     gameHistory,
     activePgcrs: state.pgcr.viewDetails,
-    pgcrDetails: state.pgcr.pgcr
+    pgcrDetails: state.pgcr.pgcr,
+    pKey,
+    profile
   };
 }
 

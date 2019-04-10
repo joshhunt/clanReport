@@ -1,8 +1,8 @@
-import React from 'react';
-import { memoize, toPairs, get } from 'lodash';
+import React from "react";
+import { memoize, toPairs, get } from "lodash";
 
-import { EMBLEM, HUNTER, TITAN, WARLOCK, NO_CLASS } from 'app/lib/destinyEnums';
-import { getLower } from 'src/lib/utils';
+import { EMBLEM, HUNTER, TITAN, WARLOCK, NO_CLASS } from "app/lib/destinyEnums";
+import { getLower } from "src/lib/utils";
 // import CLASS_OVERRIDES from 'app/extraData/classOverrides';
 
 export const flagEnum = (state, value) => !!(state & value);
@@ -49,7 +49,7 @@ export function profileHasCompletedTriumph(profile, triumphHash) {
 
   if (triumphState === undefined) {
     const completedCharacter = Object.values(
-      get(profile, 'characterRecords.data', {})
+      get(profile, "characterRecords.data", {})
     ).find(data => {
       const enumeratedState = enumerateTriumphState(
         data.records[triumphHash].state
@@ -72,7 +72,7 @@ export const isOrnament = item =>
   item.inventory.stackUniqueLabel &&
   item.plug &&
   item.plug.plugCategoryIdentifier &&
-  item.plug.plugCategoryIdentifier.includes('skins');
+  item.plug.plugCategoryIdentifier.includes("skins");
 
 export const makeTypeShort = memoize(type => {
   const match = type.match(/Destiny(\w+)Definition/);
@@ -87,7 +87,7 @@ export const getName = item => {
 };
 
 export const bungieUrl = path => {
-  return path && path.includes && path.includes('//bungie.net/')
+  return path && path.includes && path.includes("//bungie.net/")
     ? path
     : `https://bungie.net${path}`;
 };
@@ -99,24 +99,30 @@ function classFromString(str) {
   }
 
   switch (results[0]) {
-    case 'hunter':
+    case "hunter":
       return HUNTER;
-    case 'warlock':
+    case "warlock":
       return WARLOCK;
-    case 'titan':
+    case "titan":
       return TITAN;
     default:
       return NO_CLASS;
   }
 }
 
-export const getItemClass = item => {
-  // if (CLASS_OVERRIDES.hasOwnProperty(item.hash)) {
-  //   return CLASS_OVERRIDES[item.hash];
-  // }
+export const getCurrentActivity = memoize(profile => {
+  const found =
+    profile.characterActivities.data &&
+    Object.values(profile.characterActivities.data).find(character => {
+      return character.currentActivityHash !== 0;
+    });
 
-  const stackUniqueLabel = getLower(item, 'inventory.stackUniqueLabel');
-  const plugCategoryIdentifier = getLower(item, 'plug.plugCategoryIdentifier');
+  return found;
+});
+
+export const getItemClass = item => {
+  const stackUniqueLabel = getLower(item, "inventory.stackUniqueLabel");
+  const plugCategoryIdentifier = getLower(item, "plug.plugCategoryIdentifier");
 
   if (item.itemCategoryHashes.includes(EMBLEM) && stackUniqueLabel.length) {
     return classFromString(stackUniqueLabel);
@@ -145,7 +151,7 @@ export function getNameForItem(item, noQuotes) {
     return foundName;
   }
 
-  return foundName ? `"${foundName}"` : '';
+  return foundName ? `"${foundName}"` : "";
 }
 
 export const makeAllDefsArray = memoize(allDefs => {

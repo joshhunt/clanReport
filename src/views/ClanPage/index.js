@@ -8,7 +8,8 @@ import "react-table/react-table.css";
 
 import {
   profileHasCompletedTriumph,
-  profileHasCollectible
+  profileHasCollectible,
+  getCurrentActivity
 } from "src/lib/destinyUtils";
 
 import {
@@ -31,16 +32,6 @@ const decode = memoize(string => entities.decode(string));
 
 const NIOBE_EMBLEM_COLLECTIBLE = 888672408;
 const PARENT_SEAL_NODE = 1652422747;
-
-const getCurrentActivity = memoize(profile => {
-  const found =
-    profile.characterActivities.data &&
-    Object.values(profile.characterActivities.data).find(character => {
-      return character.currentActivityHash !== 0;
-    });
-
-  return found;
-});
 
 const baseSort = sortFn => member =>
   member.profile ? sortFn(member) : -99999999999;
