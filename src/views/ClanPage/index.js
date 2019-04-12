@@ -71,14 +71,6 @@ const EGO_COLUMNS = [
 
 class ClanPage extends Component {
   componentDidMount() {
-    fetch("https://destiny.plumbing/en/raw/DestinyActivityDefinition.json")
-      .then(r => r.json())
-      .then(defs => this.props.setBulkDefinitions({ activityDefs: defs }));
-
-    fetch("https://destiny.plumbing/en/raw/DestinyActivityModeDefinition.json")
-      .then(r => r.json())
-      .then(defs => this.props.setBulkDefinitions({ activityModeDefs: defs }));
-
     this.props.getClanDetails(this.props.routeParams.groupId);
 
     this.props.getClanMembers(this.props.routeParams.groupId).then(data => {
@@ -299,8 +291,8 @@ class ClanPage extends Component {
 
 function mapStateToProps(state) {
   return {
-    activityDefs: state.definitions.activityDefs,
-    activityModeDefs: state.definitions.activityModeDefs,
+    activityDefs: state.definitions.DestinyActivityDefinition,
+    activityModeDefs: state.definitions.DestinyActivityModeDefinition,
     presentationNodeDefs: state.definitions.DestinyPresentationNodeDefinition,
     recordDefs: state.definitions.DestinyRecordDefinition,
     isAuthenticated: state.auth.isAuthenticated,
