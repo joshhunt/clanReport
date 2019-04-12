@@ -43,7 +43,7 @@ class UserPage extends Component {
 
     return (
       <div className={s.root}>
-        <h2>Clans for {this.renderName()}</h2>
+        <h2>{this.renderName()}</h2>
 
         {currentActivity && (
           <CurrentActivity currentActivity={currentActivity} />
@@ -51,9 +51,12 @@ class UserPage extends Component {
 
         {clans.map(clan => (
           <p key={clan.group.groupId}>
+            Clan:{" "}
             <Link to={`/clan/${clan.group.groupId}`}>{clan.group.name}</Link>
           </p>
         ))}
+
+        <h3>Recent games</h3>
 
         <GamesTable
           games={gameHistory}
@@ -66,6 +69,8 @@ class UserPage extends Component {
   }
 }
 
+const MAX_GAMES = 100;
+
 function mapStateToProps(state, ownProps) {
   const pKey = `${ownProps.routeParams.membershipType}/${
     ownProps.routeParams.membershipId
@@ -75,7 +80,9 @@ function mapStateToProps(state, ownProps) {
 
   const byCharacter = Object.values(state.pgcr.histories[pKey] || {});
   const allGames = [].concat(...byCharacter).filter(Boolean);
-  const gameHistory = orderBy(allGames, g => new Date(g.period), ["desc"]);
+  const gameHistory = orderBy(allGames, g => new Date(g.period), [
+    "desc"
+  ]).slice(0, MAX_GAMES);
 
   return {
     isAuthenticated: state.auth.isAuthenticated,
