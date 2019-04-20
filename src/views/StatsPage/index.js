@@ -91,7 +91,9 @@ function StatsPage({
       Header: "Row",
       accessor: "hash",
       filterable: true,
-      filterMethod: ({ value }, { def }) => {
+      filterMethod: ({ value }, secondArg) => {
+        const def = secondArg._original.def;
+
         return (
           def &&
           def.displayProperties.name
