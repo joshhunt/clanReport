@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router";
 import { useDarkMode } from "src/lib/hooks";
 
 import destinyAuth from "src/lib/destinyAuth";
@@ -30,6 +31,11 @@ export default function App({ children }) {
           <Icon icon={darkMode ? "sun" : "moon"} />{" "}
           {darkMode ? "Light" : "Dark"} Mode{" "}
         </button>
+      </p>
+
+      <p className={s.footer}>
+        <Link to="/compare-triumphs">Compare triumphs</Link> /{" "}
+        <Link to="/stats">Playerbase stats</Link>
       </p>
 
       <p className={s.footer}>

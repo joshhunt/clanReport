@@ -13,6 +13,7 @@ import TriumphReport from "./views/TriumphReport";
 import CompareTriumphs from "./views/CompareTriumphs";
 import NewCollections from "./views/NewCollections";
 import ActivityGraphPage from "./views/ActivityGraphPage";
+import StatsPage from "./views/StatsPage";
 
 export default class AppRouter extends Component {
   render() {
@@ -21,6 +22,13 @@ export default class AppRouter extends Component {
         <Router history={browserHistory}>
           <Route component={App}>
             <Route path="/" component={Home} />
+            <Route path="/stats" mode="collectibles" component={StatsPage} />
+            <Route
+              path="/stats/collectibles"
+              mode="collectibles"
+              component={StatsPage}
+            />
+            <Route path="/stats/records" mode="records" component={StatsPage} />
             <Route path="/clan/:groupId" component={ClanPage} />
             <Route path="/triumph-report" component={TriumphReport} />
             <route path="/compare-triumphs" component={CompareTriumphs} />

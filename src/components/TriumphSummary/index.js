@@ -1,15 +1,16 @@
-import React from 'react';
+import React from "react";
 
-import BungieImage from 'src/components/BungieImage';
+import BungieImage from "src/components/BungieImage";
 
-import s from './styles.styl';
+import s from "./styles.styl";
 
-export default function TriumphSummary({ record, anchorLink }) {
+export default function TriumphSummary({ record, anchorLink, typeOverride }) {
+  const type = typeOverride || "Record";
   const linkProps = anchorLink
     ? { href: `#${anchorLink}` }
     : {
-        href: `https://data.destinysets.com/i/Record:${record.hash}`,
-        target: '_blank'
+        href: `https://data.destinysets.com/i/${type}:${record.hash}`,
+        target: "_blank"
       };
 
   return (
