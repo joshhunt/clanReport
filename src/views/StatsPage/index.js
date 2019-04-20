@@ -39,14 +39,15 @@ function StatsPage({
   route
 }) {
   const mode = route.mode;
-  const MODE_MAP = {
+  const DEFINITION_MAP = {
     [RECORDS]: DestinyRecordDefinition,
     [COLLECTIBLES]: DestinyCollectibleDefinition
   };
 
-  const [stats, setStats] = useState();
   const [statsResponse, setStatsResponse] = useState();
   const [voluspaTriumphs, setVoluspaTriumphs] = useState();
+
+  console.log("running...");
 
   useEffect(() => {
     fetchStats().then(setStatsResponse);
@@ -56,49 +57,41 @@ function StatsPage({
     fetch("https://voluspa-a.braytech.org/statistics/triumphs")
       .then(r => r.json())
       .then(d => setVoluspaTriumphs(d.Response.data));
-  });
+  }, []);
 
-  useMemo(() => {
-    if (!statsResponse) {
-      return null;
-    }
-
-    setStats({
-      lastAccessed: statsResponse.createdAt,
-      duration: statsResponse.duration,
-      collectibles: makeRows(
-        statsResponse.collectibleResults || statsResponse.collectibles
-      ),
-      records: makeRows(
-        statsResponse.recordResults || statsResponse.records,
-        voluspaTriumphs
-      )
-    });
-  }, [statsResponse, voluspaTriumphs]);
-
-  const definition = MODE_MAP[mode];
+  const definition = DEFINITION_MAP[mode];
 
   if (!VALID_MODES.includes(mode)) {
     return <h2>invalid mode</h2>;
   }
 
-  if (!stats || !definition) {
+  if (!statsResponse || !definition) {
     return <pre>loading...</pre>;
   }
 
-  const baseStats = stats[mode];
+  const baseStats = statsResponse[mode];
 
-  const baseline = baseStats.reduce((acc, stat) => {
-    return Math.max(acc, stat.score);
+  const baseline = Object.values(baseStats).reduce((acc, score) => {
+    return Math.max(acc, score);
   }, 0);
+
+  const rows = Object.values(definition)
+    .filter(def => def.displayProperties.name)
+    .map(def => {
+      return {
+        def,
+        hash: def && def.hash,
+        score: baseStats[def.hash] || 0,
+        voluspa: voluspaTriumphs && voluspaTriumphs[def.hash]
+      };
+    });
 
   const columns = [
     {
       Header: "Row",
       accessor: "hash",
       filterable: true,
-      filterMethod: ({ value }, { hash }) => {
-        const def = definition[hash];
+      filterMethod: ({ value }, { def }) => {
         return (
           def &&
           def.displayProperties.name
@@ -106,14 +99,16 @@ function StatsPage({
             .includes(value && value.toLowerCase())
         );
       },
-      Cell: props => (
-        <span>
-          <TriumphSummary
-            record={definition[props.value]}
-            typeOverride={TYPE_MAP[mode]}
-          />
-        </span>
-      )
+      Cell: props => {
+        return (
+          <span>
+            <TriumphSummary
+              record={props.original.def}
+              typeOverride={TYPE_MAP[mode]}
+            />
+          </span>
+        );
+      }
     },
     {
       Header: "# obtained",
@@ -143,15 +138,16 @@ function StatsPage({
         {" // "}
         <Link to="/stats/records">Records</Link>
       </p>
+
       <p>
         <div>baseline: {baseline.toLocaleString()}</div>
-        <div>duration: {stats.duration / 1000}s</div>
+        <div>duration: {statsResponse.duration / 1000}s</div>
         <div>
-          stats from <PrettyDate date={stats.lastAccessed} />
+          stats from <PrettyDate date={statsResponse.createdAt} />
         </div>
       </p>
 
-      <ReactTable data={baseStats} columns={columns} />
+      <ReactTable data={rows} columns={columns} />
     </div>
   );
 }

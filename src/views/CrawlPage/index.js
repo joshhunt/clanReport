@@ -1,15 +1,15 @@
-import { memoize } from 'lodash';
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import { memoize } from "lodash";
+import React, { Component } from "react";
+import { connect } from "react-redux";
 
-import { getClansForUser, getProfile } from 'src/store/clan';
-import { getCharacterPGCRHistory } from 'src/store/pgcr';
-import { profileHasCompletedTriumph } from 'src/lib/destinyUtils';
+import { getClansForUser, getProfile } from "src/store/clan";
+import { getCharacterPGCRHistory } from "src/store/pgcr";
+import { profileHasCompletedTriumph } from "src/lib/destinyUtils";
 
-import s from './styles.styl';
+import s from "./styles.styl";
 
 const k = ({ membershipType, membershipId }) =>
-  [membershipType, membershipId].join('/');
+  [membershipType, membershipId].join("/");
 
 class CrawlPage extends Component {
   constructor(...args) {
@@ -29,10 +29,6 @@ class CrawlPage extends Component {
         );
       });
     });
-
-    this.interval = window.setInterval(() => {
-      this.setState({ calledProfiles: this.calledProfiles });
-    }, 500);
   }
 
   componentWillUnmount() {
@@ -135,4 +131,7 @@ const mapDispatchToActions = {
   getCharacterPGCRHistory
 };
 
-export default connect(mapStateToProps, mapDispatchToActions)(CrawlPage);
+export default connect(
+  mapStateToProps,
+  mapDispatchToActions
+)(CrawlPage);
