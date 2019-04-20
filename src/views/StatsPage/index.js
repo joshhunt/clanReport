@@ -66,8 +66,13 @@ function StatsPage({
     setStats({
       lastAccessed: statsResponse.createdAt,
       duration: statsResponse.duration,
-      collectibles: makeRows(statsResponse.collectibleResults),
-      records: makeRows(statsResponse.recordResults, voluspaTriumphs)
+      collectibles: makeRows(
+        statsResponse.collectibleResults || statsResponse.collectibles
+      ),
+      records: makeRows(
+        statsResponse.recordResults || statsResponse.records,
+        voluspaTriumphs
+      )
     });
   }, [statsResponse, voluspaTriumphs]);
 

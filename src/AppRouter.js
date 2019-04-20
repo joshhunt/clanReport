@@ -31,8 +31,8 @@ export default class AppRouter extends Component {
             <Route path="/stats/records" mode="records" component={StatsPage} />
             <Route path="/clan/:groupId" component={ClanPage} />
             <Route path="/triumph-report" component={TriumphReport} />
-            <route path="/compare-triumphs" component={CompareTriumphs} />
-            <route path="/new-collections" component={NewCollections} />
+            <Route path="/compare-triumphs" component={CompareTriumphs} />
+            <Route path="/new-collections" component={NewCollections} />
             <Route path="/:membershipType/:membershipId" component={UserPage} />
             <Route
               path="/:membershipType/:membershipId/crawl"
