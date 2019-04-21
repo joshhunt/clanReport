@@ -13,7 +13,8 @@ import "./styles.styl";
 
 function percent(value, total) {
   const raw = (value / total) * 100;
-  return Math.round(raw * 100) / 100;
+  const p = Math.round(raw * 100) / 100;
+  return value > 0 && p === 0 ? "<0.01" : p;
 }
 
 function fetchStats() {
