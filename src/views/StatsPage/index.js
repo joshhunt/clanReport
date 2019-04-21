@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router";
 
@@ -7,14 +7,9 @@ import "react-table/react-table.css";
 
 import TriumphSummary from "src/components/TriumphSummary";
 import PrettyDate from "src/components/Date";
+import { PlatformIcon } from "src/components/Icon";
 
-function makeRows(data, voluspaData) {
-  return Object.entries(data).map(([hash, score]) => ({
-    hash,
-    score,
-    voluspa: voluspaData && Number(voluspaData[hash])
-  }));
-}
+import "./styles.styl";
 
 function percent(value, total) {
   const raw = (value / total) * 100;
@@ -44,10 +39,9 @@ function StatsPage({
     [COLLECTIBLES]: DestinyCollectibleDefinition
   };
 
+  const [showCounts, setShowCounts] = useState();
   const [statsResponse, setStatsResponse] = useState();
   const [voluspaTriumphs, setVoluspaTriumphs] = useState();
-
-  console.log("running...");
 
   useEffect(() => {
     fetchStats().then(setStatsResponse);
@@ -71,9 +65,20 @@ function StatsPage({
 
   const baseStats = statsResponse[mode];
 
-  const baseline = Object.values(baseStats).reduce((acc, score) => {
-    return Math.max(acc, score);
-  }, 0);
+  const populationPerPlatform = Object.values(baseStats).reduce(
+    (acc, statSet) => {
+      Object.entries(statSet).forEach(([platform, count]) => {
+        if (!acc[platform]) {
+          acc[platform] = 0;
+        }
+
+        acc[platform] = Math.max(acc[platform], count);
+      });
+
+      return acc;
+    },
+    {}
+  );
 
   const rows = Object.values(definition)
     .filter(def => def.displayProperties.name)
@@ -81,7 +86,7 @@ function StatsPage({
       return {
         def,
         hash: def && def.hash,
-        score: baseStats[def.hash] || 0,
+        score: baseStats[def.hash] || {},
         voluspa: voluspaTriumphs && voluspaTriumphs[def.hash]
       };
     });
@@ -112,18 +117,25 @@ function StatsPage({
         );
       }
     },
-    {
-      Header: "# obtained",
-      accessor: "score",
-      Cell: props => <span>{props.value.toLocaleString()}</span>,
-      filterable: false
-    },
-    {
-      Header: "% obtained",
-      accessor: "score",
-      filterable: false,
-      Cell: props => <span>{percent(props.value, baseline)}%</span>
-    },
+    ...Object.entries(populationPerPlatform).map(([platform, population]) => ({
+      Header: () => (
+        <span>
+          Obtained on {"  "}
+          {platform === "total" ? (
+            "any"
+          ) : (
+            <PlatformIcon membershipType={platform} />
+          )}
+        </span>
+      ),
+      id: `score_${platform}`,
+      accessor: d => d.score[platform] || 0,
+      Cell: props => (
+        <span onClick={() => setShowCounts(!showCounts)}>
+          {showCounts ? props.value : `${percent(props.value, population)}%`}
+        </span>
+      )
+    })),
     mode === RECORDS && {
       Header: "VOLUSPA",
       accessor: "voluspa",
@@ -142,7 +154,7 @@ function StatsPage({
       </p>
 
       <p>
-        <div>baseline: {baseline.toLocaleString()}</div>
+        {/* <div>baseline: {baseline.toLocaleString()}</div> */}
         <div>duration: {statsResponse.duration / 1000}s</div>
         <div>
           stats from <PrettyDate date={statsResponse.createdAt} />
