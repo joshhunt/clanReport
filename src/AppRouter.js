@@ -14,6 +14,7 @@ import CompareTriumphs from "./views/CompareTriumphs";
 import NewCollections from "./views/NewCollections";
 import ActivityGraphPage from "./views/ActivityGraphPage";
 import StatsPage from "./views/StatsPage";
+import TriumphsDebug from "./views/TriumphsDebug";
 
 export default class AppRouter extends Component {
   render() {
@@ -34,6 +35,10 @@ export default class AppRouter extends Component {
             <Route path="/compare-triumphs" component={CompareTriumphs} />
             <Route path="/new-collections" component={NewCollections} />
             <Route path="/:membershipType/:membershipId" component={UserPage} />
+            <Route
+              path="/:membershipType/:membershipId/debug"
+              component={TriumphsDebug}
+            />
             <Route
               path="/:membershipType/:membershipId/crawl"
               component={CrawlPage}

@@ -21,7 +21,11 @@ class UserPage extends Component {
     this.props.getClansForUser(this.props.routeParams);
     this.props.getProfile(this.props.routeParams).then(profile => {
       Object.keys(profile.characters.data).forEach(characterId => {
-        this.props.getCharacterPGCRHistory(this.props.routeParams, characterId);
+        this.props.getCharacterPGCRHistory(
+          this.props.routeParams,
+          characterId,
+          { mode: this.props.router.location.query.mode || "None" }
+        );
       });
     });
   }

@@ -1,14 +1,14 @@
-import * as destiny from 'src/lib/destiny';
-import immer from 'immer';
-import { makePayloadAction } from './utils';
+import * as destiny from "src/lib/destiny";
+import immer from "immer";
+import { makePayloadAction } from "./utils";
 
-const GET_PLAYER_PGCR_HISTORY_SUCCESS = 'Get player PGCR history - success';
-const GET_PLAYER_PGCR_HISTORY_ERROR = 'Get player PGCR history - error';
+const GET_PLAYER_PGCR_HISTORY_SUCCESS = "Get player PGCR history - success";
+const GET_PLAYER_PGCR_HISTORY_ERROR = "Get player PGCR history - error";
 
-const GET_PGCR_DETAILS_SUCCESS = 'Get PGCR details - success';
-const GET_PGCR_DETAILS_ERROR = 'Get PGCR details - error';
+const GET_PGCR_DETAILS_SUCCESS = "Get PGCR details - success";
+const GET_PGCR_DETAILS_ERROR = "Get PGCR details - error";
 
-const TOGGLE_VIEW_PGCR_DETAILS = 'View PGCR Details';
+const TOGGLE_VIEW_PGCR_DETAILS = "View PGCR Details";
 
 const defaultState = {
   histories: {},
@@ -88,7 +88,10 @@ export function getCharacterPGCRHistory(
 ) {
   return dispatch => {
     return destiny
-      .getCharacterPGCRHistory({ membershipType, membershipId, characterId })
+      .getCharacterPGCRHistory(
+        { membershipType, membershipId, characterId },
+        opts.mode
+      )
       .then(data => {
         dispatch(
           getCharacterPGCRHistorySuccess(
@@ -98,7 +101,7 @@ export function getCharacterPGCRHistory(
         );
 
         if (opts.fetchPGCRDetails) {
-          console.log('fetchPGCRDetails', data);
+          console.log("fetchPGCRDetails", data);
 
           data.activities.forEach(activity => {
             dispatch(getPGCRDetails(activity.activityDetails.instanceId));
