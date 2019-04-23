@@ -51,25 +51,26 @@ function NightfallTable({
         </tr>
       </thead>
       <tbody>
-        {nightfalls.map(nightfallHash => (
-          <tr>
-            <td>
-              {activityDefs &&
-                activityDefs[nightfallHash].displayProperties.name}
-              <br />
-              <small className={s.grey}>{nightfallHash}</small>
-            </td>
+        {nightfalls &&
+          nightfalls.map(nightfallHash => (
+            <tr>
+              <td>
+                {activityDefs &&
+                  activityDefs[nightfallHash].displayProperties.name}
+                <br />
+                <small className={s.grey}>{nightfallHash}</small>
+              </td>
 
-            {playersToCompare.map(pKey => {
-              const forPlayer = activities[pKey];
-              const thisNightfall = forPlayer && forPlayer[nightfallHash];
+              {playersToCompare.map(pKey => {
+                const forPlayer = activities[pKey];
+                const thisNightfall = forPlayer && forPlayer[nightfallHash];
 
-              return (
-                <td>{thisNightfall && nightfallCell(thisNightfall, pKey)}</td>
-              );
-            })}
-          </tr>
-        ))}
+                return (
+                  <td>{thisNightfall && nightfallCell(thisNightfall, pKey)}</td>
+                );
+              })}
+            </tr>
+          ))}
       </tbody>
     </table>
   );
@@ -79,7 +80,7 @@ function getDisplayValue(pgcr, pKey, valueKey) {
   return pgcr && getEntry(pgcr, pKey).values[valueKey].basic.displayValue;
 }
 
-function NightfallSummary({ pgcr, pKey }) {
+function NightfallSummary({ pgcr, pKey, highlight }) {
   return (
     <a
       href={`https://www.bungie.net/en/PGCR/${pgcr.activityDetails.instanceId}`}
@@ -88,15 +89,15 @@ function NightfallSummary({ pgcr, pKey }) {
     >
       <table className={s.nightfallSummary}>
         <tbody>
-          <tr>
+          <tr className={highlight === "duration" && s.bold}>
             <td className={s.grey}>Duration:</td>
             <td>{getDisplayValue(pgcr, pKey, "activityDurationSeconds")}</td>
           </tr>
-          <tr>
+          <tr className={highlight === "team score" && s.bold}>
             <td className={s.grey}>Team score:</td>
             <td>{getDisplayValue(pgcr, pKey, "teamScore")}</td>
           </tr>
-          <tr>
+          <tr className={highlight === "player score" && s.bold}>
             <td className={s.grey}>Player score:</td>
             <td>{getDisplayValue(pgcr, pKey, "score")}</td>
           </tr>
@@ -182,7 +183,11 @@ class CompareDebug extends Component {
             activityDefs={activityDefs}
             nightfallCell={(nightfall, pKey) =>
               nightfall.fastest && (
-                <NightfallSummary pgcr={nightfall.fastest} pKey={pKey} />
+                <NightfallSummary
+                  pgcr={nightfall.fastest}
+                  pKey={pKey}
+                  highlight="duration"
+                />
               )
             }
           />
@@ -200,6 +205,7 @@ class CompareDebug extends Component {
                 <NightfallSummary
                   pgcr={nightfall.highestTeamScore}
                   pKey={pKey}
+                  highlight="team score"
                 />
               )
             }
@@ -218,6 +224,7 @@ class CompareDebug extends Component {
                 <NightfallSummary
                   pgcr={nightfall.highestPlayerScore}
                   pKey={pKey}
+                  highlight="player score"
                 />
               )
             }
