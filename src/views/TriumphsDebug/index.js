@@ -10,6 +10,7 @@ import {
 } from "src/store/pgcr";
 
 import tableStyles from "app/components/Table/styles.styl";
+import GamesTable from "app/components/GamesTable";
 
 import getRecordsFromProfile from "./getRecordsFromProfile";
 
@@ -17,9 +18,14 @@ import getRecordsFromProfile from "./getRecordsFromProfile";
 
 class UserPage extends Component {
   componentDidMount() {
+    this.props.getClansForUser(this.props.routeParams);
     this.props.getProfile(this.props.routeParams).then(profile => {
       Object.keys(profile.characters.data).forEach(characterId => {
-        this.props.getCharacterPGCRHistory(this.props.routeParams, characterId);
+        this.props.getCharacterPGCRHistory(
+          this.props.routeParams,
+          characterId,
+          { mode: this.props.router.location.query.mode || 46 }
+        );
       });
     });
   }
@@ -34,6 +40,7 @@ class UserPage extends Component {
     const records = profile && getRecordsFromProfile(profile);
 
     const mappedRecords =
+      false &&
       records &&
       recordsDefs &&
       records
@@ -49,13 +56,19 @@ class UserPage extends Component {
           return !r.def || !r.def.displayProperties.name;
         });
 
-    console.log(records);
-
     return (
       <div>
         <h2>{this.renderName()}</h2>
 
-        <h3>Profile triumphs</h3>
+        <h3>Nightfalls</h3>
+        <GamesTable
+          games={this.props.gameHistory}
+          pgcrDetails={this.props.pgcrDetails}
+          onGameRowClick={this.viewPGCRDetails}
+          activePgcrs={this.props.activePgcrs}
+        />
+
+        <h3>nameless triumphs</h3>
         <table className={tableStyles.table}>
           <thead>
             <tr>
@@ -96,6 +109,8 @@ class UserPage extends Component {
   }
 }
 
+const MAX_GAMES = 999999999;
+
 function mapStateToProps(state, ownProps) {
   const pKey = `${ownProps.routeParams.membershipType}/${
     ownProps.routeParams.membershipId
@@ -103,7 +118,18 @@ function mapStateToProps(state, ownProps) {
 
   const profile = state.clan.profiles[pKey];
 
+  const byCharacter = Object.values(state.pgcr.histories[pKey] || {});
+  const allGames = [].concat(...byCharacter).filter(Boolean);
+  const gameHistory = orderBy(allGames, g => new Date(g.period), [
+    "desc"
+  ]).slice(0, MAX_GAMES);
+
   return {
+    isAuthenticated: state.auth.isAuthenticated,
+    clans: state.clan.clanResults,
+    gameHistory,
+    activePgcrs: state.pgcr.viewDetails,
+    pgcrDetails: state.pgcr.pgcr,
     pKey,
     profile,
     recordsDefs: state.definitions.DestinyRecordDefinition

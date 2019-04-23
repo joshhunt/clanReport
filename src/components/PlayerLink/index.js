@@ -1,26 +1,22 @@
-import React from 'react';
-import { Link } from 'react-router';
+import React from "react";
+import { Link } from "react-router";
 
-import { PlatformIcon } from 'src/components/Icon';
+import { PlatformIcon } from "src/components/Icon";
 
-import s from './styles.styl';
+import s from "./styles.styl";
 
-export default function PlayerLink({
-  player,
-  compareTriumphsLink,
-  saveRecentPlayer
-}) {
+export default function PlayerLink({ player, url, saveRecentPlayer }) {
   const { membershipId, membershipType, displayName } = player;
 
   let link;
 
-  if (compareTriumphsLink) {
-    if (window.location.href.includes('?players=')) {
-      link = `/compare-triumphs/${
+  if (url) {
+    if (window.location.href.includes("?players=")) {
+      link = `/${url}/${
         window.location.search
       },${membershipType}/${membershipId}`;
     } else {
-      link = `/compare-triumphs/?players=${membershipType}/${membershipId}`;
+      link = `/${url}/?players=${membershipType}/${membershipId}`;
     }
   } else {
     link = `/${membershipType}/${membershipId}`;

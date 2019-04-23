@@ -93,6 +93,7 @@ export function getCharacterPGCRHistory(
         opts.mode
       )
       .then(data => {
+        console.log("got data", { opts, data });
         dispatch(
           getCharacterPGCRHistorySuccess(
             { membershipType, membershipId, characterId },
@@ -100,6 +101,7 @@ export function getCharacterPGCRHistory(
           )
         );
 
+        console.log("here", { opts });
         if (opts.fetchPGCRDetails) {
           console.log("fetchPGCRDetails", data);
 

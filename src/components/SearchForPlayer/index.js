@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { debounce } from 'lodash';
+import React, { Component } from "react";
+import { debounce } from "lodash";
 
-import { getCacheableSearch } from 'src/lib/destiny';
-import { addRecentProfile, getRecentProfiles } from 'src/lib/ls';
-import PlayerLink from 'src/components/PlayerLink';
+import { getCacheableSearch } from "src/lib/destiny";
+import { addRecentProfile, getRecentProfiles } from "src/lib/ls";
+import PlayerLink from "src/components/PlayerLink";
 
-import s from './styles.styl';
+import s from "./styles.styl";
 
 const debouncedInput = debounce(cb => {
   cb();
@@ -13,17 +13,13 @@ const debouncedInput = debounce(cb => {
 
 const ANIMATION_TIME = 1.5 * 1000;
 
-function ProfileResultsList({
-  results,
-  compareTriumphsLink,
-  saveRecentPlayer
-}) {
+function ProfileResultsList({ results, url, saveRecentPlayer }) {
   return (
     <div>
       {results.map(result => (
         <PlayerLink
           player={result}
-          compareTriumphsLink={compareTriumphsLink}
+          url={url}
           saveRecentPlayer={saveRecentPlayer}
         />
       ))}
@@ -91,7 +87,7 @@ export default class SearchForPlayer extends Component {
   };
 
   render() {
-    const { className, compareTriumphsLink } = this.props;
+    const { className, url } = this.props;
     const { loading, results, recentProfiles } = this.state;
 
     return (
@@ -114,7 +110,7 @@ export default class SearchForPlayer extends Component {
 
             <ProfileResultsList
               results={results}
-              compareTriumphsLink={compareTriumphsLink}
+              url={url}
               saveRecentPlayer={this.saveRecentPlayer}
             />
           </div>
@@ -126,7 +122,7 @@ export default class SearchForPlayer extends Component {
 
             <ProfileResultsList
               results={recentProfiles}
-              compareTriumphsLink={compareTriumphsLink}
+              url={url}
               saveRecentPlayer={this.saveRecentPlayer}
             />
           </div>

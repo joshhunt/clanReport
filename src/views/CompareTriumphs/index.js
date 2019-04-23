@@ -353,7 +353,10 @@ class CompareTriumphs extends Component {
           isOpen={addPlayerModalVisible}
           onRequestClose={this.toggleAddPlayer}
         >
-          <SearchForPlayer className={s.addPlayerModal} compareTriumphsLink />
+          <SearchForPlayer
+            className={s.addPlayerModal}
+            url="compare-triumphs"
+          />
         </Modal>
       </div>
     );

@@ -11,6 +11,7 @@ import ClanPage from "./views/ClanPage";
 import CrawlPage from "./views/CrawlPage";
 import TriumphReport from "./views/TriumphReport";
 import CompareTriumphs from "./views/CompareTriumphs";
+import CompareDebug from "./views/CompareDebug";
 import NewCollections from "./views/NewCollections";
 import ActivityGraphPage from "./views/ActivityGraphPage";
 import StatsPage from "./views/StatsPage";
@@ -33,6 +34,7 @@ export default class AppRouter extends Component {
             <Route path="/clan/:groupId" component={ClanPage} />
             <Route path="/triumph-report" component={TriumphReport} />
             <Route path="/compare-triumphs" component={CompareTriumphs} />
+            <Route path="/compare-debug" component={CompareDebug} />
             <Route path="/new-collections" component={NewCollections} />
             <Route path="/:membershipType/:membershipId" component={UserPage} />
             <Route
