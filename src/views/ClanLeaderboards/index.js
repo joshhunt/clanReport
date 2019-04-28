@@ -18,6 +18,7 @@ const MODES = [
   "5", // PVP
   "7", // PVE
   "4", // Raids
+  "46", // Nightfalls
   "69", // Comp
   "19", // IB
   "66" // Forge
