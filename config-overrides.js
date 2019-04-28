@@ -4,9 +4,11 @@ const { getLoader, injectBabelPlugin } = require("react-app-rewired");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const WebpackVisualizerPlugin = require("webpack-visualizer-plugin");
 const { UnusedFilesWebpackPlugin } = require("unused-files-webpack-plugin");
+const rewireTypescript = require("react-app-rewire-typescript");
 
 module.exports = function override(config, env) {
   config = injectBabelPlugin("lodash", config);
+  config = rewireTypescript(config, env);
 
   config.entry.unshift("babel-polyfill");
 

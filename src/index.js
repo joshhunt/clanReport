@@ -7,6 +7,8 @@ import ReactDOM from "react-dom";
 import AppRouter from "./AppRouter";
 import "./index.styl";
 
+import testBungieAPI from "./testBungieApi";
+
 const render = App => {
   ReactDOM.render(<App />, document.getElementById("root"));
 };

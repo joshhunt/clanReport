@@ -118,7 +118,8 @@ class ClanPage extends Component {
       activityDefs,
       activityModeDefs,
       presentationNodeDefs,
-      recordDefs
+      recordDefs,
+      routeParams: { groupId }
     } = this.props;
     const data = members.map(m => ({
       ...m,
@@ -264,6 +265,7 @@ class ClanPage extends Component {
     return (
       <div className={s.root}>
         <h2>Clan {this.renderName()}</h2>
+
         {clan && (
           <div className={s.details}>
             <p>
@@ -272,6 +274,13 @@ class ClanPage extends Component {
             <p>{decode(clan.detail.about)}</p>
           </div>
         )}
+
+        <p>
+          New:{" "}
+          <Link to={`/clan/${groupId}/leaderboards`} className={s.boringLink}>
+            Activity Leaderboards
+          </Link>
+        </p>
 
         <div className={s.tableWrapper}>
           {members.length > 0 && (

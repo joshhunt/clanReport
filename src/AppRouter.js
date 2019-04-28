@@ -16,6 +16,7 @@ import NewCollections from "./views/NewCollections";
 import ActivityGraphPage from "./views/ActivityGraphPage";
 import StatsPage from "./views/StatsPage";
 import TriumphsDebug from "./views/TriumphsDebug";
+import ClanLeaderboards from "./views/ClanLeaderboards";
 
 export default class AppRouter extends Component {
   render() {
@@ -32,6 +33,18 @@ export default class AppRouter extends Component {
             />
             <Route path="/stats/records" mode="records" component={StatsPage} />
             <Route path="/clan/:groupId" component={ClanPage} />
+            <Route
+              path="/clan/:groupId/leaderboards"
+              component={ClanLeaderboards}
+            />
+            <Route
+              path="/clan/:groupId/leaderboards/:mode"
+              component={ClanLeaderboards}
+            />
+            <Route
+              path="/clan/:groupId/leaderboards/:mode/:modalStatId"
+              component={ClanLeaderboards}
+            />
             <Route path="/triumph-report" component={TriumphReport} />
             <Route path="/compare-triumphs" component={CompareTriumphs} />
             <Route path="/compare-debug" component={CompareDebug} />
