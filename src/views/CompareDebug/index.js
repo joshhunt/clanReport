@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { getProfile } from "src/store/clan";
 import { getCharacterPGCRHistory } from "src/store/pgcr";
 import Modal from "src/components/Modal";
+import Icon from "src/components/Icon";
 import SearchForPlayer from "src/components/SearchForPlayer";
 
 import s from "./styles.styl";
@@ -72,15 +73,21 @@ function NightfallSummary({ pgcr, pKey, highlight }) {
       <table className={s.nightfallSummary}>
         <tbody>
           <tr className={highlight === "duration" && s.bold}>
-            <td className={s.grey}>Duration:</td>
+            <td className={s.grey}>
+              <Icon name="stopwatch" />
+            </td>
             <td>{getDisplayValue(pgcr, "activityDurationSeconds")}</td>
           </tr>
           <tr className={highlight === "team score" && s.bold}>
-            <td className={s.grey}>Team score:</td>
+            <td className={s.grey}>
+              <Icon name="users" />
+            </td>
             <td>{getDisplayValue(pgcr, "teamScore")}</td>
           </tr>
           <tr className={highlight === "player score" && s.bold}>
-            <td className={s.grey}>Player score:</td>
+            <td className={s.grey}>
+              <Icon name="user" />
+            </td>
             <td>{getDisplayValue(pgcr, "score")}</td>
           </tr>
         </tbody>

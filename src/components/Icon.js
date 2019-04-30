@@ -19,6 +19,10 @@ library.add(
   require("@fortawesome/pro-light-svg-icons/faThLarge").faThLarge,
   require("@fortawesome/pro-light-svg-icons/faShoppingBasket").faShoppingBasket,
 
+  require("@fortawesome/pro-regular-svg-icons/faStopwatch").faStopwatch,
+  require("@fortawesome/pro-regular-svg-icons/faUser").faUser,
+  require("@fortawesome/pro-regular-svg-icons/faUsers").faUsers,
+
   require("@fortawesome/pro-regular-svg-icons/faExternalLinkSquare")
     .faExternalLinkSquare,
   require("@fortawesome/pro-regular-svg-icons/faPlus").faPlus,
