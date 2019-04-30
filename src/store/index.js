@@ -39,6 +39,8 @@ const enhancer = composeEnhancers(applyMiddleware(thunk));
 const store = createStore(rootReducer, enhancer);
 window.__store = store;
 
+store.subscribe(() => (window.__state = store.getState()));
+
 const LANGUAGE = "en";
 
 fasterGetDefinitions(

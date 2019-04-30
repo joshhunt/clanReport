@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import { flow, map, mapValues, filter, orderBy, groupBy } from "lodash/fp";
+import { sortBy, flow, mapValues, filter, groupBy } from "lodash/fp";
 import { connect } from "react-redux";
 
-// import Icon from "src/components/Icon";
 import { getProfile } from "src/store/clan";
 import { getCharacterPGCRHistory } from "src/store/pgcr";
 import Modal from "src/components/Modal";
@@ -11,23 +10,6 @@ import SearchForPlayer from "src/components/SearchForPlayer";
 import s from "./styles.styl";
 
 const PGCR_MODE = 46;
-
-let NIGHTFALL_WHITELIST = [
-  936308438, // 'Nightfall: A Garden World'
-  1282886582, // 'Nightfall: Exodus Crash'
-  3372160277, // 'Nightfall: Lake of Shadows'
-  3280234344, // "Nightfall: Savathûn's Song"
-  522318687, // 'Nightfall: Strange Terrain'
-  3145298904, // 'Nightfall: The Arms Dealer'
-  3034843176, // 'Nightfall: The Corrupted'
-  3701132453, // 'Nightfall: The Hollowed Lair'
-  1034003646, // 'Nightfall: The Insight Terminus'
-  4259769141, // 'Nightfall: The Inverted Spire'
-  3289589202, // 'Nightfall: The Pyramidion'
-  3718330161, // 'Nightfall: Tree of Probabilities'
-  3108813009, // 'Nightfall: Warden of Nothing'
-  272852450 // 'Nightfall: Will of the Thousands'
-];
 
 function NightfallTable({
   nightfalls,
@@ -76,8 +58,8 @@ function NightfallTable({
   );
 }
 
-function getDisplayValue(pgcr, pKey, valueKey) {
-  return pgcr && getEntry(pgcr, pKey).values[valueKey].basic.displayValue;
+function getDisplayValue(pgcr, valueKey) {
+  return pgcr && pgcr.values[valueKey].basic.displayValue;
 }
 
 function NightfallSummary({ pgcr, pKey, highlight }) {
@@ -91,15 +73,15 @@ function NightfallSummary({ pgcr, pKey, highlight }) {
         <tbody>
           <tr className={highlight === "duration" && s.bold}>
             <td className={s.grey}>Duration:</td>
-            <td>{getDisplayValue(pgcr, pKey, "activityDurationSeconds")}</td>
+            <td>{getDisplayValue(pgcr, "activityDurationSeconds")}</td>
           </tr>
           <tr className={highlight === "team score" && s.bold}>
             <td className={s.grey}>Team score:</td>
-            <td>{getDisplayValue(pgcr, pKey, "teamScore")}</td>
+            <td>{getDisplayValue(pgcr, "teamScore")}</td>
           </tr>
           <tr className={highlight === "player score" && s.bold}>
             <td className={s.grey}>Player score:</td>
-            <td>{getDisplayValue(pgcr, pKey, "score")}</td>
+            <td>{getDisplayValue(pgcr, "score")}</td>
           </tr>
         </tbody>
       </table>
@@ -145,7 +127,7 @@ class CompareDebug extends Component {
                 { membershipType, membershipId },
                 characterId,
                 {
-                  fetchPGCRDetails: true,
+                  completeHistory: true,
                   mode: this.props.router.location.query.mode || PGCR_MODE
                 }
               );
@@ -165,7 +147,22 @@ class CompareDebug extends Component {
     const { addPlayerModalVisible } = this.state;
 
     const firstActivities = Object.values(activities).filter(Boolean)[0];
-    const nightfalls = firstActivities && Object.keys(firstActivities);
+
+    const CUSTOM_SORT_INDEX = {
+      1034003646: 999999100,
+      3701132453: 999999101,
+      3108813009: 999999102,
+      3034843176: 999999103,
+      1207505828: 999999999
+    };
+
+    const nightfalls =
+      firstActivities &&
+      activityDefs &&
+      flow(
+        sortBy(hash => activityDefs[hash].displayProperties.name),
+        sortBy((hash, index) => CUSTOM_SORT_INDEX[hash] || 1)
+      )(Object.keys(firstActivities));
 
     return (
       <div className={s.root}>
@@ -251,17 +248,9 @@ function mapToValues(arr, fn) {
   }, {});
 }
 
-function getEntry({ entries }, pKey) {
-  const membershipId = pKey.split("/")[1];
-
-  return entries.find(
-    entry => entry.player.destinyUserInfo.membershipId === membershipId
-  );
-}
-
 const OBJECTIVE_COMPLETED = "Objective Completed";
 
-function getMinMaxValue(pgcrList, pKey, getValue, compareValues) {
+function getMinMaxValue(pgcrList, getValue, compareValues) {
   return (
     pgcrList &&
     pgcrList.length > 0 &&
@@ -270,8 +259,8 @@ function getMinMaxValue(pgcrList, pKey, getValue, compareValues) {
         return pgcr;
       }
 
-      const currentMinValue = getValue(getEntry(currentMinPGCR, pKey));
-      const thisValue = getValue(getEntry(pgcr, pKey));
+      const currentMinValue = getValue(currentMinPGCR);
+      const thisValue = getValue(pgcr);
 
       return compareValues(currentMinValue, thisValue) ? currentMinPGCR : pgcr;
     })
@@ -301,35 +290,30 @@ function mapStateToProps(state, ownProps) {
     const byCharacter = Object.values(state.pgcr.histories[pKey] || {});
     const allGames = [].concat(...byCharacter).filter(Boolean);
 
+    console.log({ pKey, allGames });
+
     const nightfalls = flow(
-      map(activity => state.pgcr.pgcr[activity.activityDetails.instanceId]),
       filter(Boolean),
-      filter(pgcr =>
-        NIGHTFALL_WHITELIST.includes(pgcr.activityDetails.directorActivityHash)
-      ),
       groupBy(pgcr => pgcr.activityDetails.directorActivityHash),
       mapValues(pgcrList => {
         const completed = pgcrList.filter(pgcr => {
           return (
-            getEntry(pgcr, pKey).values.completionReason.basic.displayValue ===
+            pgcr.values.completionReason.basic.displayValue ===
             OBJECTIVE_COMPLETED
           );
         });
 
         const highestTeamScore = getMaxValue(
           completed,
-          pKey,
-          entry => entry.values.teamScore.basic.value
+          pgcr => pgcr.values.teamScore.basic.value
         );
         const highestPlayerScore = getMaxValue(
           completed,
-          pKey,
-          entry => entry.values.score.basic.value
+          pgcr => pgcr.values.score.basic.value
         );
         const fastest = getMinValue(
           completed,
-          pKey,
-          entry => entry.values.activityDurationSeconds.basic.value
+          pgcr => pgcr.values.activityDurationSeconds.basic.value
         );
 
         return {

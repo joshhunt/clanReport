@@ -148,13 +148,40 @@ export function getRecentActivities(
   );
 }
 
+const COUNT = 250;
+const MAX_PAGE = 1000;
 export function getCharacterPGCRHistory(
-  { membershipType, membershipId, characterId },
-  mode = "None"
+  { membershipType, membershipId, characterId, completeHistory },
+  mode = "None",
+  page = 0,
+  acc = []
 ) {
   return getDestiny(
-    `/Destiny2/${membershipType}/Account/${membershipId}/Character/${characterId}/Stats/Activities/?mode=${mode}&count=250&page=0`
-  );
+    `/Destiny2/${membershipType}/Account/${membershipId}/Character/${characterId}/Stats/Activities/?mode=${mode}&count=${COUNT}&page=${page}`
+  ).then(data => {
+    const newAcc = [...acc, ...(data.activities || [])];
+
+    if (completeHistory && data.activities) {
+      const newPage = page + 1;
+
+      if (page > MAX_PAGE) {
+        return newAcc;
+      }
+
+      return getCharacterPGCRHistory(
+        {
+          membershipType,
+          membershipId,
+          characterId
+        },
+        mode,
+        newPage,
+        newAcc
+      );
+    }
+
+    return newAcc;
+  });
 }
 
 export function getCacheablePGCRDetails(pgcrId) {

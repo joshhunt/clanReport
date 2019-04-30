@@ -25,8 +25,7 @@ export default function pgcrReducer(state = defaultState, { type, payload }) {
 
       case GET_PLAYER_PGCR_HISTORY_SUCCESS:
         draft.histories[payload.key] = draft.histories[payload.key] || {};
-        draft.histories[payload.key][payload.characterId] =
-          payload.data.activities;
+        draft.histories[payload.key][payload.characterId] = payload.data;
 
         return draft;
 
@@ -89,11 +88,15 @@ export function getCharacterPGCRHistory(
   return dispatch => {
     return destiny
       .getCharacterPGCRHistory(
-        { membershipType, membershipId, characterId },
+        {
+          membershipType,
+          membershipId,
+          characterId,
+          completeHistory: opts.completeHistory
+        },
         opts.mode
       )
       .then(data => {
-        console.log("got data", { opts, data });
         dispatch(
           getCharacterPGCRHistorySuccess(
             { membershipType, membershipId, characterId },
@@ -101,10 +104,7 @@ export function getCharacterPGCRHistory(
           )
         );
 
-        console.log("here", { opts });
         if (opts.fetchPGCRDetails) {
-          console.log("fetchPGCRDetails", data);
-
           data.activities.forEach(activity => {
             dispatch(getPGCRDetails(activity.activityDetails.instanceId));
           });

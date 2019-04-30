@@ -24,7 +24,10 @@ class UserPage extends Component {
         this.props.getCharacterPGCRHistory(
           this.props.routeParams,
           characterId,
-          { mode: this.props.router.location.query.mode || 46 }
+          {
+            mode: this.props.router.location.query.mode || 46,
+            completeHistory: true
+          }
         );
       });
     });

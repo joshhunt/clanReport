@@ -1,4 +1,4 @@
-const { chain, get, omit, map } = require("lodash");
+const { chain, get } = require("lodash");
 
 const flagEnum = (state, value) => !!(state & value);
 
