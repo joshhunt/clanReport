@@ -3,7 +3,7 @@ import { sortBy, flow, mapValues, filter, groupBy } from "lodash/fp";
 import { connect } from "react-redux";
 
 import { getProfile } from "src/store/clan";
-import { getCharacterPGCRHistory } from "src/store/pgcr";
+import { getCharacterPGCRHistory, toggleSinceForsaken } from "src/store/pgcr";
 import Modal from "src/components/Modal";
 import Icon from "src/components/Icon";
 import SearchForPlayer from "src/components/SearchForPlayer";
@@ -11,6 +11,11 @@ import SearchForPlayer from "src/components/SearchForPlayer";
 import s from "./styles.styl";
 
 const PGCR_MODE = 46;
+const FORSAKEN_ISH = new Date(2018, 8, 2);
+
+const FASTEST = "Fastest";
+const TEAM_SCORE = "Team Score";
+const PLAYER_SCORE = "Player Score";
 
 function NightfallTable({
   nightfalls,
@@ -97,7 +102,9 @@ function NightfallSummary({ pgcr, pKey, highlight }) {
 }
 
 class CompareDebug extends Component {
-  state = {};
+  state = {
+    view: FASTEST
+  };
 
   componentDidMount() {
     this.fetchProfiles(this.props.playersToCompare);
@@ -149,9 +156,23 @@ class CompareDebug extends Component {
     });
   };
 
+  forsakenToggle = ev => {
+    this.props.toggleSinceForsaken();
+  };
+
+  setView = view => {
+    this.setState({ view });
+  };
+
   render() {
-    const { activityDefs, profiles, playersToCompare, activities } = this.props;
-    const { addPlayerModalVisible } = this.state;
+    const {
+      activityDefs,
+      profiles,
+      playersToCompare,
+      activities,
+      sinceForsaken
+    } = this.props;
+    const { addPlayerModalVisible, view } = this.state;
 
     const firstActivities = Object.values(activities).filter(Boolean)[0];
 
@@ -171,69 +192,94 @@ class CompareDebug extends Component {
         sortBy((hash, index) => CUSTOM_SORT_INDEX[hash] || 1)
       )(Object.keys(firstActivities));
 
+    const VIEWS = [FASTEST, TEAM_SCORE, PLAYER_SCORE];
+
     return (
       <div className={s.root}>
         <h2>Compare</h2>
 
         <button onClick={this.toggleAddPlayer}>Add player</button>
+        <label>
+          <input
+            type="checkbox"
+            onChange={this.forsakenToggle}
+            checked={sinceForsaken}
+          />
+          Since Forsaken
+        </label>
 
-        <section>
-          <h3>Fastest</h3>
-          <NightfallTable
-            nightfalls={nightfalls}
-            profiles={profiles}
-            activities={activities}
-            playersToCompare={playersToCompare}
-            activityDefs={activityDefs}
-            nightfallCell={(nightfall, pKey) =>
-              nightfall.fastest && (
-                <NightfallSummary
-                  pgcr={nightfall.fastest}
-                  pKey={pKey}
-                  highlight="duration"
-                />
-              )
-            }
-          />
-        </section>
-        <section>
-          <h3>Highest team score</h3>
-          <NightfallTable
-            nightfalls={nightfalls}
-            profiles={profiles}
-            activities={activities}
-            playersToCompare={playersToCompare}
-            activityDefs={activityDefs}
-            nightfallCell={(nightfall, pKey) =>
-              nightfall.highestTeamScore && (
-                <NightfallSummary
-                  pgcr={nightfall.highestTeamScore}
-                  pKey={pKey}
-                  highlight="team score"
-                />
-              )
-            }
-          />
-        </section>
-        <section>
-          <h3>Highest player score</h3>
-          <NightfallTable
-            nightfalls={nightfalls}
-            profiles={profiles}
-            activities={activities}
-            playersToCompare={playersToCompare}
-            activityDefs={activityDefs}
-            nightfallCell={(nightfall, pKey) =>
-              nightfall.highestPlayerScore && (
-                <NightfallSummary
-                  pgcr={nightfall.highestPlayerScore}
-                  pKey={pKey}
-                  highlight="player score"
-                />
-              )
-            }
-          />
-        </section>
+        <h3>
+          {VIEWS.map(viewName => (
+            <span
+              key={viewName}
+              onClick={() => this.setView(viewName)}
+              className={view === viewName ? s.optionActive : s.option}
+            >
+              {viewName}
+            </span>
+          ))}
+        </h3>
+
+        {view === FASTEST && (
+          <section>
+            <NightfallTable
+              nightfalls={nightfalls}
+              profiles={profiles}
+              activities={activities}
+              playersToCompare={playersToCompare}
+              activityDefs={activityDefs}
+              nightfallCell={(nightfall, pKey) =>
+                nightfall.fastest && (
+                  <NightfallSummary
+                    pgcr={nightfall.fastest}
+                    pKey={pKey}
+                    highlight="duration"
+                  />
+                )
+              }
+            />
+          </section>
+        )}
+        {view === TEAM_SCORE && (
+          <section>
+            <NightfallTable
+              nightfalls={nightfalls}
+              profiles={profiles}
+              activities={activities}
+              playersToCompare={playersToCompare}
+              activityDefs={activityDefs}
+              nightfallCell={(nightfall, pKey) =>
+                nightfall.highestTeamScore && (
+                  <NightfallSummary
+                    pgcr={nightfall.highestTeamScore}
+                    pKey={pKey}
+                    highlight="team score"
+                  />
+                )
+              }
+            />
+          </section>
+        )}
+        {view === PLAYER_SCORE && (
+          <section>
+            <NightfallTable
+              nightfalls={nightfalls}
+              profiles={profiles}
+              activities={activities}
+              playersToCompare={playersToCompare}
+              activityDefs={activityDefs}
+              nightfallCell={(nightfall, pKey) =>
+                nightfall.highestPlayerScore && (
+                  <NightfallSummary
+                    pgcr={nightfall.highestPlayerScore}
+                    pKey={pKey}
+                    highlight="player score"
+                  />
+                )
+              }
+            />
+          </section>
+        )}
 
         <Modal
           isOpen={addPlayerModalVisible}
@@ -286,6 +332,8 @@ function mapStateToProps(state, ownProps) {
     DestinyActivityDefinition: activityDefs
   } = state.definitions;
 
+  const { sinceForsaken } = state.pgcr;
+
   const { players } = ownProps.router.location.query;
   const playersToCompare = players ? players.split(",") : [];
   const profiles = mapToValues(
@@ -301,6 +349,16 @@ function mapStateToProps(state, ownProps) {
 
     const nightfalls = flow(
       filter(Boolean),
+      filter(pgcr => {
+        if (!sinceForsaken) {
+          return true;
+        }
+
+        const date = new Date(pgcr.period);
+        console.log(date > FORSAKEN_ISH, date, FORSAKEN_ISH);
+
+        return date > FORSAKEN_ISH;
+      }),
       groupBy(pgcr => pgcr.activityDetails.directorActivityHash),
       mapValues(pgcrList => {
         const completed = pgcrList.filter(pgcr => {
@@ -342,11 +400,16 @@ function mapStateToProps(state, ownProps) {
     presentationNodeDefs,
     playersToCompare,
     profiles,
-    activities
+    activities,
+    sinceForsaken
   };
 }
 
-const mapDispatchToActions = { getProfile, getCharacterPGCRHistory };
+const mapDispatchToActions = {
+  getProfile,
+  getCharacterPGCRHistory,
+  toggleSinceForsaken
+};
 
 export default connect(
   mapStateToProps,

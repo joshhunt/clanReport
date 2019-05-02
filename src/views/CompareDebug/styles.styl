@@ -53,3 +53,17 @@
   background: white
   border-radius: 2px
   padding: 15px
+
+
+.option
+  display: inline-block
+  opacity: .5
+  cursor: pointer
+  transition: all 150ms ease-in-out
+
+  & + &
+    padding-left: 10px
+
+.optionActive
+  composes: option
+  opacity: 1

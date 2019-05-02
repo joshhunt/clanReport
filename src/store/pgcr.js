@@ -9,16 +9,22 @@ const GET_PGCR_DETAILS_SUCCESS = "Get PGCR details - success";
 const GET_PGCR_DETAILS_ERROR = "Get PGCR details - error";
 
 const TOGGLE_VIEW_PGCR_DETAILS = "View PGCR Details";
+const TOGGLE_SINCE_FORSAKEN = "Toggle Since Forsaken";
 
 const defaultState = {
   histories: {},
   pgcr: {},
-  viewDetails: {}
+  viewDetails: {},
+  sinceForsaken: false
 };
 
 export default function pgcrReducer(state = defaultState, { type, payload }) {
   return immer(state, draft => {
     switch (type) {
+      case TOGGLE_SINCE_FORSAKEN:
+        draft.sinceForsaken = !draft.sinceForsaken;
+        return draft;
+
       case TOGGLE_VIEW_PGCR_DETAILS:
         draft.viewDetails[payload] = !draft.viewDetails[payload];
         return draft;
@@ -78,6 +84,10 @@ export function getPGCRDetails(pgcrId) {
       .then(data => dispatch(getPGCRDetailsSuccess({ pgcrId, data })))
       .catch(err => dispatch(getPGCRDetailsError(err)));
   };
+}
+
+export function toggleSinceForsaken() {
+  return { type: TOGGLE_SINCE_FORSAKEN };
 }
 
 export function getCharacterPGCRHistory(
