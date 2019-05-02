@@ -34,6 +34,7 @@ export default function App({ children }) {
       </p>
 
       <p className={s.footer}>
+        <Link to="/compare-nightfalls">Compare Nightfalls</Link> /{" "}
         <Link to="/compare-triumphs">Compare triumphs</Link> /{" "}
         <Link to="/stats">Playerbase stats</Link>
       </p>

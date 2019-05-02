@@ -1,6 +1,6 @@
 // eslint-disable no-console
 import React, { Component } from "react";
-import { Router, Route, browserHistory } from "react-router";
+import { Router, Route, Redirect, browserHistory } from "react-router";
 import { Provider } from "react-redux";
 
 import store from "./store";
@@ -11,7 +11,7 @@ import ClanPage from "./views/ClanPage";
 import CrawlPage from "./views/CrawlPage";
 import TriumphReport from "./views/TriumphReport";
 import CompareTriumphs from "./views/CompareTriumphs";
-import CompareDebug from "./views/CompareDebug";
+import CompareNightfalls from "./views/CompareDebug";
 import NewCollections from "./views/NewCollections";
 import ActivityGraphPage from "./views/ActivityGraphPage";
 import StatsPage from "./views/StatsPage";
@@ -47,7 +47,8 @@ export default class AppRouter extends Component {
             />
             <Route path="/triumph-report" component={TriumphReport} />
             <Route path="/compare-triumphs" component={CompareTriumphs} />
-            <Route path="/compare-debug" component={CompareDebug} />
+            <Redirect from="/compare-debug" to="/compare-nightfalls" />
+            <Route path="/compare-nightfalls" component={CompareNightfalls} />
             <Route path="/new-collections" component={NewCollections} />
             <Route path="/:membershipType/:membershipId" component={UserPage} />
             <Route

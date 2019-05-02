@@ -262,7 +262,7 @@ class CompareDebug extends Component {
 
     return (
       <div className={s.root}>
-        <h2>Compare</h2>
+        <h2>Compare Nightfalls</h2>
 
         <button onClick={this.toggleAddPlayer}>Add player</button>
         <label>
