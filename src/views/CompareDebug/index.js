@@ -10,13 +10,15 @@ import Icon from "src/components/Icon";
 import SearchForPlayer from "src/components/SearchForPlayer";
 
 import s from "./styles.styl";
+import beavertime, { fastishTimes } from "./beavertime";
 
 const PGCR_MODE = 46;
 const FORSAKEN_ISH = new Date(2018, 8, 2);
 
 const FASTEST = "Fastest";
 const TEAM_SCORE = "Team Score";
-const PLAYER_SCORE = "Player Score";
+
+window.beavertime = beavertime;
 
 function NightfallTable({
   currentNightfallHashes,
@@ -64,7 +66,10 @@ function NightfallTable({
                 const thisNightfall = forPlayer && forPlayer[nightfallHash];
 
                 return (
-                  <td>{thisNightfall && nightfallCell(thisNightfall, pKey)}</td>
+                  <td>
+                    {thisNightfall &&
+                      nightfallCell(thisNightfall, pKey, nightfallHash)}
+                  </td>
                 );
               })}
             </tr>
@@ -78,7 +83,11 @@ function getDisplayValue(pgcr, valueKey) {
   return pgcr && pgcr.values[valueKey].basic.displayValue;
 }
 
-function NightfallSummary({ pgcr, pKey, highlight }) {
+function NightfallSummary({ nightfallHash, pgcr, pKey, highlight }) {
+  const speedSeconds = pgcr.values.activityDurationSeconds.basic.value;
+  const isFast = speedSeconds <= beavertime[nightfallHash.toString()];
+  const isFastish = speedSeconds <= fastishTimes[nightfallHash.toString()];
+
   return (
     <a
       href={`https://www.bungie.net/en/PGCR/${pgcr.activityDetails.instanceId}`}
@@ -91,19 +100,23 @@ function NightfallSummary({ pgcr, pKey, highlight }) {
             <td className={s.grey}>
               <Icon name="stopwatch" />
             </td>
-            <td>{getDisplayValue(pgcr, "activityDurationSeconds")}</td>
+            <td>
+              {getDisplayValue(pgcr, "activityDurationSeconds")}
+
+              {(isFast || isFastish) && (
+                <span>
+                  {" "}
+                  {isFast && <Icon name="star" solid />}
+                  {isFastish && !isFast && <Icon name="star-half-alt" solid />}
+                </span>
+              )}
+            </td>
           </tr>
           <tr className={highlight === "team score" && s.bold}>
             <td className={s.grey}>
               <Icon name="users" />
             </td>
             <td>{getDisplayValue(pgcr, "teamScore")}</td>
-          </tr>
-          <tr className={highlight === "player score" && s.bold}>
-            <td className={s.grey}>
-              <Icon name="user" />
-            </td>
-            <td>{getDisplayValue(pgcr, "score")}</td>
           </tr>
         </tbody>
       </table>
@@ -214,7 +227,7 @@ class CompareDebug extends Component {
         sortBy((hash, index) => CUSTOM_SORT_INDEX[hash] || 1)
       )(Object.keys(firstActivities));
 
-    const VIEWS = [FASTEST, TEAM_SCORE, PLAYER_SCORE];
+    const VIEWS = [FASTEST, TEAM_SCORE];
 
     return (
       <div className={s.root}>
@@ -251,9 +264,10 @@ class CompareDebug extends Component {
               activities={activities}
               playersToCompare={playersToCompare}
               activityDefs={activityDefs}
-              nightfallCell={(nightfall, pKey) =>
+              nightfallCell={(nightfall, pKey, nightfallHash) =>
                 nightfall.fastest && (
                   <NightfallSummary
+                    nightfallHash={nightfallHash}
                     pgcr={nightfall.fastest}
                     pKey={pKey}
                     highlight="duration"
@@ -272,33 +286,13 @@ class CompareDebug extends Component {
               activities={activities}
               playersToCompare={playersToCompare}
               activityDefs={activityDefs}
-              nightfallCell={(nightfall, pKey) =>
+              nightfallCell={(nightfall, pKey, nightfallHash) =>
                 nightfall.highestTeamScore && (
                   <NightfallSummary
+                    nightfallHash={nightfallHash}
                     pgcr={nightfall.highestTeamScore}
                     pKey={pKey}
                     highlight="team score"
-                  />
-                )
-              }
-            />
-          </section>
-        )}
-        {view === PLAYER_SCORE && (
-          <section>
-            <NightfallTable
-              currentNightfallHashes={currentNightfallHashes}
-              nightfalls={nightfalls}
-              profiles={profiles}
-              activities={activities}
-              playersToCompare={playersToCompare}
-              activityDefs={activityDefs}
-              nightfallCell={(nightfall, pKey) =>
-                nightfall.highestPlayerScore && (
-                  <NightfallSummary
-                    pgcr={nightfall.highestPlayerScore}
-                    pKey={pKey}
-                    highlight="player score"
                   />
                 )
               }
@@ -388,10 +382,6 @@ function mapStateToProps(state, ownProps) {
           completed,
           pgcr => pgcr.values.teamScore.basic.value
         );
-        const highestPlayerScore = getMaxValue(
-          completed,
-          pgcr => pgcr.values.score.basic.value
-        );
         const fastest = getMinValue(
           completed,
           pgcr => pgcr.values.activityDurationSeconds.basic.value
@@ -400,7 +390,6 @@ function mapStateToProps(state, ownProps) {
         return {
           fastest,
           highestTeamScore,
-          highestPlayerScore,
           all: pgcrList,
           completed
         };

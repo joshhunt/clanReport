@@ -9,6 +9,8 @@ library.add(
 
   require("@fortawesome/pro-light-svg-icons/faMoon").faMoon,
   require("@fortawesome/pro-light-svg-icons/faSun").faSun,
+  require("@fortawesome/pro-solid-svg-icons/faStar").faStar,
+  require("@fortawesome/pro-solid-svg-icons/faStarHalfAlt").faStarHalfAlt,
   require("@fortawesome/pro-solid-svg-icons/faMoon").faMoon,
   require("@fortawesome/pro-solid-svg-icons/faSun").faSun,
   require("@fortawesome/pro-regular-svg-icons/faMoon").faMoon,
