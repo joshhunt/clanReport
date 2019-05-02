@@ -15,7 +15,7 @@ const defaultState = {
   histories: {},
   pgcr: {},
   viewDetails: {},
-  sinceForsaken: false
+  sinceForsaken: true
 };
 
 export default function pgcrReducer(state = defaultState, { type, payload }) {
