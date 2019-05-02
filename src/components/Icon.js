@@ -27,6 +27,7 @@ library.add(
     .faExternalLinkSquare,
   require("@fortawesome/pro-regular-svg-icons/faPlus").faPlus,
   require("@fortawesome/pro-regular-svg-icons/faEye").faEye,
+  require("@fortawesome/pro-regular-svg-icons/faCalendarCheck").faCalendarCheck,
   require("@fortawesome/pro-regular-svg-icons/faEyeSlash").faEyeSlash,
   require("@fortawesome/pro-regular-svg-icons/faSync").faSync,
   require("@fortawesome/pro-regular-svg-icons/faCheck").faCheck,

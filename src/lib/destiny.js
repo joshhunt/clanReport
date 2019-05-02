@@ -184,6 +184,10 @@ export function getCharacterPGCRHistory(
   });
 }
 
+export function getMilestones() {
+  return getDestiny("/Destiny2/Milestones/");
+}
+
 export function getCacheablePGCRDetails(pgcrId) {
   return getCacheableDestiny(
     `https://stats.bungie.net/Platform/Destiny2/Stats/PostGameCarnageReport/${pgcrId}/`

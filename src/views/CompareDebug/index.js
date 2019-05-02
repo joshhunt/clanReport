@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { sortBy, flow, mapValues, filter, groupBy } from "lodash/fp";
 import { connect } from "react-redux";
+import { getMilestones } from "src/lib/destiny";
 
 import { getProfile } from "src/store/clan";
 import { getCharacterPGCRHistory, toggleSinceForsaken } from "src/store/pgcr";
@@ -18,6 +19,7 @@ const TEAM_SCORE = "Team Score";
 const PLAYER_SCORE = "Player Score";
 
 function NightfallTable({
+  currentNightfallHashes,
   nightfalls,
   profiles,
   activities,
@@ -42,9 +44,17 @@ function NightfallTable({
         {nightfalls &&
           nightfalls.map(nightfallHash => (
             <tr>
-              <td>
+              <td
+                className={
+                  currentNightfallHashes.includes(nightfallHash) &&
+                  s.thisNightfall
+                }
+              >
                 {activityDefs &&
-                  activityDefs[nightfallHash].displayProperties.name}
+                  activityDefs[nightfallHash].displayProperties.name}{" "}
+                {currentNightfallHashes.includes(nightfallHash) && (
+                  <Icon name="calendar-check" />
+                )}
                 <br />
                 <small className={s.grey}>{nightfallHash}</small>
               </td>
@@ -103,11 +113,23 @@ function NightfallSummary({ pgcr, pKey, highlight }) {
 
 class CompareDebug extends Component {
   state = {
-    view: FASTEST
+    view: FASTEST,
+    currentNightfallHashes: []
   };
 
   componentDidMount() {
     this.fetchProfiles(this.props.playersToCompare);
+
+    getMilestones().then(milestones => {
+      console.log({ milestones });
+      const currentNightfallHashes = milestones[2171429505].activities
+        .filter(activity => activity.modifierHashes)
+        .map(activity => activity.activityHash.toString());
+
+      console.log({ currentNightfallHashes });
+
+      this.setState({ currentNightfallHashes });
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -172,7 +194,7 @@ class CompareDebug extends Component {
       activities,
       sinceForsaken
     } = this.props;
-    const { addPlayerModalVisible, view } = this.state;
+    const { addPlayerModalVisible, view, currentNightfallHashes } = this.state;
 
     const firstActivities = Object.values(activities).filter(Boolean)[0];
 
@@ -223,6 +245,7 @@ class CompareDebug extends Component {
         {view === FASTEST && (
           <section>
             <NightfallTable
+              currentNightfallHashes={currentNightfallHashes}
               nightfalls={nightfalls}
               profiles={profiles}
               activities={activities}
@@ -243,6 +266,7 @@ class CompareDebug extends Component {
         {view === TEAM_SCORE && (
           <section>
             <NightfallTable
+              currentNightfallHashes={currentNightfallHashes}
               nightfalls={nightfalls}
               profiles={profiles}
               activities={activities}
@@ -263,6 +287,7 @@ class CompareDebug extends Component {
         {view === PLAYER_SCORE && (
           <section>
             <NightfallTable
+              currentNightfallHashes={currentNightfallHashes}
               nightfalls={nightfalls}
               profiles={profiles}
               activities={activities}
@@ -345,20 +370,11 @@ function mapStateToProps(state, ownProps) {
     const byCharacter = Object.values(state.pgcr.histories[pKey] || {});
     const allGames = [].concat(...byCharacter).filter(Boolean);
 
-    console.log({ pKey, allGames });
-
     const nightfalls = flow(
       filter(Boolean),
-      filter(pgcr => {
-        if (!sinceForsaken) {
-          return true;
-        }
-
-        const date = new Date(pgcr.period);
-        console.log(date > FORSAKEN_ISH, date, FORSAKEN_ISH);
-
-        return date > FORSAKEN_ISH;
-      }),
+      filter(pgcr =>
+        sinceForsaken ? new Date(pgcr.period) > FORSAKEN_ISH : true
+      ),
       groupBy(pgcr => pgcr.activityDetails.directorActivityHash),
       mapValues(pgcrList => {
         const completed = pgcrList.filter(pgcr => {
