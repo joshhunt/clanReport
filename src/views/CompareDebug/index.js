@@ -20,6 +20,33 @@ const TEAM_SCORE = "Team Score";
 
 window.beavertime = beavertime;
 
+function str_pad_left(string, pad, length) {
+  return (new Array(length + 1).join(pad) + string).slice(-length);
+}
+
+function fmtSeconds(time) {
+  const minutes = Math.floor(time / 60);
+  const seconds = time - minutes * 60;
+  return str_pad_left(minutes, "0", 2) + ":" + str_pad_left(seconds, "0", 2);
+}
+
+function getMinMaxTime(compFn, hash) {
+  const hashs = hash.toString ? hash.toString() : hash;
+  const timeA = beavertime[hashs];
+  const timeB = fastishTimes[hashs];
+
+  const result = compFn(timeA, timeB);
+
+  return fmtSeconds(result);
+}
+
+function getMinTime(hash) {
+  return getMinMaxTime(Math.min, hash);
+}
+function getMaxTime(hash) {
+  return getMinMaxTime(Math.max, hash);
+}
+
 function NightfallTable({
   currentNightfallHashes,
   nightfalls,
@@ -58,7 +85,11 @@ function NightfallTable({
                   <Icon name="calendar-check" />
                 )}
                 <br />
-                <small className={s.grey}>{nightfallHash}</small>
+                <small className={s.grey}>
+                  {" "}
+                  {getMinTime(nightfallHash)} - {getMaxTime(nightfallHash)}{" "}
+                </small>
+                {/* <small className={s.grey}>{nightfallHash}</small> */}
               </td>
 
               {playersToCompare.map(pKey => {
