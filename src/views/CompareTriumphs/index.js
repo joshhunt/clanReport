@@ -337,7 +337,11 @@ class CompareTriumphs extends Component {
             : "Hide zero-point Triumphs"}
         </button>
 
-        <input placeholder="filter" onChange={this.onFilterChange} />
+        <input
+          className={s.searchFilter}
+          placeholder="filter"
+          onChange={this.onFilterChange}
+        />
 
         <ComparisonTable
           searchText={filterText}

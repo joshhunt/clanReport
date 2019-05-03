@@ -1,3 +1,5 @@
+@import '../../lib/toolbox.styl'
+
 .tbody
   content: 'hello'
 
@@ -73,7 +75,7 @@
 
 .addPlayerButton
   border: none
-  color: lighten(black, 20%)
+  color: inherit
   background: none
   appearance: none
   font-size: 14px
@@ -90,6 +92,9 @@
   background: white
   border-radius: 2px
   padding: 15px
+
+  +darkMode()
+    background: $dm-background
 
 .score
   font-weight: 400
@@ -160,3 +165,9 @@
 .slash
   font-size: 0.8em
   padding: 0 2px
+
+
+.searchFilter
+  composes: searchField from '../../components/SearchForPlayer/styles.styl'
+  margin: 10px 0
+  max-width: 300px
