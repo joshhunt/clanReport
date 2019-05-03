@@ -10,6 +10,9 @@ library.add(
   require("@fortawesome/pro-light-svg-icons/faMoon").faMoon,
   require("@fortawesome/pro-light-svg-icons/faSun").faSun,
   require("@fortawesome/pro-solid-svg-icons/faStar").faStar,
+  require("@fortawesome/pro-solid-svg-icons/faStars").faStars,
+  require("@fortawesome/pro-solid-svg-icons/faStarExclamation")
+    .faStarExclamation,
   require("@fortawesome/pro-solid-svg-icons/faStarHalfAlt").faStarHalfAlt,
   require("@fortawesome/pro-solid-svg-icons/faMoon").faMoon,
   require("@fortawesome/pro-solid-svg-icons/faSun").faSun,
@@ -23,10 +26,12 @@ library.add(
 
   require("@fortawesome/pro-regular-svg-icons/faStopwatch").faStopwatch,
   require("@fortawesome/pro-regular-svg-icons/faUser").faUser,
+  require("@fortawesome/pro-regular-svg-icons/faStar").faStar,
   require("@fortawesome/pro-regular-svg-icons/faUsers").faUsers,
 
   require("@fortawesome/pro-regular-svg-icons/faExternalLinkSquare")
     .faExternalLinkSquare,
+  require("@fortawesome/pro-regular-svg-icons/faMedal").faMedal,
   require("@fortawesome/pro-regular-svg-icons/faPlus").faPlus,
   require("@fortawesome/pro-regular-svg-icons/faEye").faEye,
   require("@fortawesome/pro-regular-svg-icons/faCalendarCheck").faCalendarCheck,

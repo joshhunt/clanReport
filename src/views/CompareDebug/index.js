@@ -35,11 +35,16 @@ function getMinMaxTime(compFn, hash) {
   const timeA = beavertime[hashs];
   const timeB = fastishTimes[hashs];
 
+  if (!timeA || !timeB) {
+    return "-";
+  }
+
   const result = compFn(timeA, timeB);
 
   return fmtSeconds(result);
 }
 
+// eslint-disable-next-line no-unused-vars
 function getMinTime(hash) {
   return getMinMaxTime(Math.min, hash);
 }
@@ -62,7 +67,7 @@ function NightfallTable({
         <tr>
           <td />
           {playersToCompare.map(pKey => (
-            <td>
+            <td key={pKey}>
               {profiles[pKey] &&
                 profiles[pKey].profile.data.userInfo.displayName}
             </td>
@@ -72,11 +77,12 @@ function NightfallTable({
       <tbody>
         {nightfalls &&
           nightfalls.map(nightfallHash => (
-            <tr>
+            <tr key={nightfallHash}>
               <td
                 className={
-                  currentNightfallHashes.includes(nightfallHash) &&
-                  s.thisNightfall
+                  currentNightfallHashes.includes(nightfallHash)
+                    ? s.thisNightfall
+                    : undefined
                 }
               >
                 {activityDefs &&
@@ -85,11 +91,13 @@ function NightfallTable({
                   <Icon name="calendar-check" />
                 )}
                 <br />
-                <small className={s.grey}>
-                  {" "}
-                  {getMinTime(nightfallHash)} - {getMaxTime(nightfallHash)}{" "}
-                </small>
-                {/* <small className={s.grey}>{nightfallHash}</small> */}
+                <small className={s.grey}>{getMaxTime(nightfallHash)}</small>
+                {activityDefs && activityDefs[nightfallHash].guidedGame && (
+                  <span>
+                    {" - "}
+                    <span className={s.grey}>Guided Game</span>
+                  </span>
+                )}
               </td>
 
               {playersToCompare.map(pKey => {
@@ -97,7 +105,7 @@ function NightfallTable({
                 const thisNightfall = forPlayer && forPlayer[nightfallHash];
 
                 return (
-                  <td>
+                  <td key={pKey}>
                     {thisNightfall &&
                       nightfallCell(thisNightfall, pKey, nightfallHash)}
                   </td>
@@ -137,17 +145,20 @@ function NightfallSummary({ nightfallHash, pgcr, pKey, highlight }) {
               {(isFast || isFastish) && (
                 <span>
                   {" "}
-                  {isFast && <Icon name="star" solid />}
-                  {isFastish && !isFast && <Icon name="star-half-alt" solid />}
+                  {isFast && <Icon name="stars" solid />}
+                  {isFastish && !isFast && <Icon name="star" solid />}
                 </span>
               )}
             </td>
           </tr>
-          <tr className={highlight === "team score" && s.bold}>
+          <tr className={highlight === "team score" ? s.bold : undefined}>
             <td className={s.grey}>
-              <Icon name="users" />
+              <Icon name="medal" />
             </td>
-            <td>{getDisplayValue(pgcr, "teamScore")}</td>
+            <td>
+              {getDisplayValue(pgcr, "teamScore")}
+              <small> pts</small>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -330,6 +341,13 @@ class CompareDebug extends Component {
             />
           </section>
         )}
+
+        <p>
+          <small className={s.grey}>
+            Times indicate current best guess at the time required to get the{" "}
+            <em>After the Nightfall</em> emblem.
+          </small>
+        </p>
 
         <Modal
           isOpen={addPlayerModalVisible}
