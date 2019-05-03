@@ -1,5 +1,6 @@
-.root
+@import '../../lib/toolbox.styl'
 
+.root
   section
     margin-bottom: 50px
 
@@ -56,6 +57,9 @@
   background: white
   border-radius: 2px
   padding: 15px
+
+  +darkMode()
+    background: $dm-background
 
 .option
   display: inline-block

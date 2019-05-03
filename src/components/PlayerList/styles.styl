@@ -1,14 +1,24 @@
+@import '../../lib/toolbox.styl'
+
 .root
   background: white
   border-radius: 3px
   box-shadow: 0 2px 8px 0 rgba(black, .08)
   margin: 10px
   overflow: hidden
+  transition: background 200ms ease-in-out
+
+  +darkMode()
+    background: lighten($dm-background, 5%)
 
 .top
   background: #F5F5F5
   padding: 10px
   display: flex
+  transition: background 200ms ease-in-out
+
+  +darkMode()
+    background: lighten($dm-background, 10%)
 
   h3
     flex: 1 0 auto
@@ -58,7 +68,7 @@
     min-width: 2ch
 
   &:link:hover
-    background: rgba(black, .04)
+    background: rgba(black, .2)
 
     .iconWell
       opacity: .9
