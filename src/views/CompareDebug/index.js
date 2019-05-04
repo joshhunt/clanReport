@@ -85,11 +85,14 @@ function NightfallTable({
                     : undefined
                 }
               >
-                {activityDefs &&
-                  activityDefs[nightfallHash].displayProperties.name}{" "}
                 {currentNightfallHashes.includes(nightfallHash) && (
-                  <Icon name="calendar-check" />
+                  <span>
+                    <Icon name="calendar-check" />{" "}
+                  </span>
                 )}
+
+                {activityDefs &&
+                  activityDefs[nightfallHash].displayProperties.name}
                 <br />
                 <small className={s.grey}>{getMaxTime(nightfallHash)}</small>
                 {activityDefs && activityDefs[nightfallHash].guidedGame && (
@@ -254,11 +257,11 @@ class CompareDebug extends Component {
     const firstActivities = Object.values(activities).filter(Boolean)[0];
 
     const CUSTOM_SORT_INDEX = {
-      1034003646: 999999100,
-      3701132453: 999999101,
-      3108813009: 999999102,
-      3034843176: 999999103,
-      1207505828: 999999999
+      1034003646: 1000100,
+      3701132453: 1000101,
+      3108813009: 1000102,
+      3034843176: 1000103,
+      1207505828: 1000999
     };
 
     const nightfalls =
@@ -266,7 +269,13 @@ class CompareDebug extends Component {
       activityDefs &&
       flow(
         sortBy(hash => activityDefs[hash].displayProperties.name),
-        sortBy((hash, index) => CUSTOM_SORT_INDEX[hash] || 1)
+        sortBy((hash, index) => {
+          if (currentNightfallHashes.includes(hash)) {
+            return 1;
+          }
+
+          return CUSTOM_SORT_INDEX[hash] || 2;
+        })
       )(Object.keys(firstActivities));
 
     const VIEWS = [FASTEST, TEAM_SCORE];
@@ -344,7 +353,7 @@ class CompareDebug extends Component {
 
         <p>
           <small className={s.grey}>
-            Times indicate current best guess at the time required to get the{" "}
+            Times indicate current known slowest qualifying time for the{" "}
             <em>After the Nightfall</em> emblem.
           </small>
         </p>
