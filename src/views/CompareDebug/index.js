@@ -18,6 +18,8 @@ const FORSAKEN_ISH = new Date(2018, 8, 2);
 const FASTEST = "Fastest";
 const TEAM_SCORE = "Team Score";
 
+const ACTIVITY_BLACKLIST = [1207505828];
+
 window.beavertime = beavertime;
 
 function str_pad_left(_string, pad, length) {
@@ -483,6 +485,12 @@ function mapStateToProps(state, ownProps) {
       filter(Boolean),
       filter(pgcr =>
         sinceForsaken ? new Date(pgcr.period) > FORSAKEN_ISH : true
+      ),
+      filter(
+        pgcr =>
+          !ACTIVITY_BLACKLIST.includes(
+            pgcr.activityDetails.directorActivityHash
+          )
       ),
       groupBy(pgcr => pgcr.activityDetails.directorActivityHash),
       mapValues(pgcrList => {
