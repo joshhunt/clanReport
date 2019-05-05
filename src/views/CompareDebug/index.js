@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { sortBy, flow, mapValues, filter, groupBy } from "lodash/fp";
 import { connect } from "react-redux";
 import { getMilestones } from "src/lib/destiny";
@@ -84,99 +84,107 @@ function NightfallTable({
   activityDefs,
   nightfallCell
 }) {
+  const [showHash, setShowHash] = useState(false);
+
   return (
-    <table className={s.table}>
-      <thead>
-        <tr>
-          <td />
-          {playersToCompare.map(pKey => (
-            <td key={pKey}>
-              {profiles[pKey] &&
-                profiles[pKey].profile.data.userInfo.displayName}
-            </td>
-          ))}
-        </tr>
-      </thead>
-
-      <tbody>
-        {nightfalls &&
-          nightfalls.map(nightfallHash => (
-            <tr key={nightfallHash}>
-              <td
-                className={
-                  currentNightfallHashes.includes(nightfallHash)
-                    ? s.thisNightfall
-                    : undefined
-                }
-              >
-                {currentNightfallHashes.includes(nightfallHash) && (
-                  <span>
-                    <Icon name="calendar-check" />{" "}
-                  </span>
-                )}
-                {activityDefs &&
-                  activityDefs[nightfallHash].displayProperties.name}
-                <br />
-                <small className={s.grey}>{getMaxTime(nightfallHash)}</small>
-                {activityDefs && activityDefs[nightfallHash].guidedGame && (
-                  <span>
-                    {" - "}
-                    <span className={s.grey}>Guided Game</span>
-                  </span>
-                )}
-                <br /> {nightfallHash}
+    <div className={s.tableWrapper}>
+      <table className={s.table}>
+        <thead>
+          <tr>
+            <td />
+            {playersToCompare.map(pKey => (
+              <td key={pKey}>
+                {profiles[pKey] &&
+                  profiles[pKey].profile.data.userInfo.displayName}
               </td>
+            ))}
+          </tr>
+        </thead>
 
-              {playersToCompare.map(pKey => {
-                const forPlayer = activities[pKey];
-                const thisNightfall = forPlayer && forPlayer[nightfallHash];
-
-                return (
-                  <td key={pKey}>
-                    {thisNightfall &&
-                      nightfallCell(thisNightfall, pKey, nightfallHash)}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-      </tbody>
-
-      <tfoot>
-        <tr>
-          <td>total accumulated time</td>
-
-          {playersToCompare.map(pKey => {
-            const forPlayer = activities[pKey];
-
-            const accumulatedTime =
-              forPlayer &&
-              Object.entries(forPlayer).reduce(
-                (acc, [nightfallHash, nightfall]) => {
-                  if (
-                    !NIGHTFALL_HASHES.includes(nightfallHash) ||
-                    !nightfall.fastest
-                  ) {
-                    return acc;
+        <tbody>
+          {nightfalls &&
+            nightfalls.map(nightfallHash => (
+              <tr key={nightfallHash}>
+                <td
+                  className={
+                    currentNightfallHashes.includes(nightfallHash)
+                      ? s.thisNightfall
+                      : undefined
                   }
+                  onClick={() => setShowHash(!showHash)}
+                >
+                  {currentNightfallHashes.includes(nightfallHash) && (
+                    <span>
+                      <Icon name="calendar-check" />{" "}
+                    </span>
+                  )}
+                  {showHash
+                    ? nightfallHash
+                    : activityDefs &&
+                      activityDefs[nightfallHash].displayProperties.name}
+                  <br />
+                  <small className={s.grey}>{getMaxTime(nightfallHash)}</small>
+                  {activityDefs && activityDefs[nightfallHash].guidedGame && (
+                    <span>
+                      {" - "}
+                      <span className={s.grey}>Guided Game</span>
+                    </span>
+                  )}
+                  {/* <br /> {nightfallHash} */}
+                </td>
 
-                  console.log("nightfall:", nightfall);
+                {playersToCompare.map(pKey => {
+                  const forPlayer = activities[pKey];
+                  const thisNightfall = forPlayer && forPlayer[nightfallHash];
 
                   return (
-                    acc +
-                    nightfall.fastest.values.activityDurationSeconds.basic.value
+                    <td key={pKey}>
+                      {thisNightfall &&
+                        nightfallCell(thisNightfall, pKey, nightfallHash)}
+                    </td>
                   );
-                },
-                0
-              );
+                })}
+              </tr>
+            ))}
+        </tbody>
 
-            const accumulatedTimeMins = accumulatedTime / 60;
+        <tfoot>
+          <tr>
+            <td>total accumulated time</td>
 
-            return <td key={pKey}>{fmtSeconds(accumulatedTime)}</td>;
-          })}
-        </tr>
-      </tfoot>
-    </table>
+            {playersToCompare.map(pKey => {
+              const forPlayer = activities[pKey];
+
+              const accumulatedTime =
+                forPlayer &&
+                Object.entries(forPlayer).reduce(
+                  (acc, [nightfallHash, nightfall]) => {
+                    if (
+                      !NIGHTFALL_HASHES.includes(nightfallHash) ||
+                      !nightfall.fastest
+                    ) {
+                      return acc;
+                    }
+
+                    console.log("nightfall:", nightfall);
+
+                    return (
+                      acc +
+                      nightfall.fastest.values.activityDurationSeconds.basic
+                        .value
+                    );
+                  },
+                  0
+                );
+
+              const accumulatedTimeMins = accumulatedTime / 60;
+
+              return <td key={pKey}>{fmtSeconds(accumulatedTime)}</td>;
+            })}
+          </tr>
+        </tfoot>
+      </table>
+    </div>
   );
 }
 
@@ -412,7 +420,7 @@ class CompareDebug extends Component {
 
         <p>
           <small className={s.grey}>
-            Times indicate current known slowest qualifying time for the{" "}
+            Times indicate current guess at the qualifying time for the{" "}
             <em>After the Nightfall</em> emblem.
           </small>
         </p>
