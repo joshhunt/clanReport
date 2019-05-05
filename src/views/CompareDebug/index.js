@@ -20,14 +20,18 @@ const TEAM_SCORE = "Team Score";
 
 window.beavertime = beavertime;
 
-function str_pad_left(string, pad, length) {
-  return (new Array(length + 1).join(pad) + string).slice(-length);
+function str_pad_left(_string, pad, length) {
+  const string = _string.toString ? _string.toString() : _string;
+  const maxLength = Math.max(length, string.length);
+  return (new Array(length + 1).join(pad) + string).slice(-maxLength);
 }
 
 function fmtSeconds(time) {
   const minutes = Math.floor(time / 60);
   const seconds = time - minutes * 60;
-  return str_pad_left(minutes, "0", 2) + ":" + str_pad_left(seconds, "0", 2);
+  return (
+    str_pad_left(minutes, "0", 2) + "m " + str_pad_left(seconds, "0", 2) + "s"
+  );
 }
 
 function getMinMaxTime(compFn, hash) {
@@ -52,6 +56,23 @@ function getMaxTime(hash) {
   return getMinMaxTime(Math.max, hash);
 }
 
+const NIGHTFALL_HASHES = [
+  "3280234344",
+  "3701132453",
+  "1034003646",
+  "936308438",
+  "1282886582",
+  "3372160277",
+  "522318687",
+  "3145298904",
+  "4259769141",
+  "3289589202",
+  "3718330161",
+  "272852450",
+  "3108813009",
+  "3034843176"
+];
+
 function NightfallTable({
   currentNightfallHashes,
   nightfalls,
@@ -74,6 +95,7 @@ function NightfallTable({
           ))}
         </tr>
       </thead>
+
       <tbody>
         {nightfalls &&
           nightfalls.map(nightfallHash => (
@@ -90,7 +112,6 @@ function NightfallTable({
                     <Icon name="calendar-check" />{" "}
                   </span>
                 )}
-
                 {activityDefs &&
                   activityDefs[nightfallHash].displayProperties.name}
                 <br />
@@ -101,6 +122,7 @@ function NightfallTable({
                     <span className={s.grey}>Guided Game</span>
                   </span>
                 )}
+                <br /> {nightfallHash}
               </td>
 
               {playersToCompare.map(pKey => {
@@ -117,6 +139,41 @@ function NightfallTable({
             </tr>
           ))}
       </tbody>
+
+      <tfoot>
+        <tr>
+          <td>total accumulated time</td>
+
+          {playersToCompare.map(pKey => {
+            const forPlayer = activities[pKey];
+
+            const accumulatedTime =
+              forPlayer &&
+              Object.entries(forPlayer).reduce(
+                (acc, [nightfallHash, nightfall]) => {
+                  if (
+                    !NIGHTFALL_HASHES.includes(nightfallHash) ||
+                    !nightfall.fastest
+                  ) {
+                    return acc;
+                  }
+
+                  console.log("nightfall:", nightfall);
+
+                  return (
+                    acc +
+                    nightfall.fastest.values.activityDurationSeconds.basic.value
+                  );
+                },
+                0
+              );
+
+            const accumulatedTimeMins = accumulatedTime / 60;
+
+            return <td key={pKey}>{fmtSeconds(accumulatedTime)}</td>;
+          })}
+        </tr>
+      </tfoot>
     </table>
   );
 }
