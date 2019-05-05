@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { Fragment, Component, useState } from "react";
 import { sortBy, flow, mapValues, filter, groupBy } from "lodash/fp";
 import { connect } from "react-redux";
 import { getMilestones } from "src/lib/destiny";
@@ -19,8 +19,6 @@ const FASTEST = "Fastest";
 const TEAM_SCORE = "Team Score";
 
 const ACTIVITY_BLACKLIST = [1207505828];
-
-window.beavertime = beavertime;
 
 function str_pad_left(_string, pad, length) {
   const string = _string.toString ? _string.toString() : _string;
@@ -92,6 +90,7 @@ function NightfallTable({
         <thead>
           <tr>
             <td />
+            {showHash && <td>Slowest</td>}
             {playersToCompare.map(pKey => (
               <td key={pKey}>
                 {profiles[pKey] &&
@@ -118,10 +117,8 @@ function NightfallTable({
                       <Icon name="calendar-check" />{" "}
                     </span>
                   )}
-                  {showHash
-                    ? nightfallHash
-                    : activityDefs &&
-                      activityDefs[nightfallHash].displayProperties.name}
+                  {activityDefs &&
+                    activityDefs[nightfallHash].displayProperties.name}
                   <br />
                   <small className={s.grey}>{getMaxTime(nightfallHash)}</small>
                   {activityDefs && activityDefs[nightfallHash].guidedGame && (
@@ -130,8 +127,30 @@ function NightfallTable({
                       <span className={s.grey}>Guided Game</span>
                     </span>
                   )}
-                  {/* <br /> {nightfallHash} */}
+                  {showHash && (
+                    <Fragment>
+                      <br /> {nightfallHash}
+                    </Fragment>
+                  )}
                 </td>
+
+                {showHash && (
+                  <td>
+                    {fmtSeconds(
+                      playersToCompare.reduce((acc, pKey) => {
+                        const forPlayer = activities[pKey];
+                        const thisNightfall =
+                          forPlayer && forPlayer[nightfallHash];
+
+                        const thisTime =
+                          thisNightfall.fastest.values.activityDurationSeconds
+                            .basic.value;
+
+                        return Math.max(thisTime, acc);
+                      }, 0)
+                    )}
+                  </td>
+                )}
 
                 {playersToCompare.map(pKey => {
                   const forPlayer = activities[pKey];
