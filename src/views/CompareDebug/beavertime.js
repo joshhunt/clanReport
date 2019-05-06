@@ -22,17 +22,17 @@ export default {
 
 export const fastishTimes = {
   936308438: time("12:14"), //  Garden World:
-  1282886582: time("10:10"), // Exodus Crash:
+  1282886582: time("10:43"), // Exodus Crash:
   3372160277: time("10:27"), // Lake of Shadows:
   3280234344: time("12:31"), // Savathun’s Song
-  522318687: time("8:28"), //   Strange Terrain
-  3145298904: time("9:02"), //  Arms Dealer
+  522318687: time("9:11"), //   Strange Terrain
+  3145298904: time("9:05"), //  Arms Dealer
   4259769141: time("10:43"), // Inverted Spire
   3289589202: time("11:46"), // Pyramidion
-  3718330161: time("10:13"), // Tree of Probabilities
+  3718330161: time("10:55"), // Tree of Probabilities
   272852450: time("10:17"), //  Will of the Thousands
   1034003646: time("12:34"), // Insight Terminus
-  3701132453: time("9:21"), //  Hollowed Lair
+  3701132453: time("9:42"), //  Hollowed Lair
   3108813009: time("11:57"), // Warden of Nothing
   3034843176: time("9:15") //   The Corrupted
 };
