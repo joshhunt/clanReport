@@ -142,6 +142,10 @@ function NightfallTable({
                         const thisNightfall =
                           forPlayer && forPlayer[nightfallHash];
 
+                        if (!thisNightfall || !thisNightfall.fastest) {
+                          return acc;
+                        }
+
                         const thisTime =
                           thisNightfall.fastest.values.activityDurationSeconds
                             .basic.value;
