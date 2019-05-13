@@ -49,11 +49,25 @@
   content: 'leaderboard'
 
   > ol
-    padding-left: 3ch
+    padding: 0
 
 .leaderboardItem
   padding: 8px 0
-  padding-left: 1ch
+
+  list-style: none
+
+  > div
+    display: inline-block
+
+    > small
+      opacity: .75
+
+  &:before
+    content:  attr(data-rank) "."
+    padding-right: 1.5ch
+    display: inline-block
+    vertical-align: top
+
 
 .leaderboardTop
   grid-column: span 2

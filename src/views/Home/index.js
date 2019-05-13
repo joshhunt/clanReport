@@ -109,11 +109,17 @@ class App extends Component {
                 leaderboards[leaderboardPlatform].collection
                   .slice(0, MAX_LEADERBOARD)
                   .map(player => (
-                    <li key={player.membershipId} className={s.leaderboardItem}>
-                      <PlatformIcon membershipType={player.membershipType} />{" "}
-                      {player.displayName}
-                      <br />
-                      <small>{player.collectionScore} collected</small>
+                    <li
+                      key={player.membershipId}
+                      className={s.leaderboardItem}
+                      data-rank={player.collectionRank}
+                    >
+                      <div>
+                        <PlatformIcon membershipType={player.membershipType} />{" "}
+                        {player.displayName}
+                        <br />
+                        <small>{player.collectionScore} collected</small>
+                      </div>
                     </li>
                   ))}
             </ol>
@@ -126,11 +132,17 @@ class App extends Component {
                 leaderboards[leaderboardPlatform].triumph
                   .slice(0, MAX_LEADERBOARD)
                   .map(player => (
-                    <li key={player.membershipId} className={s.leaderboardItem}>
-                      <PlatformIcon membershipType={player.membershipType} />{" "}
-                      {player.displayName}
-                      <br />
-                      <small>{player.triumphScore} pts</small>
+                    <li
+                      key={player.membershipId}
+                      className={s.leaderboardItem}
+                      data-rank={player.triumphRank}
+                    >
+                      <div>
+                        <PlatformIcon membershipType={player.membershipType} />{" "}
+                        {player.displayName}
+                        <br />
+                        <small>{player.triumphScore} pts</small>
+                      </div>
                     </li>
                   ))}
             </ol>
