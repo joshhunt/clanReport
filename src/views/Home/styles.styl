@@ -1,6 +1,14 @@
 .root
-  width: 500px
-  max-width: 100%
+  content: 'root'
+  display: grid
+  grid-template-columns: repeat(3, 1fr)
+  grid-column-gap: 50px
+
+  @media screen and (max-width: 1020px)
+    grid-template-columns: repeat(1, 1fr)
+
+.selectPlayer
+  content: 'selectPlayer'
 
 .playerSearch
   margin-top: 50px
@@ -26,3 +34,44 @@
 .authLink
   color: inherit
   font-weight: 500
+
+.leaderboards
+  grid-column: span 2
+  display: grid
+  grid-template-columns: repeat(2, 1fr)
+  grid-column-gap: 20px
+  max-width: 700px
+
+  > h2
+    grid-column: span 2
+
+.leaderboard
+  content: 'leaderboard'
+
+  > ol
+    padding-left: 3ch
+
+.leaderboardItem
+  padding: 8px 0
+  padding-left: 1ch
+
+.leaderboardTop
+  grid-column: span 2
+
+  em
+    color: #737373
+
+.leaderboardSelect
+  display: inline-block
+  font-size: 14px
+  margin-left: 10px
+
+.leaderboardPlatformButton
+  background: none
+  appearance: none
+  border: none
+  border-radius: 0
+  font-family: inherit
+  font-size: inherit
+  padding: 0
+  padding: 0 10px

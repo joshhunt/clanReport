@@ -5,6 +5,7 @@ import app from "./app";
 import auth from "./auth";
 import clan from "./clan";
 import pgcr from "./pgcr";
+import leaderboards from "./leaderboards";
 
 import definitions, {
   setBulkDefinitions,
@@ -20,7 +21,8 @@ const rootReducer = combineReducers({
   auth,
   clan,
   pgcr,
-  definitions
+  definitions,
+  leaderboards
 });
 
 const composeEnhancers =

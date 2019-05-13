@@ -1,25 +1,24 @@
-import React, { Component } from 'react';
-import { format, formatDistanceStrict } from 'date-fns';
+import React, { useEffect, useMemo, useState } from "react";
+import { format, formatDistanceStrict } from "date-fns";
 
-export default class PrettyDate extends Component {
-  state = {
-    toggle: true
-  };
+export default function PrettyDate(props) {
+  const { date, formatFormat } = props;
 
-  onClick = () => {
-    this.setState({ toggle: !this.state.toggle });
-  };
+  const [, setTick] = useState(0);
+  const [toggle, setToggle] = useState(true);
 
-  render() {
-    const { date, formatFormat } = this.props;
-    const d = new Date(date);
+  const d = useMemo(() => new Date(date), [date]);
 
-    return (
-      <span onClick={this.onClick}>
-        {this.state.toggle
-          ? `${formatDistanceStrict(d, new Date())} ago`
-          : format(d, formatFormat || 'd LLL Y, h:mm aaaa')}
-      </span>
-    );
-  }
+  useEffect(() => {
+    const id = setInterval(() => setTick(Math.random()), 500);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <span onClick={() => setToggle(!toggle)}>
+      {toggle
+        ? `${formatDistanceStrict(d, new Date())} ago`
+        : format(d, formatFormat || "d LLL Y, h:mm aaaa")}
+    </span>
+  );
 }

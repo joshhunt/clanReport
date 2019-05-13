@@ -16,9 +16,11 @@ export function Player({ className, userInfo, children, linkedActivityId }) {
       rel="noopener"
       href={hasLink && `https://destinytracker.com/d2/pgcr/${linkedActivityId}`}
     >
-      <div className={s.playerWell}>
-        <BungieImage className={s.playerIcon} src={userInfo.iconPath} />
-      </div>
+      {userInfo.iconPath && (
+        <div className={s.playerWell}>
+          <BungieImage className={s.playerIcon} src={userInfo.iconPath} />
+        </div>
+      )}
 
       <div className={s.playerMain}>
         <div className={s.playerName}>{userInfo.displayName}</div>
@@ -34,6 +36,46 @@ export function Player({ className, userInfo, children, linkedActivityId }) {
   );
 }
 
+export function BasePlayerList(props) {
+  const {
+    entries,
+    title,
+    small,
+    titleLink,
+    playerClassName,
+    className,
+    renderPlayerChildren
+  } = props;
+
+  return (
+    <div className={cx(className, s.root, { [s.small]: small })}>
+      <div className={s.top}>
+        <h3 className={s.title}>
+          {titleLink ? <Link to={titleLink}>{title}</Link> : title}
+        </h3>
+      </div>
+
+      <ol className={s.list}>
+        {entries.map((entry, index) => (
+          <li className={s.listItem} key={entry.membershipId || index}>
+            <Player
+              userInfo={
+                (entry.player && entry.player.destinyUserInfo) ||
+                entry.player ||
+                entry
+              }
+              className={playerClassName}
+              linkedActivityId={entry.value && entry.value.activityId}
+            >
+              {renderPlayerChildren(entry)}
+            </Player>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
 export default class PlayerList extends Component {
   render() {
     const {
@@ -45,30 +87,16 @@ export default class PlayerList extends Component {
       className
     } = this.props;
 
-    console.log({ entries });
-
     return (
-      <div className={cx(className, s.root, { [s.small]: small })}>
-        <div className={s.top}>
-          <h3 className={s.title}>
-            <Link to={titleLink}>{title}</Link>
-          </h3>
-        </div>
-
-        <ol className={s.list}>
-          {entries.map((entry, index) => (
-            <li className={s.listItem} key={index}>
-              <Player
-                userInfo={entry.player.destinyUserInfo}
-                className={playerClassName}
-                linkedActivityId={entry.value.activityId}
-              >
-                {entry.value.basic.displayValue}
-              </Player>
-            </li>
-          ))}
-        </ol>
-      </div>
+      <BasePlayerList
+        entries={entries}
+        title={title}
+        small={small}
+        titleLink={titleLink}
+        playerClassName={playerClassName}
+        className={className}
+        renderPlayerChildren={entry => entry.value.basic.displayValue}
+      />
     );
   }
 }

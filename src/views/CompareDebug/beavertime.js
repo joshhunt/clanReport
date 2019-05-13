@@ -21,10 +21,10 @@ export default {
 };
 
 export const fastishTimes = {
-  936308438: time("12:14"), //  Garden World:
-  1282886582: time("10:43"), // Exodus Crash:
-  3372160277: time("10:27"), // Lake of Shadows:
-  3280234344: time("12:31"), // Savathun’s Song
+  936308438: time("14:22"), //  A Garden World
+  1282886582: time("10:43"), // Exodus Crash
+  3372160277: time("10:27"), // Lake of Shadows
+  3280234344: time("12:57"), // Savathun’s Song
   522318687: time("9:11"), //   Strange Terrain
   3145298904: time("9:05"), //  Arms Dealer
   4259769141: time("10:43"), // Inverted Spire
