@@ -169,7 +169,7 @@ class App extends Component {
                 Leaderboards are experimental. I know the collection score is
                 higher than in-game or on Braytech.org.
                 <br />
-                Dont @ me.
+                Don&apos;t @ me.
               </small>
             </em>
           </p>
