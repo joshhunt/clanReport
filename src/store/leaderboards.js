@@ -1,15 +1,29 @@
 const INITIAL_STATE = {
-  leaderboard: {}
+  leaderboard: {},
+  players: {}
 };
 
+const SET_PLAYER_VALUE = "Set player leaderboard";
 const SET_LEADERBOARDS = "Set leaderboards";
 const SET_STATUS = "Set leaderboards status";
+
+const k = ({ membershipType, membershipId }) =>
+  [membershipType, membershipId].join("/");
 
 export default function leaderboardsReducer(
   state = INITIAL_STATE,
   { type, payload }
 ) {
   switch (type) {
+    case SET_PLAYER_VALUE:
+      return {
+        ...state,
+        players: {
+          ...state.players,
+          [payload.key]: payload.data
+        }
+      };
+
     case SET_LEADERBOARDS:
       return {
         ...state,
@@ -47,6 +61,21 @@ export function getLeaderboard(leaderboardType = "all") {
     dispatch({
       type: SET_LEADERBOARDS,
       payload: { leaderboardType, leaderboard }
+    });
+  };
+}
+
+export function getLeaderboardForPlayer({ membershipId, membershipType }) {
+  return async dispatch => {
+    const url = `https://api.clan.report/i/user/${membershipType}/${membershipId}`;
+    const data = await (await fetch(url)).json();
+
+    dispatch({
+      type: SET_PLAYER_VALUE,
+      payload: {
+        key: k({ membershipId, membershipType }),
+        data
+      }
     });
   };
 }

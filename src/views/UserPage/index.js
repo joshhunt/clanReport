@@ -1,9 +1,13 @@
+import React, { Component, Fragment } from "react";
 import { orderBy } from "lodash";
-import React, { Component } from "react";
 import { Link } from "react-router";
 import { connect } from "react-redux";
 
 import { getClansForUser, getProfile } from "src/store/clan";
+import {
+  getLeaderboardForPlayer,
+  getLeaderboardStatus
+} from "src/store/leaderboards";
 import {
   getCharacterPGCRHistory,
   toggleViewPGCRDetails,
@@ -11,13 +15,32 @@ import {
 } from "src/store/pgcr";
 import GamesTable from "app/components/GamesTable";
 import CurrentActivity from "app/components/CurrentActivity";
+import Stat from "app/components/Stat";
+import PrettyDate from "app/components/Date";
 
 import { getCurrentActivity } from "src/lib/destinyUtils";
 
 import s from "./styles.styl";
 
+const getOrdinal = n => {
+  const s = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return s[(v - 20) % 10] || s[v] || s[0];
+};
+
+function Ordinal({ value }) {
+  return (
+    <span>
+      {value.toLocaleString()}
+      <sup>{getOrdinal(value)}</sup>
+    </span>
+  );
+}
+
 class UserPage extends Component {
   componentDidMount() {
+    this.props.getLeaderboardStatus();
+    this.props.getLeaderboardForPlayer(this.props.routeParams);
     this.props.getClansForUser(this.props.routeParams);
     this.props.getProfile(this.props.routeParams).then(profile => {
       Object.keys(profile.characters.data).forEach(characterId => {
@@ -44,17 +67,13 @@ class UserPage extends Component {
   };
 
   render() {
-    const { gameHistory, profile } = this.props;
+    const { gameHistory, profile, ranks, leaderboardStatus } = this.props;
     const clans = this.props.clans || [];
     const currentActivity = profile && getCurrentActivity(profile);
 
     return (
       <div className={s.root}>
         <h2>{this.renderName()}</h2>
-
-        {currentActivity && (
-          <CurrentActivity currentActivity={currentActivity} />
-        )}
 
         {clans.map(clan => (
           <p key={clan.group.groupId}>
@@ -63,6 +82,26 @@ class UserPage extends Component {
           </p>
         ))}
 
+        {ranks && ranks.profile && (
+          <div className={s.ranks}>
+            <Stat
+              className={s.rank}
+              name="Triumph score"
+              extra={<Ordinal value={ranks.triumphRank} />}
+              value={ranks.profile.triumphScore}
+            />
+            <Stat
+              className={s.rank}
+              name="Collected items"
+              extra={<Ordinal value={ranks.collectionRank} />}
+              value={ranks.profile.collectionScore}
+            />
+          </div>
+        )}
+
+        {currentActivity && (
+          <CurrentActivity currentActivity={currentActivity} />
+        )}
         <h3>Recent games</h3>
 
         <GamesTable
@@ -71,6 +110,19 @@ class UserPage extends Component {
           onGameRowClick={this.viewPGCRDetails}
           activePgcrs={this.props.activePgcrs}
         />
+
+        {leaderboardStatus && (
+          <p className={s.status}>
+            <em>
+              <small>
+                Tracking {leaderboardStatus.profileCount.toLocaleString()}{" "}
+                profiles, last updated{" "}
+                <PrettyDate date={leaderboardStatus.latestProfileLastCrawled} />
+              </small>
+            </em>
+            <br />
+          </p>
+        )}
       </div>
     );
   }
@@ -93,6 +145,8 @@ function mapStateToProps(state, ownProps) {
 
   return {
     isAuthenticated: state.auth.isAuthenticated,
+    leaderboardStatus: state.leaderboards.status,
+    ranks: state.leaderboards.players[pKey],
     clans: state.clan.clanResults,
     gameHistory,
     activePgcrs: state.pgcr.viewDetails,
@@ -104,6 +158,8 @@ function mapStateToProps(state, ownProps) {
 
 const mapDispatchToActions = {
   getClansForUser,
+  getLeaderboardForPlayer,
+  getLeaderboardStatus,
   getProfile,
   getCharacterPGCRHistory,
   toggleViewPGCRDetails,
