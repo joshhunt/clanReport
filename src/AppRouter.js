@@ -8,15 +8,13 @@ import App from "./views/App";
 import Home from "./views/Home";
 import UserPage from "./views/UserPage";
 import ClanPage from "./views/ClanPage";
-import CrawlPage from "./views/CrawlPage";
 import TriumphReport from "./views/TriumphReport";
 import CompareTriumphs from "./views/CompareTriumphs";
 import CompareNightfalls from "./views/CompareDebug";
 import NewCollections from "./views/NewCollections";
-import ActivityGraphPage from "./views/ActivityGraphPage";
 import StatsPage from "./views/StatsPage";
-import TriumphsDebug from "./views/TriumphsDebug";
 import ClanLeaderboards from "./views/ClanLeaderboards";
+import Experiments from "./views/Experiments";
 
 export default class AppRouter extends Component {
   render() {
@@ -50,19 +48,13 @@ export default class AppRouter extends Component {
             <Redirect from="/compare-debug" to="/compare-nightfalls" />
             <Route path="/compare-nightfalls" component={CompareNightfalls} />
             <Route path="/new-collections" component={NewCollections} />
+
+            <Route
+              path="/experiments/:experimentName"
+              component={Experiments}
+            />
+
             <Route path="/:membershipType/:membershipId" component={UserPage} />
-            <Route
-              path="/:membershipType/:membershipId/debug"
-              component={TriumphsDebug}
-            />
-            <Route
-              path="/:membershipType/:membershipId/crawl"
-              component={CrawlPage}
-            />
-            <Route
-              path="/:membershipType/:membershipId/activity-graph"
-              component={ActivityGraphPage}
-            />
           </Route>
         </Router>
       </Provider>
