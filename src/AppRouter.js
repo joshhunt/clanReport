@@ -49,10 +49,7 @@ export default class AppRouter extends Component {
             <Route path="/compare-nightfalls" component={CompareNightfalls} />
             <Route path="/new-collections" component={NewCollections} />
 
-            <Route
-              path="/experiments/:experimentName"
-              component={Experiments}
-            />
+            <Route path="/experiments/:name" component={Experiments} />
 
             <Route path="/:membershipType/:membershipId" component={UserPage} />
           </Route>

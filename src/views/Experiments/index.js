@@ -44,12 +44,16 @@ function Experiments({ data, definitions }) {
   );
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
   const {
     DestinyRecordDefinition,
     DestinyCollectibleDefinition
   } = state.definitions;
-  const entriesDefinition = DestinyCollectibleDefinition;
+
+  const entriesDefinition =
+    ownProps.routeParams.name === "records"
+      ? DestinyRecordDefinition
+      : DestinyCollectibleDefinition;
 
   if (!entriesDefinition) {
     return {};
