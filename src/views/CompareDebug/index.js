@@ -10,7 +10,7 @@ import Icon from "src/components/Icon";
 import SearchForPlayer from "src/components/SearchForPlayer";
 
 import s from "./styles.styl";
-import beavertime, { fastishTimes } from "./beavertime";
+import beavertime from "./beavertime";
 
 const PGCR_MODE = 46;
 const FORSAKEN_ISH = new Date(2018, 8, 2);
@@ -36,8 +36,8 @@ function fmtSeconds(time) {
 
 function getMinMaxTime(compFn, hash) {
   const hashs = hash.toString ? hash.toString() : hash;
-  const timeA = beavertime[hashs];
-  const timeB = fastishTimes[hashs];
+  const timeA = beavertime[hashs][0];
+  const timeB = beavertime[hashs][1];
 
   if (!timeA || !timeB) {
     return "-";
@@ -217,8 +217,8 @@ function getDisplayValue(pgcr, valueKey) {
 
 function NightfallSummary({ nightfallHash, pgcr, pKey, highlight }) {
   const speedSeconds = pgcr.values.activityDurationSeconds.basic.value;
-  const isFast = speedSeconds <= beavertime[nightfallHash.toString()];
-  const isFastish = speedSeconds <= fastishTimes[nightfallHash.toString()];
+  const isFast = speedSeconds <= beavertime[nightfallHash.toString()][0];
+  const isFastish = speedSeconds <= beavertime[nightfallHash.toString()][1];
 
   return (
     <a
