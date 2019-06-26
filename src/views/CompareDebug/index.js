@@ -120,7 +120,13 @@ function NightfallTable({
                   {activityDefs &&
                     activityDefs[nightfallHash].displayProperties.name}
                   <br />
-                  <small className={s.grey}>{getMaxTime(nightfallHash)}</small>
+                  <small className={s.grey}>
+                    <Icon className={s.smallIcon} name="star" solid />{" "}
+                    {fmtSeconds(beavertime[nightfallHash])}
+                    <span className={s.spacer}>{", "}</span>
+                    <Icon className={s.smallIcon} name="star" />{" "}
+                    {fmtSeconds(fastishTimes[nightfallHash])}
+                  </small>
                   {activityDefs && activityDefs[nightfallHash].guidedGame && (
                     <span>
                       {" - "}
@@ -238,8 +244,8 @@ function NightfallSummary({ nightfallHash, pgcr, pKey, highlight }) {
               {(isFast || isFastish) && (
                 <span>
                   {" "}
-                  {isFast && <Icon name="stars" solid />}
-                  {isFastish && !isFast && <Icon name="star" solid />}
+                  {isFast && <Icon name="star" solid />}
+                  {isFastish && !isFast && <Icon name="star" />}
                 </span>
               )}
             </td>
@@ -442,9 +448,24 @@ class CompareDebug extends Component {
         )}
 
         <p>
+          <small className={s.grey}>Legend:</small>
+          <br />
+          <small className={s.grey}>
+            <Icon name="star" solid /> indicates a time faster than a player
+            confirmed to have the emblem. This is the time to strive for.
+            <br />
+            <Icon name="star" /> indicates the slowest fastest time, based on
+            known multiple known players with the emblem. You should get{" "}
+            <em>at least</em> this fast.
+            <br />
+          </small>
+        </p>
+
+        <p>
           <small className={s.grey}>
             Times indicate current guess at the qualifying time for the{" "}
-            <em>After the Nightfall</em> emblem.
+            <em>After the Nightfall</em> emblem. They have been updated to all
+            be from one single player.
           </small>
         </p>
 
