@@ -25,6 +25,14 @@ const Noop = ({ children }) => children;
 const USE_LAZY_LOAD = false;
 const LazyLoad = USE_LAZY_LOAD ? _LazyLoad : Noop;
 
+function calculateTriumphScore(node) {
+  const intervalPoints = node.intervalInfo.intervalObjectives
+    .map(io => io.intervalScoreValue)
+    .reduce((acc, i) => i + acc, 0);
+
+  return intervalPoints + node.completionInfo.ScoreValue;
+}
+
 function chunkArray(myArray, chunkSize) {
   var index = 0;
   var arrayLength = myArray.length;
@@ -155,7 +163,7 @@ const ComparisonTable = React.memo(
                     if (!node.headingNode && hideZeroPointRecords) {
                       if (
                         node.completionInfo &&
-                        node.completionInfo.ScoreValue === 0
+                        calculateTriumphScore(node) === 0
                       ) {
                         return null;
                       }

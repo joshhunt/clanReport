@@ -13,6 +13,10 @@ export default function TriumphSummary({ record, anchorLink, typeOverride }) {
         target: "_blank"
       };
 
+  const intervalPoints = record.intervalInfo
+    ? record.intervalInfo.intervalObjectives.map(io => io.intervalScoreValue)
+    : [];
+
   return (
     <div className={s.recordSummary}>
       {record.displayProperties.icon && (
@@ -32,7 +36,10 @@ export default function TriumphSummary({ record, anchorLink, typeOverride }) {
 
           {record.completionInfo && (
             <small className={s.points}>
-              {record.completionInfo.ScoreValue} pts
+              {intervalPoints.length
+                ? intervalPoints.join("pts + ")
+                : record.completionInfo.ScoreValue}
+              pts
             </small>
           )}
         </a>
