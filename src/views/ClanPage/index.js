@@ -62,15 +62,19 @@ const makeTriumphCell = (name, triumphHash) => ({
     d.profile && profileHasCompletedTriumph(d.profile, triumphHash) ? "Yes" : ""
 });
 
+const orZero = v => (v ? v : 0);
+
 const EGO_COLUMNS = [
   // makeCollectibleCell("niobe labs", NIOBE_EMBLEM_COLLECTIBLE),
   // makeTriumphCell("solo ST", 851701008), // Solo Shattered Throne
   {
     name: "bonus power",
     cell: d =>
-      d.profile &&
-      d.profile.profileProgression.data &&
-      d.profile.profileProgression.data.seasonalArtifact.powerBonus
+      orZero(
+        d.profile &&
+          d.profile.profileProgression.data &&
+          d.profile.profileProgression.data.seasonalArtifact.powerBonus
+      )
   },
   {
     name: "season rank",
@@ -80,7 +84,7 @@ const EGO_COLUMNS = [
         d.profile.characterProgressions.data &&
         Object.values(d.profile.characterProgressions.data)[0];
 
-      return character && character.progressions[1628407317].level
+      return orZero(character && character.progressions[1628407317].level);
     }
   }
 ];
