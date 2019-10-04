@@ -30,7 +30,6 @@ import s from "./styles.styl";
 const entities = new AllHtmlEntities();
 const decode = memoize(string => entities.decode(string));
 
-const NIOBE_EMBLEM_COLLECTIBLE = 888672408;
 const PARENT_SEAL_NODE = 1652422747;
 
 const baseSort = sortFn => member =>
@@ -64,9 +63,26 @@ const makeTriumphCell = (name, triumphHash) => ({
 });
 
 const EGO_COLUMNS = [
-  makeCollectibleCell("niobe labs", NIOBE_EMBLEM_COLLECTIBLE),
-  makeTriumphCell("solo ST", 851701008), // Solo Shattered Throne
-  makeTriumphCell("solo ST flawless", 1290451257) // Solo Shattered Throne
+  // makeCollectibleCell("niobe labs", NIOBE_EMBLEM_COLLECTIBLE),
+  // makeTriumphCell("solo ST", 851701008), // Solo Shattered Throne
+  {
+    name: "bonus power",
+    cell: d =>
+      d.profile &&
+      d.profile.profileProgression.data &&
+      d.profile.profileProgression.data.seasonalArtifact.powerBonus
+  },
+  {
+    name: "season rank",
+    cell: d => {
+      const character =
+        d.profile &&
+        d.profile.characterProgressions.data &&
+        Object.values(d.profile.characterProgressions.data)[0];
+
+      return character && character.progressions[1628407317].level
+    }
+  }
 ];
 
 class ClanPage extends Component {
@@ -134,9 +150,7 @@ class ClanPage extends Component {
         cell: d => (
           <Link
             className={s.link}
-            to={`/${d.destinyUserInfo.membershipType}/${
-              d.destinyUserInfo.membershipId
-            }`}
+            to={`/${d.destinyUserInfo.membershipType}/${d.destinyUserInfo.membershipId}`}
           >
             {d.destinyUserInfo.displayName}
           </Link>
