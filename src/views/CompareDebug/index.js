@@ -451,12 +451,9 @@ class CompareDebug extends Component {
           <small className={s.grey}>Legend:</small>
           <br />
           <small className={s.grey}>
-            <Icon name="star" solid /> indicates a time faster than a player
-            confirmed to have the emblem. This is the time to strive for.
+            <Icon name="star" solid /> times are all from a selected single account with the emblem, so aim for <em>all</em> these and your times should be enough.
             <br />
-            <Icon name="star" /> indicates the slowest fastest time, based on
-            known multiple known players with the emblem. You should get{" "}
-            <em>at least</em> this fast.
+            <Icon name="star" /> times are the slowest individual times found on accounts that have the emblem. your individual times will need to be at least this fast.
             <br />
           </small>
         </p>

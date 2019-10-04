@@ -34,5 +34,5 @@ export const fastishTimes = {
   1034003646: time("12:34"), // Insight Terminus
   3701132453: time("9:42"), //  Hollowed Lair
   3108813009: time("11:57"), // Warden of Nothing
-  3034843176: time("9:15") //   The Corrupted
+  3034843176: time("15:47") //   The Corrupted
 };
