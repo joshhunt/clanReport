@@ -210,6 +210,15 @@ const ComparisonTable = React.memo(
                             return <td key={playerKey} />;
                           }
 
+                          const intervalObjectives =
+                            record.intervalObjectives || [];
+                          const classicObjectives = record.objectives || [];
+
+                          const objectives = [
+                            ...intervalObjectives,
+                            ...classicObjectives
+                          ];
+
                           return (
                             <td
                               key={playerKey}
@@ -232,8 +241,8 @@ const ComparisonTable = React.memo(
                                 <Icon className={s.icon} name="times" />
                               )}
 
-                              {!record.$hasCompleted && record.objectives && (
-                                <Objectives objectives={record.objectives} />
+                              {!record.$hasCompleted && objectives && (
+                                <Objectives objectives={objectives} />
                               )}
                             </td>
                           );
