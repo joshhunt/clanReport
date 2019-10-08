@@ -6,6 +6,7 @@ library.add(
   require("@fortawesome/fontawesome-free-brands/faPlaystation"),
   require("@fortawesome/fontawesome-free-brands/faXbox"),
   require("@fortawesome/fontawesome-free-brands/faWindows"),
+  require("@fortawesome/fontawesome-free-brands/faSteam"),
 
   require("@fortawesome/pro-light-svg-icons/faMoon").faMoon,
   require("@fortawesome/pro-light-svg-icons/faSun").faSun,
@@ -62,6 +63,7 @@ export default function Icon({ icon, name, brand, light, solid, ...props }) {
 const PLATFORM_ICON = {
   1: "xbox",
   2: "playstation",
+  3: "steam",
   4: "windows"
 };
 
