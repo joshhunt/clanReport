@@ -1,9 +1,10 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React from "react";
+import { connect } from "react-redux";
 
-import PrettyDate from 'src/components/Date';
+import PrettyDate from "src/components/Date";
+import { PlatformIcon } from "src/components/Icon";
 
-import s from './styles.styl';
+import s from "./styles.styl";
 
 const STANDING = {
   0: s.standingVictory,
@@ -12,7 +13,7 @@ const STANDING = {
 };
 
 const SCORE_NAME = {
-  1848252830: 'motes'
+  1848252830: "motes"
 };
 
 function Stat({ name, value }) {
@@ -55,7 +56,7 @@ function GameRow({ game, modeDef, activityDef, onClick, isActive }) {
 
       <td className={s.statColumn}>
         <Stat
-          name={SCORE_NAME[modeDef && modeDef.hash] || 'score'}
+          name={SCORE_NAME[modeDef && modeDef.hash] || "score"}
           value={game.values.score && game.values.score.basic.displayValue}
         />
       </td>
@@ -89,15 +90,16 @@ function GameRow({ game, modeDef, activityDef, onClick, isActive }) {
 
       <td>
         <a
-          href={`https://destinytracker.com/d2/pgcr/${
-            game.activityDetails.instanceId
-          }`}
+          href={`https://destinytracker.com/d2/pgcr/${game.activityDetails.instanceId}`}
         >
           DTR
         </a>
       </td>
 
       <td>{game.activityDetails.instanceId}</td>
+      <td>
+        <PlatformIcon membershipType={game.activityDetails.membershipType} />
+      </td>
     </tr>
   );
 }

@@ -1,8 +1,8 @@
-import React, { Fragment } from 'react';
+import React, { Fragment } from "react";
 
-import tableStyles from 'app/components/Table/styles.styl';
-import GameDetails from 'app/components/GameDetails';
-import GameRow from './GameRow';
+import tableStyles from "app/components/Table/styles.styl";
+import GameDetails from "app/components/GameDetails";
+import GameRow from "./GameRow";
 
 export default function GamesTable({
   games,
@@ -23,6 +23,7 @@ export default function GamesTable({
             <td>date</td>
             <td>links</td>
             <td>pgcr</td>
+            <td>platform</td>
           </tr>
         </thead>
 
