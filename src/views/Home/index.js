@@ -118,7 +118,12 @@ class App extends Component {
                         <PlatformIcon membershipType={player.membershipType} />{" "}
                         {player.displayName}
                         <br />
-                        <small>{player.collectionScore} collected</small>
+                        <small>
+                          {player.collectionScore.toLocaleString
+                            ? player.collectionScore.toLocaleString()
+                            : player.collectionScore}{" "}
+                          collected
+                        </small>
                       </div>
                     </li>
                   ))}
@@ -141,7 +146,12 @@ class App extends Component {
                         <PlatformIcon membershipType={player.membershipType} />{" "}
                         {player.displayName}
                         <br />
-                        <small>{player.triumphScore} pts</small>
+                        <small>
+                          {player.triumphScore.toLocaleString
+                            ? player.triumphScore.toLocaleString()
+                            : player.triumphScore}{" "}
+                          pts
+                        </small>
                       </div>
                     </li>
                   ))}
