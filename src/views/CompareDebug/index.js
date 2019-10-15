@@ -52,9 +52,6 @@ function getMinMaxTime(compFn, hash) {
 function getMinTime(hash) {
   return getMinMaxTime(Math.min, hash);
 }
-function getMaxTime(hash) {
-  return getMinMaxTime(Math.max, hash);
-}
 
 const NIGHTFALL_HASHES = [
   "3280234344",
@@ -205,8 +202,6 @@ function NightfallTable({
                   },
                   0
                 );
-
-              const accumulatedTimeMins = accumulatedTime / 60;
 
               return <td key={pKey}>{fmtSeconds(accumulatedTime)}</td>;
             })}
@@ -451,9 +446,13 @@ class CompareDebug extends Component {
           <small className={s.grey}>Legend:</small>
           <br />
           <small className={s.grey}>
-            <Icon name="star" solid /> times are all from a selected single account with the emblem, so aim for <em>all</em> these and your times should be enough.
+            <Icon name="star" solid /> times are all from a selected single
+            account with the emblem, so aim for <em>all</em> these and your
+            times should be enough.
             <br />
-            <Icon name="star" /> times are the slowest individual times found on accounts that have the emblem. your individual times will need to be at least this fast.
+            <Icon name="star" /> times are the slowest individual times found on
+            accounts that have the emblem. your individual times will need to be
+            at least this fast.
             <br />
           </small>
         </p>

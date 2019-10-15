@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import cx from "classnames";
 
 import s from "./styles.styl";
 
@@ -30,7 +31,7 @@ function Objective({ def, instance }) {
 
 function Objectives({ className, objectives, objectiveDefs }) {
   return (
-    <div className={s.objectives}>
+    <div className={cx(s.objectives, className)}>
       {objectives.map(obj => {
         const def = objectiveDefs[obj.objectiveHash];
         return <Objective def={def} instance={obj} />;

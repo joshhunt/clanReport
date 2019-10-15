@@ -8,7 +8,6 @@ import "react-table/react-table.css";
 
 import {
   profileHasCompletedTriumph,
-  profileHasCollectible,
   getCurrentActivity
 } from "src/lib/destinyUtils";
 
@@ -50,17 +49,17 @@ const maxLight = member =>
 const k = ({ membershipType, membershipId }) =>
   [membershipType, membershipId].join("/");
 
-const makeCollectibleCell = (name, collectibleHash) => ({
-  name,
-  cell: d =>
-    d.profile && profileHasCollectible(d.profile, collectibleHash) ? "Yes" : ""
-});
+// const makeCollectibleCell = (name, collectibleHash) => ({
+//   name,
+//   cell: d =>
+//     d.profile && profileHasCollectible(d.profile, collectibleHash) ? "Yes" : ""
+// });
 
-const makeTriumphCell = (name, triumphHash) => ({
-  name,
-  cell: d =>
-    d.profile && profileHasCompletedTriumph(d.profile, triumphHash) ? "Yes" : ""
-});
+// const makeTriumphCell = (name, triumphHash) => ({
+//   name,
+//   cell: d =>
+//     d.profile && profileHasCompletedTriumph(d.profile, triumphHash) ? "Yes" : ""
+// });
 
 const orZero = v => (v ? v : 0);
 

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { orderBy } from "lodash";
 import { Link } from "react-router";
 import { connect } from "react-redux";
@@ -131,9 +131,7 @@ class UserPage extends Component {
 const MAX_GAMES = 100;
 
 function mapStateToProps(state, ownProps) {
-  const pKey = `${ownProps.routeParams.membershipType}/${
-    ownProps.routeParams.membershipId
-  }`;
+  const pKey = `${ownProps.routeParams.membershipType}/${ownProps.routeParams.membershipId}`;
 
   const profile = state.clan.profiles[pKey];
 

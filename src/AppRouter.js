@@ -15,12 +15,23 @@ import NewCollections from "./views/NewCollections";
 import StatsPage from "./views/StatsPage";
 import ClanLeaderboards from "./views/ClanLeaderboards";
 import Experiments from "./views/Experiments";
+import LiveCompanion from "./views/LiveCompanion";
 
 export default class AppRouter extends Component {
   render() {
     return (
       <Provider store={store}>
         <Router history={browserHistory}>
+          <Route
+            path="/live/:membershipType/:membershipId"
+            component={LiveCompanion}
+          />
+
+          <Route
+            path="/live/:membershipType/:membershipId/:characterId"
+            component={LiveCompanion}
+          />
+
           <Route component={App}>
             <Route path="/" component={Home} />
             <Route path="/stats" mode="collectibles" component={StatsPage} />

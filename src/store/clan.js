@@ -1,24 +1,24 @@
-import { flatMap } from 'lodash';
+import { flatMap } from "lodash";
 
-import * as destiny from 'src/lib/destiny';
-import { makePayloadAction } from './utils';
+import * as destiny from "src/lib/destiny";
+import { makePayloadAction } from "./utils";
 
-export const CLANS_FOR_USER_SUCCESS = 'Clans for user - success';
-export const CLANS_FOR_USER_ERROR = 'Clans for user - error';
+export const CLANS_FOR_USER_SUCCESS = "Clans for user - success";
+export const CLANS_FOR_USER_ERROR = "Clans for user - error";
 
-export const GET_CLAN_DETAILS_SUCCESS = 'Clain details - success';
-export const GET_CLAN_DETAILS_ERROR = 'Clain details - error';
+export const GET_CLAN_DETAILS_SUCCESS = "Clain details - success";
+export const GET_CLAN_DETAILS_ERROR = "Clain details - error";
 
-export const GET_CLAN_MEMBERS_SUCCESS = 'Clain members - success';
-export const GET_CLAN_MEMBERS_ERROR = 'Clain members - error';
+export const GET_CLAN_MEMBERS_SUCCESS = "Clain members - success";
+export const GET_CLAN_MEMBERS_ERROR = "Clain members - error";
 
-export const GET_PROFILE_SUCCESS = 'Get profile - success';
-export const GET_PROFILE_ERROR = 'Get profile - error';
+export const GET_PROFILE_SUCCESS = "Get profile - success";
+export const GET_PROFILE_ERROR = "Get profile - error";
 
 export const PROFILE_RECENT_ACTIVITIES_SUCCESS =
-  'Get profile recent activities - success';
+  "Get profile recent activities - success";
 export const PROFILE_RECENT_ACTIVITIES_ERROR =
-  'Get profile recent activities - error';
+  "Get profile recent activities - error";
 
 const INITIAL_STATE = {
   clanDetails: {},
@@ -28,7 +28,7 @@ const INITIAL_STATE = {
 };
 
 const k = ({ membershipType, membershipId }) =>
-  [membershipType, membershipId].join('/');
+  [membershipType, membershipId].join("/");
 
 export default function clanReducer(state = INITIAL_STATE, { type, payload }) {
   switch (type) {
@@ -145,7 +145,7 @@ export function getClanMembers(groupId) {
 export const getProfileSuccess = makePayloadAction(GET_PROFILE_SUCCESS);
 export const getProfileError = makePayloadAction(GET_PROFILE_ERROR);
 
-export function getProfile({ membershipType, membershipId }) {
+export function getProfile({ membershipType, membershipId }, options = {}) {
   return (dispatch, getState) => {
     const state = getState();
     const prevProfile =
@@ -156,7 +156,11 @@ export function getProfile({ membershipType, membershipId }) {
     }
 
     return destiny
-      .getProfile({ membershipType, membershipId }, state.auth.access)
+      .getProfile(
+        { membershipType, membershipId },
+        state.auth.accessToken,
+        options
+      )
       .then(data => {
         dispatch(getProfileSuccess(data));
         return data;

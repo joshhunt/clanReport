@@ -2,7 +2,6 @@ import React from "react";
 import { get } from "lodash";
 import { connect } from "react-redux";
 
-import BungieImage from "app/components/BungieImage";
 import TriumphSummary from "app/components/TriumphSummary";
 
 import s from "./styles.styl";

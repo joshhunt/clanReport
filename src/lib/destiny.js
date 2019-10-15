@@ -124,11 +124,21 @@ export function getClanMembers(groupId, accessToken) {
 }
 
 // https://www.bungie.net/Platform/Destiny2/2/Profile/4611686018469271298/
-export function getProfile({ membershipType, membershipId }, accessToken) {
+export function getProfile(
+  { membershipType, membershipId },
+  accessToken,
+  options = {}
+) {
   const getFn = CACHE_PROFILES ? getCacheableDestiny : getDestiny;
 
+  const components = [100, 104, 200, 202, 204, 800, 900];
+
+  options.fetchInventory && components.push(102, 201, 205, 301);
+
   return getFn(
-    `/Destiny2/${membershipType}/Profile/${membershipId}/?components=100,104,200,202,204,800,900`,
+    `/Destiny2/${membershipType}/Profile/${membershipId}/?components=${components.join(
+      ","
+    )}`,
     {
       accessToken
     }
