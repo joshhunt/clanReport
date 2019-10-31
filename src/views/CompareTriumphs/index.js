@@ -259,18 +259,31 @@ const ComparisonTable = React.memo(
   }
 );
 
+const initialHideAllCompleted =
+  window.localStorage.getItem("hideAllCompleted") === "true";
+const initialHideZeroPointRecords =
+  window.localStorage.getItem("hideZeroPointRecords") === "true";
+
 class CompareTriumphs extends Component {
-  state = { hideAllCompleted: false, addPlayerModalVisible: false };
+  state = {
+    hideAllCompleted: initialHideAllCompleted,
+    hideZeroPointRecords: initialHideZeroPointRecords,
+    addPlayerModalVisible: false
+  };
 
   toggleHideAllCompleted = () => {
+    const newValue = !this.state.hideAllCompleted;
+    localStorage.setItem("hideAllCompleted", newValue ? "true" : "false");
     this.setState({
-      hideAllCompleted: !this.state.hideAllCompleted
+      hideAllCompleted: newValue
     });
   };
 
   toggleHideZeroPointTriumphs = () => {
+    const newValue = !this.state.hideZeroPointRecords;
+    localStorage.setItem("hideZeroPointRecords", newValue ? "true" : "false");
     this.setState({
-      hideZeroPointRecords: !this.state.hideZeroPointRecords
+      hideZeroPointRecords: newValue
     });
   };
 
