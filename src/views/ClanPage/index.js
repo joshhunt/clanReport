@@ -67,6 +67,22 @@ const EGO_COLUMNS = [
   // makeCollectibleCell("niobe labs", NIOBE_EMBLEM_COLLECTIBLE),
   // makeTriumphCell("solo ST", 851701008), // Solo Shattered Throne
   {
+    name: "current light",
+    sortValue: baseSort(d => maxLight(d)),
+    cell: d => maxLight(d)
+  },
+  {
+    name: "triumph score",
+    sortValue: baseSort2(
+      d =>
+        d.profile.profileRecords.data && d.profile.profileRecords.data.score
+    ),
+    cell: d =>
+      d.profile &&
+      d.profile.profileRecords.data &&
+      d.profile.profileRecords.data.score
+  },
+  {
     name: "bonus power",
     cell: d =>
       orZero(
@@ -163,22 +179,6 @@ class ClanPage extends Component {
         name: "date joined",
         sortValue: baseSort(member => member.joinDate),
         cell: member => <PrettyDate date={member.joinDate} />
-      },
-      {
-        name: "current light",
-        sortValue: baseSort(d => maxLight(d)),
-        cell: d => maxLight(d)
-      },
-      {
-        name: "triumph score",
-        sortValue: baseSort2(
-          d =>
-            d.profile.profileRecords.data && d.profile.profileRecords.data.score
-        ),
-        cell: d =>
-          d.profile &&
-          d.profile.profileRecords.data &&
-          d.profile.profileRecords.data.score
       },
       ...(EGO
         ? EGO_COLUMNS
