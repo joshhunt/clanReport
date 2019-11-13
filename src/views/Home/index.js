@@ -23,7 +23,8 @@ const LEADERBOARD_PLATFORMS = [
   ["all", "All"],
   ["1", "Xbox"],
   ["2", "PS4"],
-  ["4", "PC"]
+  ["3", "Steam"],
+  ["5", "Stadia"]
 ];
 class App extends Component {
   state = {
@@ -212,7 +213,4 @@ const mapDispatchToActions = {
   getLeaderboardStatus
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToActions
-)(App);
+export default connect(mapStateToProps, mapDispatchToActions)(App);
