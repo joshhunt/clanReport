@@ -35,8 +35,9 @@ export default function App({ children }) {
 
       <p className={s.footer}>
         <Link to="/compare-nightfalls">Compare Nightfalls</Link> /{" "}
-        <Link to="/compare-triumphs">Compare triumphs</Link> /{" "}
-        <Link to="/stats">Playerbase stats</Link>
+        <Link to="/compare-triumphs">Compare triumphs</Link> / Looking for
+        leaderboards? They've moved to{" "}
+        <a href="https://destiny.report">destiny.report</a>
       </p>
 
       <p className={s.footer}>
