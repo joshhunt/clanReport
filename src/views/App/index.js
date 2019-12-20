@@ -28,8 +28,8 @@ export default function App({ children }) {
           className={s.darkModeButton}
           onClick={() => toggleDarkMode(!darkMode)}
         >
-          <Icon icon={darkMode ? "sun" : "moon"} />{" "}
-          {darkMode ? "Light" : "Dark"} Mode{" "}
+          {darkMode ? <Icon name="sun" /> : <Icon name="moon" />}
+          {darkMode ? " Light" : " Dark"} Mode{" "}
         </button>
       </p>
 
