@@ -12,9 +12,7 @@ export default function PlayerLink({ player, url, saveRecentPlayer }) {
 
   if (url) {
     if (window.location.href.includes("?players=")) {
-      link = `/${url}/${
-        window.location.search
-      },${membershipType}/${membershipId}`;
+      link = `/${url}/${window.location.search},${membershipType}/${membershipId}`;
     } else {
       link = `/${url}/?players=${membershipType}/${membershipId}`;
     }
@@ -29,10 +27,7 @@ export default function PlayerLink({ player, url, saveRecentPlayer }) {
       to={link}
       onClick={() => saveRecentPlayer && saveRecentPlayer(player)}
     >
-      <PlatformIcon
-        className={s.platformIcon}
-        membershipType={membershipType}
-      />
+      <PlatformIcon className={s.platformIcon} type={membershipType} />
       {displayName}
     </Link>
   );

@@ -122,11 +122,7 @@ function StatsPage({
       Header: () => (
         <span>
           Obtained on {"  "}
-          {platform === "total" ? (
-            "any"
-          ) : (
-            <PlatformIcon membershipType={platform} />
-          )}
+          {platform === "total" ? "any" : <PlatformIcon type={platform} />}
         </span>
       ),
       id: `score_${platform}`,

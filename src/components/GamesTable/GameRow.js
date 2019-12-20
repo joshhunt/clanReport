@@ -98,7 +98,7 @@ function GameRow({ game, modeDef, activityDef, onClick, isActive }) {
 
       <td>{game.activityDetails.instanceId}</td>
       <td>
-        <PlatformIcon membershipType={game.activityDetails.membershipType} />
+        <PlatformIcon type={game.activityDetails.membershipType} />
       </td>
     </tr>
   );

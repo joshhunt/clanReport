@@ -260,6 +260,8 @@ function NightfallSummary({ nightfallHash, pgcr, pKey, highlight }) {
   );
 }
 
+const MILESTONE_HASH = 2171429505;
+
 class CompareDebug extends Component {
   state = {
     view: FASTEST,
@@ -271,13 +273,14 @@ class CompareDebug extends Component {
 
     getMilestones().then(milestones => {
       console.log({ milestones });
-      const currentNightfallHashes = milestones[2171429505].activities
-        .filter(activity => activity.modifierHashes)
-        .map(activity => activity.activityHash.toString());
+      const milestoneData = milestones[MILESTONE_HASH];
+      const currentNightfallHashes =
+        milestoneData &&
+        milestoneData.activities
+          .filter(activity => activity.modifierHashes)
+          .map(activity => activity.activityHash.toString());
 
-      console.log({ currentNightfallHashes });
-
-      this.setState({ currentNightfallHashes });
+      this.setState({ currentNightfallHashes: currentNightfallHashes || [] });
     });
   }
 
@@ -359,6 +362,7 @@ class CompareDebug extends Component {
       firstActivities &&
       activityDefs &&
       flow(
+        filter(hash => activityDefs[hash]),
         sortBy(hash => activityDefs[hash].displayProperties.name),
         sortBy((hash, index) => {
           if (currentNightfallHashes.includes(hash)) {
@@ -587,7 +591,4 @@ const mapDispatchToActions = {
   toggleSinceForsaken
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToActions
-)(CompareDebug);
+export default connect(mapStateToProps, mapDispatchToActions)(CompareDebug);

@@ -544,7 +544,4 @@ function mapStateToProps(state, ownProps) {
 
 const mapDispatchToActions = { getProfile };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToActions
-)(CompareTriumphs);
+export default connect(mapStateToProps, mapDispatchToActions)(CompareTriumphs);
