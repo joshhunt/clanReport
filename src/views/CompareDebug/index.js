@@ -13,12 +13,17 @@ import s from "./styles.styl";
 import beavertime, { fastishTimes } from "./beavertime";
 
 const PGCR_MODE = 46;
-const FORSAKEN_ISH = new Date(2018, 8, 2);
+// const FORSAKEN_ISH = new Date(2018, 8, 2);
 
 const FASTEST = "Fastest";
 const TEAM_SCORE = "Team Score";
 
 const ACTIVITY_BLACKLIST = [1207505828];
+const ACTIVITY_WHITELIST = [
+  ...Object.keys(fastishTimes),
+  "3625752472", // scarlet keep 1
+  "3856436847" // scarlet keep 2
+];
 
 function str_pad_left(_string, pad, length) {
   const string = _string.toString ? _string.toString() : _string;
@@ -118,10 +123,11 @@ function NightfallTable({
                     activityDefs[nightfallHash].displayProperties.name}
                   <br />
                   <small className={s.grey}>
-                    <Icon className={s.smallIcon} name="star" solid />{" "}
+                    {/* <Icon name="star" solid /> */}
+                    <Icon name="star" solid />{" "}
                     {fmtSeconds(beavertime[nightfallHash])}
                     <span className={s.spacer}>{", "}</span>
-                    <Icon className={s.smallIcon} name="star" />{" "}
+                    <Icon name="star" />{" "}
                     {fmtSeconds(fastishTimes[nightfallHash])}
                   </small>
                   {activityDefs && activityDefs[nightfallHash].guidedGame && (
@@ -227,40 +233,24 @@ function NightfallSummary({ nightfallHash, pgcr, pKey, highlight }) {
       target="_blank"
       className={s.nightfallLink}
     >
-      <table className={s.nightfallSummary}>
-        <tbody>
-          <tr className={highlight === "duration" && s.bold}>
-            <td className={s.grey}>
-              <Icon name="stopwatch" />
-            </td>
-            <td>
-              {getDisplayValue(pgcr, "activityDurationSeconds")}
+      {getDisplayValue(pgcr, "activityDurationSeconds")}
 
-              {(isFast || isFastish) && (
-                <span>
-                  {" "}
-                  {isFast && <Icon name="star" solid />}
-                  {isFastish && !isFast && <Icon name="star" />}
-                </span>
-              )}
-            </td>
-          </tr>
-          <tr className={highlight === "team score" ? s.bold : undefined}>
-            <td className={s.grey}>
-              <Icon name="medal" />
-            </td>
-            <td>
-              {getDisplayValue(pgcr, "teamScore")}
-              <small> pts</small>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      {(isFast || isFastish) && (
+        <span>
+          {" "}
+          {isFast && <Icon name="star" solid />}
+          {isFastish && !isFast && <Icon name="star" />}
+        </span>
+      )}
     </a>
   );
 }
 
 const MILESTONE_HASH = 2171429505;
+
+function fmtdate(strDate) {
+  return new Date(strDate).toLocaleDateString();
+}
 
 class CompareDebug extends Component {
   state = {
@@ -340,6 +330,7 @@ class CompareDebug extends Component {
 
   render() {
     const {
+      currentSeason,
       activityDefs,
       profiles,
       playersToCompare,
@@ -378,17 +369,31 @@ class CompareDebug extends Component {
     return (
       <div className={s.root}>
         <h2>Compare Nightfalls</h2>
-
-        <button onClick={this.toggleAddPlayer}>Add player</button>
+        <button onClick={this.toggleAddPlayer}>Add player</button>{" "}
         <label>
           <input
             type="checkbox"
             onChange={this.forsakenToggle}
             checked={sinceForsaken}
           />
-          Since Forsaken
+          Current season{" "}
+          {currentSeason && (
+            <span>
+              ({currentSeason.displayProperties.name}, from{" "}
+              {fmtdate(currentSeason.startDate)})
+            </span>
+          )}
         </label>
-
+        {!nightfalls && <div class={s.info}>Loading...</div>}
+        {nightfalls && nightfalls.length === 0 && (
+          <div class={s.info}>Loaded, but no suitable activities found</div>
+        )}
+        {nightfalls && nightfalls.length > 0 && (
+          <div class={s.info}>
+            Current assumption on how to get the After the Nightfall emblem is
+            to meet all time trials within the same season.
+          </div>
+        )}
         <h3>
           {VIEWS.map(viewName => (
             <span
@@ -400,7 +405,6 @@ class CompareDebug extends Component {
             </span>
           ))}
         </h3>
-
         {view === FASTEST && (
           <section>
             <NightfallTable
@@ -445,7 +449,6 @@ class CompareDebug extends Component {
             />
           </section>
         )}
-
         <p>
           <small className={s.grey}>Legend:</small>
           <br />
@@ -460,7 +463,6 @@ class CompareDebug extends Component {
             <br />
           </small>
         </p>
-
         <p>
           <small className={s.grey}>
             Times indicate current guess at the qualifying time for the{" "}
@@ -468,7 +470,6 @@ class CompareDebug extends Component {
             be from one single player.
           </small>
         </p>
-
         <Modal
           isOpen={addPlayerModalVisible}
           onRequestClose={this.toggleAddPlayer}
@@ -515,12 +516,23 @@ const getMaxValue = (...args) =>
 
 function mapStateToProps(state, ownProps) {
   const {
+    DestinySeasonDefinition: seasonDefs,
     DestinyPresentationNodeDefinition: presentationNodeDefs,
     DestinyRecordDefinition: recordDefs,
     DestinyActivityDefinition: activityDefs
   } = state.definitions;
 
   const { sinceForsaken } = state.pgcr;
+
+  const now = new Date();
+  const currentSeason =
+    seasonDefs &&
+    Object.values(seasonDefs).find(
+      s => new Date(s.startDate) < now && new Date(s.endDate) > now
+    );
+
+  const currentSeasonStart = currentSeason && new Date(currentSeason.startDate);
+  // const currentSeasonEnd = currentSeason && new Date(currentSeason.endDate);
 
   const { players } = ownProps.router.location.query;
   const playersToCompare = players ? players.split(",") : [];
@@ -529,6 +541,8 @@ function mapStateToProps(state, ownProps) {
     pKey => state.clan.profiles[pKey]
   );
 
+  // Object.values(__definitions.DestinySeasonDefinition)
+
   const activities = mapToValues(playersToCompare, pKey => {
     const byCharacter = Object.values(state.pgcr.histories[pKey] || {});
     const allGames = [].concat(...byCharacter).filter(Boolean);
@@ -536,10 +550,13 @@ function mapStateToProps(state, ownProps) {
     const nightfalls = flow(
       filter(Boolean),
       filter(pgcr =>
-        sinceForsaken ? new Date(pgcr.period) > FORSAKEN_ISH : true
+        sinceForsaken ? new Date(pgcr.period) > currentSeasonStart : true
       ),
       filter(
         pgcr =>
+          ACTIVITY_WHITELIST.includes(
+            pgcr.activityDetails.directorActivityHash.toString()
+          ) &&
           !ACTIVITY_BLACKLIST.includes(
             pgcr.activityDetails.directorActivityHash
           )
@@ -575,6 +592,7 @@ function mapStateToProps(state, ownProps) {
   });
 
   return {
+    currentSeason,
     recordDefs,
     activityDefs,
     presentationNodeDefs,
