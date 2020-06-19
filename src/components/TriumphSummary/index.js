@@ -1,6 +1,6 @@
 import React from "react";
 
-import BungieImage from "src/components/BungieImage";
+import BungieImage from "../BungieImage";
 
 import s from "./styles.styl";
 
@@ -10,11 +10,11 @@ export default function TriumphSummary({ record, anchorLink, typeOverride }) {
     ? { href: `#${anchorLink}` }
     : {
         href: `https://data.destinysets.com/i/${type}:${record.hash}`,
-        target: "_blank"
+        target: "_blank",
       };
 
   const intervalPoints = record.intervalInfo
-    ? record.intervalInfo.intervalObjectives.map(io => io.intervalScoreValue)
+    ? record.intervalInfo.intervalObjectives.map((io) => io.intervalScoreValue)
     : [];
 
   return (

@@ -1,14 +1,14 @@
 import React, { Fragment } from "react";
 
-import tableStyles from "app/components/Table/styles.styl";
-import GameDetails from "app/components/GameDetails";
+import tableStyles from "../Table/styles.styl";
+import GameDetails from "../GameDetails";
 import GameRow from "./GameRow";
 
 export default function GamesTable({
   games,
   activePgcrs,
   pgcrDetails,
-  onGameRowClick
+  onGameRowClick,
 }) {
   return (
     <div className={tableStyles.tableScrollWrapper}>

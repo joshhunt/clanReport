@@ -2,7 +2,7 @@ import { has } from "lodash";
 import { queue } from "async";
 import Dexie from "dexie";
 
-const log = require("src/lib/log")("http");
+const log = require("./log")("http");
 
 export const db = new Dexie("requestCache");
 
@@ -10,16 +10,16 @@ const CACHE_PROFILES = false;
 
 const GET_CONCURRENCY = 50;
 db.version(1).stores({
-  requests: "&url, response, date"
+  requests: "&url, response, date",
 });
 
 function getWorker({ url, opts }, cb) {
   fetch(url, opts)
-    .then(res => res.json())
-    .then(result => {
+    .then((res) => res.json())
+    .then((result) => {
       cb(null, result);
     })
-    .catch(err => cb(err));
+    .catch((err) => cb(err));
 }
 
 const getQueue = queue(getWorker, GET_CONCURRENCY);
@@ -61,7 +61,7 @@ export function getDestiny(_pathname, opts = {}, postBody) {
 
   log(`REQUEST: ${pathname}`, opts);
 
-  return get(url, opts).then(resp => {
+  return get(url, opts).then((resp) => {
     log(`RESPONSE: ${pathname}`, resp);
 
     if (resp.ErrorStatus === "DestinyAccountNotFound") {
@@ -90,12 +90,12 @@ export function getDestiny(_pathname, opts = {}, postBody) {
 }
 
 export function getCacheableDestiny(pathname, opts) {
-  return db.requests.get(pathname).then(result => {
+  return db.requests.get(pathname).then((result) => {
     if (result) {
       return result.response;
     }
 
-    return getDestiny(pathname, opts).then(data => {
+    return getDestiny(pathname, opts).then((data) => {
       db.requests.put({ url: pathname, response: data, date: new Date() });
       return data;
     });
@@ -140,7 +140,7 @@ export function getProfile(
       ","
     )}`,
     {
-      accessToken
+      accessToken,
     }
   );
 }
@@ -153,7 +153,7 @@ export function getRecentActivities(
   return getDestiny(
     `/Destiny2/${membershipType}/Account/${membershipId}/Character/${characterId}/Stats/Activities/?mode=0&count=${ACTIVITY_LIMIT}`,
     {
-      accessToken
+      accessToken,
     }
   );
 }
@@ -168,7 +168,7 @@ export function getCharacterPGCRHistory(
 ) {
   return getDestiny(
     `/Destiny2/${membershipType}/Account/${membershipId}/Character/${characterId}/Stats/Activities/?mode=${mode}&count=${COUNT}&page=${page}`
-  ).then(data => {
+  ).then((data) => {
     const newAcc = [...acc, ...(data.activities || [])];
 
     if (completeHistory && data.activities) {
@@ -182,7 +182,7 @@ export function getCharacterPGCRHistory(
         {
           membershipType,
           membershipId,
-          characterId
+          characterId,
         },
         mode,
         newPage,

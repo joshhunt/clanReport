@@ -2,11 +2,11 @@ import React, { Component, Fragment } from "react";
 import { get } from "lodash";
 import { connect } from "react-redux";
 
-import SearchForPlayer from "src/components/SearchForPlayer";
-import PlayerLink from "src/components/PlayerLink";
+import SearchForPlayer from "../../components/SearchForPlayer";
+import PlayerLink from "../../components/PlayerLink";
 
-import destinyAuth from "src/lib/destinyAuth";
-import { setAuth, getMembership } from "src/store/auth";
+import destinyAuth from "../../lib/destinyAuth";
+import { setAuth, getMembership } from "../../store/auth";
 
 import s from "./styles.styl";
 
@@ -33,7 +33,7 @@ class App extends Component {
           {isAuthenticated ? (
             <Fragment>
               <h2>Your linked accounts</h2>
-              {memberships.map(player => (
+              {memberships.map((player) => (
                 <PlayerLink player={player} />
               ))}
             </Fragment>
@@ -55,13 +55,13 @@ class App extends Component {
 function mapStateToProps(state) {
   return {
     memberships: get(state, "auth.membership.destinyMemberships", []),
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
   };
 }
 
 const mapDispatchToActions = {
   setAuth,
-  getMembership
+  getMembership,
 };
 
 export default connect(mapStateToProps, mapDispatchToActions)(App);

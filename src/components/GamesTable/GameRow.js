@@ -1,19 +1,19 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import PrettyDate from "src/components/Date";
-import { PlatformIcon } from "src/components/Icon";
+import PrettyDate from "../Date";
+import { PlatformIcon } from "../Icon";
 
 import s from "./styles.styl";
 
 const STANDING = {
   0: s.standingVictory,
   1: s.standingDefeat,
-  undefined: s.standing
+  undefined: s.standing,
 };
 
 const SCORE_NAME = {
-  1848252830: "motes"
+  1848252830: "motes",
 };
 
 function Stat({ name, value }) {
@@ -42,8 +42,9 @@ function GameRow({ game, modeDef, activityDef, onClick, isActive }) {
           <img
             alt=""
             className={s.activityIcon}
-            src={`https://bungie.net${modeDef &&
-              modeDef.displayProperties.icon}`}
+            src={`https://bungie.net${
+              modeDef && modeDef.displayProperties.icon
+            }`}
           />
         </div>
         <div className={s.mode}>
@@ -107,7 +108,7 @@ function GameRow({ game, modeDef, activityDef, onClick, isActive }) {
 function mapStateToProps(state, { game }) {
   const {
     DestinyActivityModeDefinition,
-    DestinyActivityDefinition
+    DestinyActivityDefinition,
   } = state.definitions;
 
   if (!(DestinyActivityModeDefinition && DestinyActivityDefinition)) {
@@ -115,7 +116,7 @@ function mapStateToProps(state, { game }) {
   }
 
   const modeDef = Object.values(DestinyActivityModeDefinition).find(
-    d => d.modeType === game.activityDetails.mode
+    (d) => d.modeType === game.activityDetails.mode
   );
 
   const activityDef =
@@ -123,7 +124,7 @@ function mapStateToProps(state, { game }) {
 
   return {
     modeDef,
-    activityDef
+    activityDef,
   };
 }
 

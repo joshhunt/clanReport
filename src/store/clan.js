@@ -1,6 +1,6 @@
 import { flatMap } from "lodash";
 
-import * as destiny from "src/lib/destiny";
+import * as destiny from "../lib/destiny";
 import { makePayloadAction } from "./utils";
 
 export const CLANS_FOR_USER_SUCCESS = "Clans for user - success";
@@ -24,7 +24,7 @@ const INITIAL_STATE = {
   clanDetails: {},
   clanMembers: {},
   profiles: {},
-  recentActivities: {}
+  recentActivities: {},
 };
 
 const k = ({ membershipType, membershipId }) =>
@@ -37,8 +37,8 @@ export default function clanReducer(state = INITIAL_STATE, { type, payload }) {
         ...state,
         clanDetails: {
           ...state.clanDetails,
-          [payload.detail.groupId]: payload
-        }
+          [payload.detail.groupId]: payload,
+        },
       };
     }
 
@@ -47,8 +47,8 @@ export default function clanReducer(state = INITIAL_STATE, { type, payload }) {
         ...state,
         clanMembers: {
           ...state.clanMembers,
-          [payload.$groupId]: payload
-        }
+          [payload.$groupId]: payload,
+        },
       };
     }
 
@@ -57,8 +57,8 @@ export default function clanReducer(state = INITIAL_STATE, { type, payload }) {
         ...state,
         profiles: {
           ...state.profiles,
-          [k(payload.profile.data.userInfo)]: payload
-        }
+          [k(payload.profile.data.userInfo)]: payload,
+        },
       };
     }
 
@@ -67,8 +67,8 @@ export default function clanReducer(state = INITIAL_STATE, { type, payload }) {
         ...state,
         recentActivities: {
           ...state.recentActivities,
-          [payload.$player]: payload.activities
-        }
+          [payload.$player]: payload.activities,
+        },
       };
     }
 
@@ -76,7 +76,7 @@ export default function clanReducer(state = INITIAL_STATE, { type, payload }) {
       return {
         ...state,
         clanResults: payload.results,
-        error: null
+        error: null,
       };
     }
 
@@ -84,7 +84,7 @@ export default function clanReducer(state = INITIAL_STATE, { type, payload }) {
       return {
         ...state,
         clanResults: null,
-        error: payload
+        error: payload,
       };
     }
 
@@ -102,8 +102,8 @@ export function getClansForUser({ membershipType, membershipId }) {
 
     return destiny
       .getClansForUser({ membershipType, membershipId }, state.auth.accessToken)
-      .then(arg => dispatch(clansForUserSuccess(arg)))
-      .catch(arg => dispatch(clansForUserError(arg)));
+      .then((arg) => dispatch(clansForUserSuccess(arg)))
+      .catch((arg) => dispatch(clansForUserError(arg)));
   };
 }
 
@@ -118,8 +118,8 @@ export function getClanDetails(groupId) {
 
     return destiny
       .getClan(groupId, state.auth.accessToken)
-      .then(arg => dispatch(getClanDetailsSuccess(arg)))
-      .catch(arg => dispatch(getClanDetailsError(arg)));
+      .then((arg) => dispatch(getClanDetailsSuccess(arg)))
+      .catch((arg) => dispatch(getClanDetailsError(arg)));
   };
 }
 
@@ -134,11 +134,11 @@ export function getClanMembers(groupId) {
 
     return destiny
       .getClanMembers(groupId, state.auth.accessToken)
-      .then(data => {
+      .then((data) => {
         dispatch(getClanMembersSuccess({ ...data, $groupId: groupId }));
         return data;
       })
-      .catch(err => dispatch(getClanMembersError(err)));
+      .catch((err) => dispatch(getClanMembersError(err)));
   };
 }
 
@@ -161,11 +161,11 @@ export function getProfile({ membershipType, membershipId }, options = {}) {
         state.auth.accessToken,
         options
       )
-      .then(data => {
+      .then((data) => {
         dispatch(getProfileSuccess(data));
         return data;
       })
-      .catch(err => dispatch(getProfileError(err)));
+      .catch((err) => dispatch(getProfileError(err)));
   };
 }
 
@@ -180,20 +180,20 @@ export function getRecentActivitiesForAccount(profile) {
   return (dispatch, getState) => {
     const {
       characterIds,
-      userInfo: { membershipType, membershipId }
+      userInfo: { membershipType, membershipId },
     } = profile.data;
 
-    const promises = characterIds.map(characterId => {
+    const promises = characterIds.map((characterId) => {
       return destiny.getRecentActivities({
         membershipType,
         membershipId,
-        characterId
+        characterId,
       });
     });
 
     Promise.all(promises)
-      .then(results => {
-        const activities = flatMap(results, r => r.activities)
+      .then((results) => {
+        const activities = flatMap(results, (r) => r.activities)
           .filter(Boolean)
           .sort((a, b) => {
             return new Date(b.period) - new Date(a.period);
@@ -202,10 +202,10 @@ export function getRecentActivitiesForAccount(profile) {
         dispatch(
           getRecentActivitiesForAccountSuccess({
             activities,
-            $player: k(profile.data.userInfo)
+            $player: k(profile.data.userInfo),
           })
         );
       })
-      .catch(err => dispatch(getRecentActivitiesForAccountError(err)));
+      .catch((err) => dispatch(getRecentActivitiesForAccountError(err)));
   };
 }

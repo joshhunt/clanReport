@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router";
-import { useDarkMode } from "src/lib/hooks";
 
-import destinyAuth from "src/lib/destinyAuth";
-import { setAuth, getMembership } from "src/store/auth";
-import Icon from "src/components/Icon";
+import { useDarkMode } from "../../lib/hooks";
+import destinyAuth from "../../lib/destinyAuth";
+import { setAuth, getMembership } from "../../store/auth";
+import Icon from "../../components/Icon";
 
 import s from "./styles.styl";
 
@@ -79,7 +79,7 @@ class _AuthRequired extends Component {
 
 function mapStateToProps(state) {
   return {
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
   };
 }
 

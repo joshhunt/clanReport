@@ -1,30 +1,30 @@
-import React, { Fragment } from 'react';
-import { connect } from 'react-redux';
-import { Tooltip } from 'react-tippy';
-import { memoize } from 'lodash';
+import React, { Fragment } from "react";
+import { connect } from "react-redux";
+import { Tooltip } from "react-tippy";
+import { memoize } from "lodash";
 
-import 'react-tippy/dist/tippy.css';
+import "react-tippy/dist/tippy.css";
 
-import BungieImage from 'src/components/BungieImage';
-import s from './styles.styl';
+import BungieImage from "../BungieImage";
+import s from "./styles.styl";
 
-const NO_ICON = '/img/misc/missing_icon_d2.png';
+const NO_ICON = "/img/misc/missing_icon_d2.png";
 
 if (false) {
   const defs = {};
 
   Object.values(defs.DestinyHistoricalStatsDefinition)
-    .map(statDef => ({
+    .map((statDef) => ({
       statDef,
       records: Object.values(defs.DestinyRecordDefinition).filter(
-        r => r.displayProperties.name === statDef.statName
-      )
+        (r) => r.displayProperties.name === statDef.statName
+      ),
     }))
     .filter(({ records }) => records.length > 0)
     .reduce((acc, d) => {
       return {
         ...acc,
-        [d.statDef.statId]: d.records.map(r => r.displayProperties.icon)
+        [d.statDef.statId]: d.records.map((r) => r.displayProperties.icon),
       };
     }, {});
 }
@@ -57,25 +57,25 @@ function Medal({ statDef, count, className, fallbackIcons }) {
   );
 }
 
-const getFallbackIcons = memoize(defs => {
+const getFallbackIcons = memoize((defs) => {
   return Object.values(defs.DestinyHistoricalStatsDefinition || {})
-    .map(statDef => ({
+    .map((statDef) => ({
       statDef,
       records: Object.values(defs.DestinyRecordDefinition || {}).filter(
-        r => r.displayProperties.name === statDef.statName
-      )
+        (r) => r.displayProperties.name === statDef.statName
+      ),
     }))
     .filter(({ records }) => records.length > 0)
     .reduce((acc, d) => {
       return {
         ...acc,
-        [d.statDef.statId]: d.records.map(r => r.displayProperties.icon)
+        [d.statDef.statId]: d.records.map((r) => r.displayProperties.icon),
       };
     }, {});
 });
 
 const mapStateToProps = (state, ownProps) => ({
-  fallbackIcons: getFallbackIcons(state.definitions)
+  fallbackIcons: getFallbackIcons(state.definitions),
 });
 
 export default connect(mapStateToProps)(Medal);

@@ -1,12 +1,12 @@
-import React from 'react';
-import { memoize } from 'lodash';
+import React from "react";
+import { memoize } from "lodash";
 
-import Item from 'app/components/Item';
-import Medal from 'app/components/Medal';
+import Item from "../Item";
+import Medal from "../Medal";
 
-import s from './styles.styl';
+import s from "./styles.styl";
 
-const getTotalPrimevalDamage = memoize(teamMembers => {
+const getTotalPrimevalDamage = memoize((teamMembers) => {
   return teamMembers.reduce((acc, teamMember) => {
     return (
       acc +
@@ -19,7 +19,7 @@ const getTotalPrimevalDamage = memoize(teamMembers => {
 
 function percent(fraction) {
   if (isNaN(fraction)) {
-    return '-';
+    return "-";
   }
   return `${Math.round(fraction * 100)}%`;
 }
@@ -30,17 +30,17 @@ export function stat(stats, statName) {
 
 const field = (label, statKey) => ({ label, stat: statKey });
 
-const WEAPONS_FIELD = field('weapons', (stats, teamMember) => {
+const WEAPONS_FIELD = field("weapons", (stats, teamMember) => {
   return (
     teamMember.extended.weapons &&
-    teamMember.extended.weapons.map(weapon => {
+    teamMember.extended.weapons.map((weapon) => {
       return <Item className={s.item} hash={weapon.referenceId} />;
     })
   );
 });
 
 const MEDALS_FIELD = field(
-  'medals',
+  "medals",
   (
     stats,
     teamMember,
@@ -64,31 +64,31 @@ const MEDALS_FIELD = field(
 );
 
 const GAMBIT_FIELDS = [
-  field('most deposited', 'motesDeposited'),
-  field('picked up', 'motesPickedUp'),
-  field('lost', 'motesLost'),
-  field('denied', 'motesDenied'),
-  field('degraded', 'motesDegraded'),
-  field('invasions', 'invasions'),
-  field('invader deaths', 'invaderDeaths'),
-  field('invaders killed', 'invaderKills'),
-  field('invasion kills', 'invasionKills'),
-  field('primeval damage', (stats, teamMember, teamMembers) => {
+  field("most deposited", "motesDeposited"),
+  field("picked up", "motesPickedUp"),
+  field("lost", "motesLost"),
+  field("denied", "motesDenied"),
+  field("degraded", "motesDegraded"),
+  field("invasions", "invasions"),
+  field("invader deaths", "invaderDeaths"),
+  field("invaders killed", "invaderKills"),
+  field("invasion kills", "invasionKills"),
+  field("primeval damage", (stats, teamMember, teamMembers) => {
     return stats.primevalDamage
       ? percent(
           stats.primevalDamage.basic.value / getTotalPrimevalDamage(teamMembers)
         )
       : null;
   }),
-  field('blockers', stats => {
+  field("blockers", (stats) => {
     return [
-      `${stat(stats, 'smallBlockersSent')}`,
-      `${stat(stats, 'mediumBlockersSent')}`,
-      `${stat(stats, 'largeBlockersSent')}`
-    ].join(' / ');
+      `${stat(stats, "smallBlockersSent")}`,
+      `${stat(stats, "mediumBlockersSent")}`,
+      `${stat(stats, "largeBlockersSent")}`,
+    ].join(" / ");
   }),
   WEAPONS_FIELD,
-  MEDALS_FIELD
+  MEDALS_FIELD,
 ];
 
 const FALLBACK_FIELDS = [WEAPONS_FIELD];
@@ -98,15 +98,15 @@ const activityHashIs = (pgcr, hash) =>
 
 export default [
   {
-    test: pgcr =>
+    test: (pgcr) =>
       activityHashIs(pgcr, 3577607128) || activityHashIs(pgcr, 1183187383),
-    fields: GAMBIT_FIELDS
+    fields: GAMBIT_FIELDS,
   },
 
   {
-    test: pgcr => pgcr.activityDetails.modes.includes(5),
-    fields: [WEAPONS_FIELD, MEDALS_FIELD]
+    test: (pgcr) => pgcr.activityDetails.modes.includes(5),
+    fields: [WEAPONS_FIELD, MEDALS_FIELD],
   },
 
-  { test: () => true, fields: FALLBACK_FIELDS }
+  { test: () => true, fields: FALLBACK_FIELDS },
 ];

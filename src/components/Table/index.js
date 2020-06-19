@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import { sortBy, reverse } from 'lodash';
+import React, { Component } from "react";
+import { sortBy, reverse } from "lodash";
 
-import s from './styles.styl';
+import s from "./styles.styl";
 
-const ASC = 'asc';
-const DSC = 'dsc';
+const ASC = "asc";
+const DSC = "dsc";
 const defaultSort = DSC;
 
 export default class Table extends Component {
@@ -13,7 +13,7 @@ export default class Table extends Component {
 
     this.state = {
       sortField: props.defaultSortField,
-      sortDirection: defaultSort
+      sortDirection: defaultSort,
     };
   }
 
@@ -22,12 +22,12 @@ export default class Table extends Component {
 
     if (sortField === cell.name) {
       this.setState({
-        sortDirection: sortDirection === ASC ? DSC : ASC
+        sortDirection: sortDirection === ASC ? DSC : ASC,
       });
     } else {
       this.setState({
         sortField: cell.name,
-        sortDirection: defaultSort
+        sortDirection: defaultSort,
       });
     }
   };
@@ -41,10 +41,10 @@ export default class Table extends Component {
     }
 
     const colToSortBy =
-      columns.find(col => col.name === sortField) || columns[0];
+      columns.find((col) => col.name === sortField) || columns[0];
     const sortValueFn = colToSortBy.sortValue || colToSortBy.cell;
 
-    const sorted = sortBy(data, item => {
+    const sorted = sortBy(data, (item) => {
       return sortValueFn(item);
     });
 
@@ -60,7 +60,7 @@ export default class Table extends Component {
         <thead>
           <tr>
             {columns.map((c, index) => (
-              <td key={c.name} onClick={ev => this.onHeaderClick(ev, c)}>
+              <td key={c.name} onClick={(ev) => this.onHeaderClick(ev, c)}>
                 {c.name}
               </td>
             ))}
@@ -68,10 +68,10 @@ export default class Table extends Component {
         </thead>
 
         <tbody>
-          {rows.map(rowData => {
+          {rows.map((rowData) => {
             return (
               <tr>
-                {columns.map(c => (
+                {columns.map((c) => (
                   <td key={c.name}>{c.cell(rowData)}</td>
                 ))}
               </tr>
@@ -82,14 +82,14 @@ export default class Table extends Component {
         <tfoot>
           <tr>
             <td>Totals:</td>
-            {columns.slice(1).map(c => {
+            {columns.slice(1).map((c) => {
               const count =
                 c.hasTotal &&
                 rows.reduce((acc, rowData) => {
                   return acc + (c.cell(rowData) || 0);
                 }, 0);
 
-              return <td key={c.name}>{c.hasTotal ? count : ''}</td>;
+              return <td key={c.name}>{c.hasTotal ? count : ""}</td>;
             })}
           </tr>
         </tfoot>

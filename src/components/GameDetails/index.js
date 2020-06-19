@@ -1,22 +1,22 @@
-import React, { Fragment } from 'react';
-import { connect } from 'react-redux';
-import { isString, groupBy } from 'lodash';
+import React, { Fragment } from "react";
+import { connect } from "react-redux";
+import { isString, groupBy } from "lodash";
 
-import tableStyles from 'app/components/Table/styles.styl';
-import s from './styles.styl';
-import GAME_MODE_FIELDS, { stat } from './fields';
+import tableStyles from "../Table/styles.styl";
+import s from "./styles.styl";
+import GAME_MODE_FIELDS, { stat } from "./fields";
 
 function TeamTable({
   pgcr,
   teamId,
   teamMembers,
-  DestinyHistoricalStatsDefinition
+  DestinyHistoricalStatsDefinition,
 }) {
   const team = pgcr.teams.find(
-    t => t.teamId === teamId || t.teamId === parseInt(teamId, 10)
+    (t) => t.teamId === teamId || t.teamId === parseInt(teamId, 10)
   );
 
-  const fieldSet = GAME_MODE_FIELDS.find(gmf => gmf.test(pgcr));
+  const fieldSet = GAME_MODE_FIELDS.find((gmf) => gmf.test(pgcr));
 
   return (
     <Fragment>
@@ -31,19 +31,19 @@ function TeamTable({
         <tr>
           <td>player</td>
 
-          {fieldSet && fieldSet.fields.map(f => <td>{f.label}</td>)}
+          {fieldSet && fieldSet.fields.map((f) => <td>{f.label}</td>)}
         </tr>
       </thead>
 
       <tbody>
-        {teamMembers.map(teamMember => {
+        {teamMembers.map((teamMember) => {
           const stats = teamMember.extended.values || {};
           return (
             <tr>
               <td>{teamMember.player.destinyUserInfo.displayName}</td>
 
               {fieldSet &&
-                fieldSet.fields.map(f => {
+                fieldSet.fields.map((f) => {
                   return (
                     <td>
                       {isString(f.stat)
@@ -69,13 +69,13 @@ function TeamTable({
 
 function GameDetails({ pgcr, DestinyHistoricalStatsDefinition }) {
   if (!pgcr) {
-    return 'Loading...';
+    return "Loading...";
   }
 
   const playersPerTeam = Object.entries(
     groupBy(
       pgcr.entries,
-      entry => entry.values.team && entry.values.team.basic.value
+      (entry) => entry.values.team && entry.values.team.basic.value
     )
   );
 
@@ -99,7 +99,7 @@ function GameDetails({ pgcr, DestinyHistoricalStatsDefinition }) {
 function mapStateToProps(state) {
   return {
     DestinyHistoricalStatsDefinition:
-      state.definitions.DestinyHistoricalStatsDefinition
+      state.definitions.DestinyHistoricalStatsDefinition,
   };
 }
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import BungieImage from "src/components/BungieImage";
+import BungieImage from "../BungieImage";
 
 import s from "./styles.styl";
 
@@ -31,7 +31,7 @@ function CurrentActivity({ currentActivity, activity, activityMode }) {
 function mapStateToProps(state, ownProps) {
   const { currentActivity } = ownProps;
   const {
-    definitions: { DestinyActivityDefinition, DestinyActivityModeDefinition }
+    definitions: { DestinyActivityDefinition, DestinyActivityModeDefinition },
   } = state;
 
   let activity =
@@ -46,7 +46,7 @@ function mapStateToProps(state, ownProps) {
 
   return {
     activity,
-    activityMode
+    activityMode,
   };
 }
 

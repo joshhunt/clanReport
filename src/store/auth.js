@@ -1,10 +1,10 @@
-import { makePayloadAction } from './utils';
-import * as destiny from 'src/lib/destiny';
+import { makePayloadAction } from "./utils";
+import * as destiny from "../lib/destiny";
 
-export const SET_AUTH = 'Auth - Set Auth';
+export const SET_AUTH = "Auth - Set Auth";
 
-export const GET_MEMBERSHIP_SUCCESS = 'Auth - Get membership - success';
-export const GET_MEMBERSHIP_ERROR = 'Auth - Get membership - error';
+export const GET_MEMBERSHIP_SUCCESS = "Auth - Get membership - success";
+export const GET_MEMBERSHIP_ERROR = "Auth - Get membership - error";
 
 export default function authReducer(state = {}, { type, payload }) {
   switch (type) {
@@ -15,7 +15,7 @@ export default function authReducer(state = {}, { type, payload }) {
 
       return {
         ...state,
-        ...payload.result
+        ...payload.result,
       };
     }
 
@@ -23,7 +23,7 @@ export default function authReducer(state = {}, { type, payload }) {
       return {
         ...state,
         membership: payload,
-        error: null
+        error: null,
       };
     }
 
@@ -31,7 +31,7 @@ export default function authReducer(state = {}, { type, payload }) {
       return {
         ...state,
         membership: null,
-        error: payload
+        error: payload,
       };
     }
 
@@ -46,13 +46,13 @@ export const getMembershipSuccess = makePayloadAction(GET_MEMBERSHIP_SUCCESS);
 export const getMembershipError = makePayloadAction(GET_MEMBERSHIP_ERROR);
 
 export function getMembership() {
-  console.log('getMembership action');
+  console.log("getMembership action");
   return (dispatch, getState) => {
     const state = getState();
 
     return destiny
       .getCurrentMembership(state.auth.accessToken)
-      .then(arg => dispatch(getMembershipSuccess(arg)))
-      .catch(arg => dispatch(getMembershipError(arg)));
+      .then((arg) => dispatch(getMembershipSuccess(arg)))
+      .catch((arg) => dispatch(getMembershipError(arg)));
   };
 }

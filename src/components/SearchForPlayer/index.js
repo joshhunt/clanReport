@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { debounce } from "lodash";
 
-import { getCacheableSearch } from "src/lib/destiny";
-import { addRecentProfile, getRecentProfiles } from "src/lib/ls";
-import PlayerLink from "src/components/PlayerLink";
+import { getCacheableSearch } from "../../lib/destiny";
+import { addRecentProfile, getRecentProfiles } from "../../lib/ls";
+import PlayerLink from "../PlayerLink";
 
 import s from "./styles.styl";
 
-const debouncedInput = debounce(cb => {
+const debouncedInput = debounce((cb) => {
   cb();
 }, 200);
 
@@ -16,7 +16,7 @@ const ANIMATION_TIME = 1.5 * 1000;
 function ProfileResultsList({ results, url, saveRecentPlayer }) {
   return (
     <div>
-      {results.map(result => (
+      {results.map((result) => (
         <PlayerLink
           player={result}
           url={url}
@@ -30,22 +30,22 @@ function ProfileResultsList({ results, url, saveRecentPlayer }) {
 export default class SearchForPlayer extends Component {
   state = {
     loading: false,
-    recentProfiles: null
+    recentProfiles: null,
   };
 
   componentDidMount() {
     this.setState({
-      recentProfiles: getRecentProfiles()
+      recentProfiles: getRecentProfiles(),
     });
   }
 
-  onInputChange = ev => {
+  onInputChange = (ev) => {
     const { value } = ev.target;
     debouncedInput(() => {
       const endAnimation = this.animate();
 
       getCacheableSearch(value)
-        .then(results => {
+        .then((results) => {
           this.setState({ results });
           endAnimation();
         })
@@ -82,7 +82,7 @@ export default class SearchForPlayer extends Component {
     };
   };
 
-  saveRecentPlayer = player => {
+  saveRecentPlayer = (player) => {
     addRecentProfile(player);
   };
 

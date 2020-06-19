@@ -1,6 +1,8 @@
 import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 
+import { staleThenRevalidate, _Dexie } from "@destiny-plumbing/definitions";
+
 import app from "./app";
 import auth from "./auth";
 import clan from "./clan";
@@ -11,10 +13,11 @@ import definitions, {
   setBulkDefinitions,
   definitionsStatus,
   definitionsError,
-  SET_BULK_DEFINITIONS
-} from "app/store/definitions";
+  SET_BULK_DEFINITIONS,
+} from "./definitions";
 
-import { fasterGetDefinitions } from "app/lib/definitions";
+// Clean up previous definitions
+_Dexie.delete("destinyManifest");
 
 const rootReducer = combineReducers({
   app,
@@ -22,17 +25,17 @@ const rootReducer = combineReducers({
   clan,
   pgcr,
   definitions,
-  leaderboards
+  leaderboards,
 });
 
 const composeEnhancers =
   typeof window === "object" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
         actionsBlacklist: [SET_BULK_DEFINITIONS],
-        stateSanitizer: state => ({
+        stateSanitizer: (state) => ({
           ...state,
-          definitions: state.definitions ? "[hidden]" : state.definitions
-        })
+          definitions: state.definitions ? "[hidden]" : state.definitions,
+        }),
       })
     : compose;
 
@@ -45,21 +48,25 @@ store.subscribe(() => (window.__state = store.getState()));
 
 const LANGUAGE = "en";
 
-fasterGetDefinitions(
+staleThenRevalidate(
+  process.env.REACT_APP_API_KEY,
   LANGUAGE,
-  null,
-  data => {
-    store.dispatch(definitionsStatus(data));
-  },
-  (err, data) => {
+  [],
+  (err, result) => {
+    console.log("definitions cb:", { err, result });
+
     if (err) {
       store.dispatch(definitionsError(err));
       return;
     }
 
-    if (data && data.definitions) {
+    if (result && result.loading) {
+      store.dispatch(definitionsStatus({ status: "downloading" }));
+    }
+
+    if (result && result.definitions) {
       store.dispatch(definitionsStatus({ status: null }));
-      store.dispatch(setBulkDefinitions(data.definitions));
+      store.dispatch(setBulkDefinitions(result.definitions));
     }
   }
 );

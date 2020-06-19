@@ -8,33 +8,31 @@ import "react-table/react-table.css";
 
 import {
   profileHasCompletedTriumph,
-  getCurrentActivity
-} from "src/lib/destinyUtils";
+  getCurrentActivity,
+} from "../../lib/destinyUtils";
 
 import {
   getClanDetails,
   getClanMembers,
   getProfile,
-  getRecentActivitiesForAccount
-} from "src/store/clan";
+  getRecentActivitiesForAccount,
+} from "../../store/clan";
 
-import { setBulkDefinitions } from "src/store/definitions";
-
-import PrettyDate from "src/components/Date";
-import Table from "src/components/Table";
-import { ImageWithTooltip } from "src/components/Item";
+import PrettyDate from "../../components/Date";
+import Table from "../../components/Table";
+import { ImageWithTooltip } from "../../components/Item";
 
 import s from "./styles.styl";
 
 const entities = new AllHtmlEntities();
-const decode = memoize(string => entities.decode(string));
+const decode = memoize((string) => entities.decode(string));
 
 const PARENT_SEAL_NODE = 1652422747;
 
-const baseSort = sortFn => member =>
+const baseSort = (sortFn) => (member) =>
   member.profile ? sortFn(member) : -99999999999;
 
-const baseSort2 = sortFn => member =>
+const baseSort2 = (sortFn) => (member) =>
   member.profile &&
   member.profile &&
   member.profile.profileRecords &&
@@ -42,9 +40,11 @@ const baseSort2 = sortFn => member =>
     ? sortFn(member)
     : -99999999999;
 
-const maxLight = member =>
+const maxLight = (member) =>
   member.profile &&
-  Math.max(...Object.values(member.profile.characters.data).map(c => c.light));
+  Math.max(
+    ...Object.values(member.profile.characters.data).map((c) => c.light)
+  );
 
 const k = ({ membershipType, membershipId }) =>
   [membershipType, membershipId].join("/");
@@ -61,56 +61,56 @@ const k = ({ membershipType, membershipId }) =>
 //     d.profile && profileHasCompletedTriumph(d.profile, triumphHash) ? "Yes" : ""
 // });
 
-const orZero = v => (v ? v : 0);
+const orZero = (v) => (v ? v : 0);
 
 const EGO_COLUMNS = [
   // makeCollectibleCell("niobe labs", NIOBE_EMBLEM_COLLECTIBLE),
   // makeTriumphCell("solo ST", 851701008), // Solo Shattered Throne
   {
     name: "current light",
-    sortValue: baseSort(d => maxLight(d)),
-    cell: d => maxLight(d)
+    sortValue: baseSort((d) => maxLight(d)),
+    cell: (d) => maxLight(d),
   },
   {
     name: "triumph score",
     sortValue: baseSort2(
-      d =>
+      (d) =>
         d.profile.profileRecords.data && d.profile.profileRecords.data.score
     ),
-    cell: d =>
+    cell: (d) =>
       d.profile &&
       d.profile.profileRecords.data &&
-      d.profile.profileRecords.data.score
+      d.profile.profileRecords.data.score,
   },
   {
     name: "bonus power",
-    cell: d =>
+    cell: (d) =>
       orZero(
         d.profile &&
           d.profile.profileProgression.data &&
           d.profile.profileProgression.data.seasonalArtifact.powerBonus
-      )
+      ),
   },
   {
     name: "season rank",
-    cell: d => {
+    cell: (d) => {
       const character =
         d.profile &&
         d.profile.characterProgressions.data &&
         Object.values(d.profile.characterProgressions.data)[0];
 
       return orZero(character && character.progressions[1628407317].level);
-    }
-  }
+    },
+  },
 ];
 
 class ClanPage extends Component {
   componentDidMount() {
     this.props.getClanDetails(this.props.routeParams.groupId);
 
-    this.props.getClanMembers(this.props.routeParams.groupId).then(data => {
-      data.results.forEach(member => {
-        this.props.getProfile(member.destinyUserInfo).then(profile => {
+    this.props.getClanMembers(this.props.routeParams.groupId).then((data) => {
+      data.results.forEach((member) => {
+        this.props.getProfile(member.destinyUserInfo).then((profile) => {
           // this.props.getRecentActivitiesForAccount(profile.profile);
         });
       });
@@ -127,10 +127,10 @@ class ClanPage extends Component {
     const membersQuery = clanMembers[this.props.routeParams.groupId];
     const members = membersQuery ? membersQuery.results : [];
 
-    return members.map(member => {
+    return members.map((member) => {
       return {
         ...member,
-        profile: profiles[k(member.destinyUserInfo)]
+        profile: profiles[k(member.destinyUserInfo)],
       };
     });
   }
@@ -154,11 +154,11 @@ class ClanPage extends Component {
       activityModeDefs,
       presentationNodeDefs,
       recordDefs,
-      routeParams: { groupId }
+      routeParams: { groupId },
     } = this.props;
-    const data = members.map(m => ({
+    const data = members.map((m) => ({
       ...m,
-      profile: profiles[k(m.destinyUserInfo)]
+      profile: profiles[k(m.destinyUserInfo)],
     }));
 
     const EGO = window.location.search.includes("ego");
@@ -166,39 +166,39 @@ class ClanPage extends Component {
     const columns = [
       {
         name: "gamertag",
-        cell: d => (
+        cell: (d) => (
           <Link
             className={s.link}
             to={`/${d.destinyUserInfo.membershipType}/${d.destinyUserInfo.membershipId}`}
           >
             {d.destinyUserInfo.displayName}
           </Link>
-        )
+        ),
       },
       {
         name: "date joined",
-        sortValue: baseSort(member => member.joinDate),
-        cell: member => <PrettyDate date={member.joinDate} />
+        sortValue: baseSort((member) => member.joinDate),
+        cell: (member) => <PrettyDate date={member.joinDate} />,
       },
       ...(EGO
         ? EGO_COLUMNS
         : [
             {
               name: "seals",
-              cell: d => {
+              cell: (d) => {
                 return (
                   presentationNodeDefs &&
                   presentationNodeDefs[
                     PARENT_SEAL_NODE
                   ].children.presentationNodes
-                    .map(childNode => {
+                    .map((childNode) => {
                       const sealPresentationNode =
                         presentationNodeDefs[childNode.presentationNodeHash];
                       return recordDefs[
                         sealPresentationNode.completionRecordHash
                       ];
                     })
-                    .map(titleRecord => {
+                    .map((titleRecord) => {
                       if (!titleRecord) {
                         return null;
                       }
@@ -220,11 +220,11 @@ class ClanPage extends Component {
                     })
                     .filter(Boolean)
                 );
-              }
+              },
             },
             {
               name: "current activity",
-              sortValue: baseSort(member => {
+              sortValue: baseSort((member) => {
                 const currentActivity =
                   member.profile && getCurrentActivity(member.profile);
 
@@ -232,7 +232,7 @@ class ClanPage extends Component {
                   ? currentActivity.dateActivityStarted
                   : member.profile.profile.data.dateLastPlayed;
               }),
-              cell: member => {
+              cell: (member) => {
                 const profile = member.profile;
                 const currentActivity =
                   member.profile && getCurrentActivity(member.profile);
@@ -274,9 +274,9 @@ class ClanPage extends Component {
                     )}
                   </span>
                 );
-              }
-            }
-          ])
+              },
+            },
+          ]),
     ];
 
     return (
@@ -291,13 +291,6 @@ class ClanPage extends Component {
             <p>{decode(clan.detail.about)}</p>
           </div>
         )}
-
-        <p>
-          New:{" "}
-          <Link to={`/clan/${groupId}/leaderboards`} className={s.boringLink}>
-            Activity Leaderboards
-          </Link>
-        </p>
 
         <div className={s.tableWrapper}>
           {members.length > 0 && (
@@ -325,19 +318,15 @@ function mapStateToProps(state) {
     clanMembers: state.clan.clanMembers,
     clanDetails: state.clan.clanDetails,
     profiles: state.clan.profiles,
-    recentActivities: state.clan.recentActivities
+    recentActivities: state.clan.recentActivities,
   };
 }
 
 const mapDispatchToActions = {
-  setBulkDefinitions,
   getClanDetails,
   getClanMembers,
   getProfile,
-  getRecentActivitiesForAccount
+  getRecentActivitiesForAccount,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToActions
-)(ClanPage);
+export default connect(mapStateToProps, mapDispatchToActions)(ClanPage);

@@ -1,11 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import BungieImage from "src/components/BungieImage";
+import BungieImage from "components/BungieImage";
 
 import s from "./styles.styl";
 
-const name = def => def && def.displayProperties.name;
+const name = (def) => def && def.displayProperties.name;
 
 function Character({ character, classDef, genderDef, raceDef }) {
   const { red, green, blue, alpha } = character.emblemColor || {};
@@ -49,7 +49,7 @@ function mapStateToProps(state, ownProps) {
   return {
     classDef,
     genderDef,
-    raceDef
+    raceDef,
   };
 }
 

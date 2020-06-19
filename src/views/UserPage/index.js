@@ -3,26 +3,26 @@ import { orderBy } from "lodash";
 import { Link } from "react-router";
 import { connect } from "react-redux";
 
-import { getClansForUser, getProfile } from "src/store/clan";
+import { getClansForUser, getProfile } from "../../store/clan";
 import {
   getLeaderboardForPlayer,
-  getLeaderboardStatus
-} from "src/store/leaderboards";
+  getLeaderboardStatus,
+} from "../../store/leaderboards";
 import {
   getCharacterPGCRHistory,
   toggleViewPGCRDetails,
-  getPGCRDetails
-} from "src/store/pgcr";
-import GamesTable from "app/components/GamesTable";
-import CurrentActivity from "app/components/CurrentActivity";
-import Stat from "app/components/Stat";
-import PrettyDate from "app/components/Date";
+  getPGCRDetails,
+} from "../../store/pgcr";
+import GamesTable from "../../components/GamesTable";
+import CurrentActivity from "../../components/CurrentActivity";
+import Stat from "../../components/Stat";
+import PrettyDate from "../../components/Date";
 
-import { getCurrentActivity } from "src/lib/destinyUtils";
+import { getCurrentActivity } from "../../lib/destinyUtils";
 
 import s from "./styles.styl";
 
-const getOrdinal = n => {
+const getOrdinal = (n) => {
   const s = ["th", "st", "nd", "rd"];
   const v = n % 100;
   return s[(v - 20) % 10] || s[v] || s[0];
@@ -42,14 +42,14 @@ class UserPage extends Component {
     this.props.getLeaderboardStatus();
     this.props.getLeaderboardForPlayer(this.props.routeParams);
     this.props.getClansForUser(this.props.routeParams);
-    this.props.getProfile(this.props.routeParams).then(profile => {
-      Object.keys(profile.characters.data).forEach(characterId => {
+    this.props.getProfile(this.props.routeParams).then((profile) => {
+      Object.keys(profile.characters.data).forEach((characterId) => {
         this.props.getCharacterPGCRHistory(
           this.props.routeParams,
           characterId,
           {
             completeHistory: true,
-            mode: this.props.router.location.query.mode || "None"
+            mode: this.props.router.location.query.mode || "None",
           }
         );
       });
@@ -61,7 +61,7 @@ class UserPage extends Component {
     return profile ? profile.profile.data.userInfo.displayName : pKey;
   }
 
-  viewPGCRDetails = pgcrId => {
+  viewPGCRDetails = (pgcrId) => {
     this.props.toggleViewPGCRDetails(pgcrId);
     this.props.getPGCRDetails(pgcrId);
   };
@@ -75,7 +75,7 @@ class UserPage extends Component {
       <div className={s.root}>
         <h2>{this.renderName()}</h2>
 
-        {clans.map(clan => (
+        {clans.map((clan) => (
           <p key={clan.group.groupId}>
             Clan:{" "}
             <Link to={`/clan/${clan.group.groupId}`}>{clan.group.name}</Link>
@@ -137,8 +137,8 @@ function mapStateToProps(state, ownProps) {
 
   const byCharacter = Object.values(state.pgcr.histories[pKey] || {});
   const allGames = [].concat(...byCharacter).filter(Boolean);
-  const gameHistory = orderBy(allGames, g => new Date(g.period), [
-    "desc"
+  const gameHistory = orderBy(allGames, (g) => new Date(g.period), [
+    "desc",
   ]).slice(0, MAX_GAMES);
 
   return {
@@ -150,7 +150,7 @@ function mapStateToProps(state, ownProps) {
     activePgcrs: state.pgcr.viewDetails,
     pgcrDetails: state.pgcr.pgcr,
     pKey,
-    profile
+    profile,
   };
 }
 
@@ -161,10 +161,7 @@ const mapDispatchToActions = {
   getProfile,
   getCharacterPGCRHistory,
   toggleViewPGCRDetails,
-  getPGCRDetails
+  getPGCRDetails,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToActions
-)(UserPage);
+export default connect(mapStateToProps, mapDispatchToActions)(UserPage);

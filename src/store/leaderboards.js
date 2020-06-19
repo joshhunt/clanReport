@@ -1,6 +1,6 @@
 const INITIAL_STATE = {
   leaderboard: {},
-  players: {}
+  players: {},
 };
 
 const SET_PLAYER_VALUE = "Set player leaderboard";
@@ -20,8 +20,8 @@ export default function leaderboardsReducer(
         ...state,
         players: {
           ...state.players,
-          [payload.key]: payload.data
-        }
+          [payload.key]: payload.data,
+        },
       };
 
     case SET_LEADERBOARDS:
@@ -29,14 +29,14 @@ export default function leaderboardsReducer(
         ...state,
         leaderboard: {
           ...state.leaderboard,
-          [payload.leaderboardType]: payload.leaderboard
-        }
+          [payload.leaderboardType]: payload.leaderboard,
+        },
       };
 
     case SET_STATUS:
       return {
         ...state,
-        status: payload
+        status: payload,
       };
 
     default:
@@ -45,28 +45,30 @@ export default function leaderboardsReducer(
 }
 
 export function getLeaderboardStatus() {
-  return async dispatch => {
+  return async (dispatch) => {
     dispatch({
       type: SET_STATUS,
-      payload: await (await fetch("https://api.clan.report/status.json")).json()
+      payload: await (
+        await fetch("https://api.clan.report/status.json")
+      ).json(),
     });
   };
 }
 
 export function getLeaderboard(leaderboardType = "all") {
-  return async dispatch => {
+  return async (dispatch) => {
     const url = `https://api.clan.report/leaderboards-${leaderboardType}.json`;
     const leaderboard = await (await fetch(url)).json();
 
     dispatch({
       type: SET_LEADERBOARDS,
-      payload: { leaderboardType, leaderboard }
+      payload: { leaderboardType, leaderboard },
     });
   };
 }
 
 export function getLeaderboardForPlayer({ membershipId, membershipType }) {
-  return async dispatch => {
+  return async (dispatch) => {
     const url = `https://api.clan.report/i/user/${membershipType}/${membershipId}`;
     const data = await (await fetch(url)).json();
 
@@ -74,8 +76,8 @@ export function getLeaderboardForPlayer({ membershipId, membershipType }) {
       type: SET_PLAYER_VALUE,
       payload: {
         key: k({ membershipId, membershipType }),
-        data
-      }
+        data,
+      },
     });
   };
 }

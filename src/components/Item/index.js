@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { Tooltip } from "react-tippy";
 
-import BungieImage from "src/components/BungieImage";
+import BungieImage from "../BungieImage";
 
 import s from "./styles.styl";
 
@@ -12,7 +12,7 @@ export function ImageWithTooltip({
   src,
   className,
   children,
-  containerClassName
+  containerClassName,
 }) {
   return (
     <Tooltip
@@ -45,7 +45,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     item:
       state.definitions.DestinyInventoryItemDefinition &&
-      state.definitions.DestinyInventoryItemDefinition[ownProps.hash]
+      state.definitions.DestinyInventoryItemDefinition[ownProps.hash],
   };
 };
 

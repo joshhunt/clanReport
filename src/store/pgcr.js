@@ -1,4 +1,4 @@
-import * as destiny from "src/lib/destiny";
+import * as destiny from "../lib/destiny";
 import immer from "immer";
 import { makePayloadAction } from "./utils";
 
@@ -15,11 +15,11 @@ const defaultState = {
   histories: {},
   pgcr: {},
   viewDetails: {},
-  sinceForsaken: true
+  sinceForsaken: true,
 };
 
 export default function pgcrReducer(state = defaultState, { type, payload }) {
-  return immer(state, draft => {
+  return immer(state, (draft) => {
     switch (type) {
       case TOGGLE_SINCE_FORSAKEN:
         draft.sinceForsaken = !draft.sinceForsaken;
@@ -40,8 +40,8 @@ export default function pgcrReducer(state = defaultState, { type, payload }) {
           ...state,
           pgcr: {
             ...state.pgcr,
-            [payload.pgcrId]: payload.data
-          }
+            [payload.pgcrId]: payload.data,
+          },
         };
 
       default:
@@ -56,7 +56,7 @@ const getCharacterPGCRHistorySuccess = (
 ) => {
   return {
     type: GET_PLAYER_PGCR_HISTORY_SUCCESS,
-    payload: { key: `${membershipType}/${membershipId}`, characterId, data }
+    payload: { key: `${membershipType}/${membershipId}`, characterId, data },
   };
 };
 
@@ -81,8 +81,8 @@ export function getPGCRDetails(pgcrId) {
 
     return destiny
       .getCacheablePGCRDetails(pgcrId)
-      .then(data => dispatch(getPGCRDetailsSuccess({ pgcrId, data })))
-      .catch(err => dispatch(getPGCRDetailsError(err)));
+      .then((data) => dispatch(getPGCRDetailsSuccess({ pgcrId, data })))
+      .catch((err) => dispatch(getPGCRDetailsError(err)));
   };
 }
 
@@ -95,18 +95,18 @@ export function getCharacterPGCRHistory(
   characterId,
   opts = {}
 ) {
-  return dispatch => {
+  return (dispatch) => {
     return destiny
       .getCharacterPGCRHistory(
         {
           membershipType,
           membershipId,
           characterId,
-          completeHistory: opts.completeHistory
+          completeHistory: opts.completeHistory,
         },
         opts.mode
       )
-      .then(data => {
+      .then((data) => {
         dispatch(
           getCharacterPGCRHistorySuccess(
             { membershipType, membershipId, characterId },
@@ -115,11 +115,11 @@ export function getCharacterPGCRHistory(
         );
 
         if (opts.fetchPGCRDetails) {
-          data.activities.forEach(activity => {
+          data.activities.forEach((activity) => {
             dispatch(getPGCRDetails(activity.activityDetails.instanceId));
           });
         }
       })
-      .catch(err => dispatch(getCharacterPGCRHistoryError(err)));
+      .catch((err) => dispatch(getCharacterPGCRHistoryError(err)));
   };
 }

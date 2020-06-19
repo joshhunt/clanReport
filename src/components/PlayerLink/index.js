@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router";
 
-import { PlatformIcon } from "src/components/Icon";
+import { PlatformIcon } from "../Icon";
 
 import s from "./styles.styl";
 

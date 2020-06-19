@@ -1,13 +1,13 @@
 import React, { Fragment, Component, useState } from "react";
 import { sortBy, flow, mapValues, filter, groupBy } from "lodash/fp";
 import { connect } from "react-redux";
-import { getMilestones } from "src/lib/destiny";
 
-import { getProfile } from "src/store/clan";
-import { getCharacterPGCRHistory, toggleSinceForsaken } from "src/store/pgcr";
-import Modal from "src/components/Modal";
-import Icon from "src/components/Icon";
-import SearchForPlayer from "src/components/SearchForPlayer";
+import { getMilestones } from "../../lib/destiny";
+import { getProfile } from "../../store/clan";
+import { getCharacterPGCRHistory, toggleSinceForsaken } from "../../store/pgcr";
+import Modal from "../../components/Modal";
+import Icon from "../../components/Icon";
+import SearchForPlayer from "../../components/SearchForPlayer";
 
 import s from "./styles.styl";
 import beavertime, { fastishTimes } from "./beavertime";
@@ -22,7 +22,7 @@ const ACTIVITY_BLACKLIST = [1207505828];
 const ACTIVITY_WHITELIST = [
   ...Object.keys(fastishTimes),
   "3625752472", // scarlet keep 1
-  "3856436847" // scarlet keep 2
+  "3856436847", // scarlet keep 2
 ];
 
 function str_pad_left(_string, pad, length) {
@@ -72,7 +72,7 @@ const NIGHTFALL_HASHES = [
   "3718330161",
   "272852450",
   "3108813009",
-  "3034843176"
+  "3034843176",
 ];
 
 function NightfallTable({
@@ -82,7 +82,7 @@ function NightfallTable({
   activities,
   playersToCompare,
   activityDefs,
-  nightfallCell
+  nightfallCell,
 }) {
   const [showHash, setShowHash] = useState(false);
 
@@ -93,7 +93,7 @@ function NightfallTable({
           <tr>
             <td />
             {showHash && <td>Slowest</td>}
-            {playersToCompare.map(pKey => (
+            {playersToCompare.map((pKey) => (
               <td key={pKey}>
                 {profiles[pKey] &&
                   profiles[pKey].profile.data.userInfo.displayName}
@@ -104,7 +104,7 @@ function NightfallTable({
 
         <tbody>
           {nightfalls &&
-            nightfalls.map(nightfallHash => (
+            nightfalls.map((nightfallHash) => (
               <tr key={nightfallHash}>
                 <td
                   className={
@@ -165,7 +165,7 @@ function NightfallTable({
                   </td>
                 )}
 
-                {playersToCompare.map(pKey => {
+                {playersToCompare.map((pKey) => {
                   const forPlayer = activities[pKey];
                   const thisNightfall = forPlayer && forPlayer[nightfallHash];
 
@@ -184,7 +184,7 @@ function NightfallTable({
           <tr>
             <td>total accumulated time</td>
 
-            {playersToCompare.map(pKey => {
+            {playersToCompare.map((pKey) => {
               const forPlayer = activities[pKey];
 
               const accumulatedTime =
@@ -255,27 +255,27 @@ function fmtdate(strDate) {
 class CompareDebug extends Component {
   state = {
     view: FASTEST,
-    currentNightfallHashes: []
+    currentNightfallHashes: [],
   };
 
   componentDidMount() {
     this.fetchProfiles(this.props.playersToCompare);
 
-    getMilestones().then(milestones => {
+    getMilestones().then((milestones) => {
       console.log({ milestones });
       const milestoneData = milestones[MILESTONE_HASH];
       const currentNightfallHashes =
         milestoneData &&
         milestoneData.activities
-          .filter(activity => activity.modifierHashes)
-          .map(activity => activity.activityHash.toString());
+          .filter((activity) => activity.modifierHashes)
+          .map((activity) => activity.activityHash.toString());
 
       this.setState({ currentNightfallHashes: currentNightfallHashes || [] });
     });
   }
 
   componentDidUpdate(prevProps) {
-    const newPlayers = this.props.playersToCompare.filter(currentPlayer => {
+    const newPlayers = this.props.playersToCompare.filter((currentPlayer) => {
       return !prevProps.playersToCompare.includes(currentPlayer);
     });
 
@@ -288,25 +288,25 @@ class CompareDebug extends Component {
 
   toggleAddPlayer = () => {
     this.setState({
-      addPlayerModalVisible: !this.state.addPlayerModalVisible
+      addPlayerModalVisible: !this.state.addPlayerModalVisible,
     });
   };
 
   fetchProfiles(playersToCompare) {
     playersToCompare
-      .filter(playerKey => !this.props.profiles[playerKey])
-      .forEach(playerKey => {
+      .filter((playerKey) => !this.props.profiles[playerKey])
+      .forEach((playerKey) => {
         const [membershipType, membershipId] = playerKey.split("/");
         this.props
           .getProfile({ membershipType, membershipId })
-          .then(profile => {
-            Object.keys(profile.characters.data).forEach(characterId => {
+          .then((profile) => {
+            Object.keys(profile.characters.data).forEach((characterId) => {
               this.props.getCharacterPGCRHistory(
                 { membershipType, membershipId },
                 characterId,
                 {
                   completeHistory: true,
-                  mode: this.props.router.location.query.mode || PGCR_MODE
+                  mode: this.props.router.location.query.mode || PGCR_MODE,
                 }
               );
             });
@@ -316,15 +316,15 @@ class CompareDebug extends Component {
 
   toggleAddPlayer = () => {
     this.setState({
-      addPlayerModalVisible: !this.state.addPlayerModalVisible
+      addPlayerModalVisible: !this.state.addPlayerModalVisible,
     });
   };
 
-  forsakenToggle = ev => {
+  forsakenToggle = (ev) => {
     this.props.toggleSinceForsaken();
   };
 
-  setView = view => {
+  setView = (view) => {
     this.setState({ view });
   };
 
@@ -335,7 +335,7 @@ class CompareDebug extends Component {
       profiles,
       playersToCompare,
       activities,
-      sinceForsaken
+      sinceForsaken,
     } = this.props;
     const { addPlayerModalVisible, view, currentNightfallHashes } = this.state;
 
@@ -346,15 +346,15 @@ class CompareDebug extends Component {
       3701132453: 1000101,
       3108813009: 1000102,
       3034843176: 1000103,
-      1207505828: 1000999
+      1207505828: 1000999,
     };
 
     const nightfalls =
       firstActivities &&
       activityDefs &&
       flow(
-        filter(hash => activityDefs[hash]),
-        sortBy(hash => activityDefs[hash].displayProperties.name),
+        filter((hash) => activityDefs[hash]),
+        sortBy((hash) => activityDefs[hash].displayProperties.name),
         sortBy((hash, index) => {
           if (currentNightfallHashes.includes(hash)) {
             return 1;
@@ -395,7 +395,7 @@ class CompareDebug extends Component {
           </div>
         )}
         <h3>
-          {VIEWS.map(viewName => (
+          {VIEWS.map((viewName) => (
             <span
               key={viewName}
               onClick={() => this.setView(viewName)}
@@ -485,7 +485,7 @@ function mapToValues(arr, fn) {
   return arr.reduce((acc, key) => {
     return {
       ...acc,
-      [key]: fn(key)
+      [key]: fn(key),
     };
   }, {});
 }
@@ -519,7 +519,7 @@ function mapStateToProps(state, ownProps) {
     DestinySeasonDefinition: seasonDefs,
     DestinyPresentationNodeDefinition: presentationNodeDefs,
     DestinyRecordDefinition: recordDefs,
-    DestinyActivityDefinition: activityDefs
+    DestinyActivityDefinition: activityDefs,
   } = state.definitions;
 
   const { sinceForsaken } = state.pgcr;
@@ -528,7 +528,7 @@ function mapStateToProps(state, ownProps) {
   const currentSeason =
     seasonDefs &&
     Object.values(seasonDefs).find(
-      s => new Date(s.startDate) < now && new Date(s.endDate) > now
+      (s) => new Date(s.startDate) < now && new Date(s.endDate) > now
     );
 
   const currentSeasonStart = currentSeason && new Date(currentSeason.startDate);
@@ -538,22 +538,22 @@ function mapStateToProps(state, ownProps) {
   const playersToCompare = players ? players.split(",") : [];
   const profiles = mapToValues(
     playersToCompare,
-    pKey => state.clan.profiles[pKey]
+    (pKey) => state.clan.profiles[pKey]
   );
 
   // Object.values(__definitions.DestinySeasonDefinition)
 
-  const activities = mapToValues(playersToCompare, pKey => {
+  const activities = mapToValues(playersToCompare, (pKey) => {
     const byCharacter = Object.values(state.pgcr.histories[pKey] || {});
     const allGames = [].concat(...byCharacter).filter(Boolean);
 
     const nightfalls = flow(
       filter(Boolean),
-      filter(pgcr =>
+      filter((pgcr) =>
         sinceForsaken ? new Date(pgcr.period) > currentSeasonStart : true
       ),
       filter(
-        pgcr =>
+        (pgcr) =>
           ACTIVITY_WHITELIST.includes(
             pgcr.activityDetails.directorActivityHash.toString()
           ) &&
@@ -561,9 +561,9 @@ function mapStateToProps(state, ownProps) {
             pgcr.activityDetails.directorActivityHash
           )
       ),
-      groupBy(pgcr => pgcr.activityDetails.directorActivityHash),
-      mapValues(pgcrList => {
-        const completed = pgcrList.filter(pgcr => {
+      groupBy((pgcr) => pgcr.activityDetails.directorActivityHash),
+      mapValues((pgcrList) => {
+        const completed = pgcrList.filter((pgcr) => {
           return (
             pgcr.values.completionReason.basic.displayValue ===
             OBJECTIVE_COMPLETED
@@ -572,18 +572,18 @@ function mapStateToProps(state, ownProps) {
 
         const highestTeamScore = getMaxValue(
           completed,
-          pgcr => pgcr.values.teamScore.basic.value
+          (pgcr) => pgcr.values.teamScore.basic.value
         );
         const fastest = getMinValue(
           completed,
-          pgcr => pgcr.values.activityDurationSeconds.basic.value
+          (pgcr) => pgcr.values.activityDurationSeconds.basic.value
         );
 
         return {
           fastest,
           highestTeamScore,
           all: pgcrList,
-          completed
+          completed,
         };
       })
     )(allGames);
@@ -599,14 +599,14 @@ function mapStateToProps(state, ownProps) {
     playersToCompare,
     profiles,
     activities,
-    sinceForsaken
+    sinceForsaken,
   };
 }
 
 const mapDispatchToActions = {
   getProfile,
   getCharacterPGCRHistory,
-  toggleSinceForsaken
+  toggleSinceForsaken,
 };
 
 export default connect(mapStateToProps, mapDispatchToActions)(CompareDebug);

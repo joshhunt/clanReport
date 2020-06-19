@@ -1,13 +1,13 @@
 import React from "react";
 import { memoize, toPairs, get } from "lodash";
 
-import { EMBLEM, HUNTER, TITAN, WARLOCK, NO_CLASS } from "app/lib/destinyEnums";
-import { getLower } from "src/lib/utils";
+import { EMBLEM, HUNTER, TITAN, WARLOCK, NO_CLASS } from "./destinyEnums";
+import { getLower } from "./utils";
 // import CLASS_OVERRIDES from 'app/extraData/classOverrides';
 
 export const flagEnum = (state, value) => !!(state & value);
 
-export const enumerateTriumphState = state => ({
+export const enumerateTriumphState = (state) => ({
   none: flagEnum(state, 0),
   recordRedeemed: flagEnum(state, 1),
   rewardUnavailable: flagEnum(state, 2),
@@ -15,10 +15,10 @@ export const enumerateTriumphState = state => ({
   obscured: flagEnum(state, 8),
   invisible: flagEnum(state, 16),
   entitlementUnowned: flagEnum(state, 32),
-  canEquipTitle: flagEnum(state, 64)
+  canEquipTitle: flagEnum(state, 64),
 });
 
-export const enumerateCollectibleState = state => ({
+export const enumerateCollectibleState = (state) => ({
   none: flagEnum(state, 0),
   notAcquired: flagEnum(state, 1),
   obscured: flagEnum(state, 2),
@@ -26,7 +26,7 @@ export const enumerateCollectibleState = state => ({
   cannotAffordMaterialRequirements: flagEnum(state, 8),
   inventorySpaceUnavailable: flagEnum(state, 16),
   uniquenessViolation: flagEnum(state, 32),
-  purchaseDisabled: flagEnum(state, 64)
+  purchaseDisabled: flagEnum(state, 64),
 });
 
 export function profileHasCollectible(profile, collectibleHash) {
@@ -50,7 +50,7 @@ export function profileHasCompletedTriumph(profile, triumphHash) {
   if (triumphState === undefined) {
     const completedCharacter = Object.values(
       get(profile, "characterRecords.data", {})
-    ).find(data => {
+    ).find((data) => {
       const enumeratedState = enumerateTriumphState(
         data.records[triumphHash].state
       );
@@ -67,26 +67,26 @@ export function profileHasCompletedTriumph(profile, triumphHash) {
 }
 
 // TODO: we can just use itemCategoryHashes for this now?
-export const isOrnament = item =>
+export const isOrnament = (item) =>
   item.inventory &&
   item.inventory.stackUniqueLabel &&
   item.plug &&
   item.plug.plugCategoryIdentifier &&
   item.plug.plugCategoryIdentifier.includes("skins");
 
-export const makeTypeShort = memoize(type => {
+export const makeTypeShort = memoize((type) => {
   const match = type.match(/Destiny(\w+)Definition/);
   return match ? match[1] : type;
 });
 
-export const getName = item => {
+export const getName = (item) => {
   return (
     (item.displayProperties && item.displayProperties.name) ||
     item.statName || <em>No name</em>
   );
 };
 
-export const bungieUrl = path => {
+export const bungieUrl = (path) => {
   return path && path.includes && path.includes("//bungie.net/")
     ? path
     : `https://bungie.net${path}`;
@@ -110,17 +110,17 @@ function classFromString(str) {
   }
 }
 
-export const getCurrentActivity = memoize(profile => {
+export const getCurrentActivity = memoize((profile) => {
   const found =
     profile.characterActivities.data &&
-    Object.values(profile.characterActivities.data).find(character => {
+    Object.values(profile.characterActivities.data).find((character) => {
       return character.currentActivityHash !== 0;
     });
 
   return found;
 });
 
-export const getItemClass = item => {
+export const getItemClass = (item) => {
   const stackUniqueLabel = getLower(item, "inventory.stackUniqueLabel");
   const plugCategoryIdentifier = getLower(item, "plug.plugCategoryIdentifier");
 
@@ -154,7 +154,7 @@ export function getNameForItem(item, noQuotes) {
   return foundName ? `"${foundName}"` : "";
 }
 
-export const makeAllDefsArray = memoize(allDefs => {
+export const makeAllDefsArray = memoize((allDefs) => {
   return toPairs(allDefs).reduce((acc, [type, defs]) => {
     return [
       ...acc,
@@ -162,16 +162,16 @@ export const makeAllDefsArray = memoize(allDefs => {
         dxId: `${type}:${key}`, // Data Explorer-specific ID, (hopefully) globally unique across all entries
         type, // definition type
         key, // definition key, like hash
-        def // the definition item itself
-      }))
+        def, // the definition item itself
+      })),
     ];
   }, []);
 });
 
 const MAX_RANDOM_ITEMS = 100;
-export const getRandomItems = memoize(allDefs => {
+export const getRandomItems = memoize((allDefs) => {
   let n = MAX_RANDOM_ITEMS;
-  const arr = makeAllDefsArray(allDefs).filter(obj => {
+  const arr = makeAllDefsArray(allDefs).filter((obj) => {
     return (
       obj.def && obj.def.displayProperties && obj.def.displayProperties.hasIcon
     );

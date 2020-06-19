@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { Link } from "react-router";
 import cx from "classnames";
 
-import BungieImage from "src/components/BungieImage";
-import Icon from "src/components/Icon";
+import BungieImage from "../BungieImage";
+import Icon from "../Icon";
 
 import s from "./styles.styl";
 
@@ -44,7 +44,7 @@ export function BasePlayerList(props) {
     titleLink,
     playerClassName,
     className,
-    renderPlayerChildren
+    renderPlayerChildren,
   } = props;
 
   return (
@@ -84,7 +84,7 @@ export default class PlayerList extends Component {
       small,
       titleLink,
       playerClassName,
-      className
+      className,
     } = this.props;
 
     return (
@@ -95,7 +95,7 @@ export default class PlayerList extends Component {
         titleLink={titleLink}
         playerClassName={playerClassName}
         className={className}
-        renderPlayerChildren={entry => entry.value.basic.displayValue}
+        renderPlayerChildren={(entry) => entry.value.basic.displayValue}
       />
     );
   }

@@ -1,6 +1,6 @@
 import React from "react";
 
-import Icon from "src/components/Icon";
+import Icon from "components/Icon";
 
 import s from "./styles.styl";
 

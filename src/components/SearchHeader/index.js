@@ -1,11 +1,11 @@
-import React from 'react';
+import React from "react";
 
-import Icon from 'src/components/Icon';
-import SearchHelp from 'src/components/SearchHelp';
-import Modal from 'src/components/Modal';
+import Icon from "../Icon";
+import SearchHelp from "../SearchHelp";
+import Modal from "../Modal";
 
-import s from './styles.styl';
-import logo from './logo.svg';
+import s from "./styles.styl";
+import logo from "./logo.svg";
 
 export default function SearchHeader({
   definitions,
@@ -14,7 +14,7 @@ export default function SearchHeader({
   collectModeEnabled,
   toggleCollectMode,
   searchHelpEnabled,
-  toggleSearchHelp
+  toggleSearchHelp,
 }) {
   return (
     <div className={s.root}>
@@ -44,7 +44,7 @@ export default function SearchHeader({
           className={collectModeEnabled ? s.bigButtonActive : s.bigButton}
           onClick={toggleCollectMode}
           title={
-            collectModeEnabled ? 'Disable collect mode' : 'Enable collect mode'
+            collectModeEnabled ? "Disable collect mode" : "Enable collect mode"
           }
         >
           <div className={s.buttonInner}>
