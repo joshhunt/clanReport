@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 
-import tableStyles from "../Table/styles.styl";
+import tableStyles from "../Table/styles.module.css";
 import GameDetails from "../GameDetails";
 import GameRow from "./GameRow";
 

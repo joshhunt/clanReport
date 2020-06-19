@@ -3,7 +3,7 @@ import { Link } from "react-router";
 
 import { PlatformIcon } from "../Icon";
 
-import s from "./styles.styl";
+import s from "./styles.module.css";
 
 export default function PlayerLink({ player, url, saveRecentPlayer }) {
   const { membershipId, membershipType, displayName } = player;

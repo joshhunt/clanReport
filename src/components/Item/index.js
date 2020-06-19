@@ -4,7 +4,7 @@ import { Tooltip } from "react-tippy";
 
 import BungieImage from "../BungieImage";
 
-import s from "./styles.styl";
+import s from "./styles.module.css";
 
 const NO_ICON = "/img/misc/missing_icon_d2.png";
 

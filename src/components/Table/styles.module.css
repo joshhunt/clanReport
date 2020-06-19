@@ -1,0 +1,28 @@
+.table {
+  font-size: 0.9375em;
+  border-collapse: collapse;
+  white-space: nowrap;
+  width: 100%;
+  margin-bottom: 50px;
+}
+.table thead {
+  font-weight: bold;
+}
+.table thead td {
+  cursor: pointer;
+}
+.table tfoot {
+  font-weight: bold;
+}
+.table td {
+  padding: 10px 15px;
+  border-bottom: 1px solid #e1e1e1;
+}
+.table td:global(.dark-mode),
+:global(.dark-mode) .table td {
+  border-bottom-color: #6e788b;
+}
+.tableScrollWrapper {
+  max-width: 100%;
+  overflow: auto;
+}

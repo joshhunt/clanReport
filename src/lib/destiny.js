@@ -205,9 +205,9 @@ export function getCacheablePGCRDetails(pgcrId) {
 }
 
 export function getCacheableSearch(searchTerm) {
-  return getDestiny(
-    `/Destiny2/SearchDestinyPlayer/-1/${encodeURIComponent(searchTerm)}/`
-  );
+  return fetch(
+    `https://elastic.destinytrialsreport.com/players/0/${searchTerm}`
+  ).then((r) => r.json());
 }
 
 window.getCacheablePGCRDetails = getCacheablePGCRDetails;

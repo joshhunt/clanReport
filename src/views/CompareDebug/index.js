@@ -4,16 +4,19 @@ import { connect } from "react-redux";
 
 import { getMilestones } from "../../lib/destiny";
 import { getProfile } from "../../store/clan";
-import { getCharacterPGCRHistory, toggleSinceForsaken } from "../../store/pgcr";
+import {
+  getCharacterPGCRHistory,
+  togglesinceCurrentSeason,
+} from "../../store/pgcr";
 import Modal from "../../components/Modal";
 import Icon from "../../components/Icon";
 import SearchForPlayer from "../../components/SearchForPlayer";
 
-import s from "./styles.styl";
+import s from "./styles.module.css";
 import beavertime, { fastishTimes } from "./beavertime";
 
 const PGCR_MODE = 46;
-// const FORSAKEN_ISH = new Date(2018, 8, 2);
+const FORSAKEN_ISH = new Date(2018, 8, 2);
 
 const FASTEST = "Fastest";
 const TEAM_SCORE = "Team Score";
@@ -320,8 +323,8 @@ class CompareDebug extends Component {
     });
   };
 
-  forsakenToggle = (ev) => {
-    this.props.toggleSinceForsaken();
+  sinceCurrentSeasonToggle = (ev) => {
+    this.props.togglesinceCurrentSeason();
   };
 
   setView = (view) => {
@@ -335,7 +338,7 @@ class CompareDebug extends Component {
       profiles,
       playersToCompare,
       activities,
-      sinceForsaken,
+      sinceCurrentSeason,
     } = this.props;
     const { addPlayerModalVisible, view, currentNightfallHashes } = this.state;
 
@@ -373,8 +376,8 @@ class CompareDebug extends Component {
         <label>
           <input
             type="checkbox"
-            onChange={this.forsakenToggle}
-            checked={sinceForsaken}
+            onChange={this.sinceCurrentSeasonToggle}
+            checked={sinceCurrentSeason}
           />
           Current season{" "}
           {currentSeason && (
@@ -384,15 +387,12 @@ class CompareDebug extends Component {
             </span>
           )}
         </label>
-        {!nightfalls && <div class={s.info}>Loading...</div>}
+        {!nightfalls && <div className={s.info}>Loading...</div>}
         {nightfalls && nightfalls.length === 0 && (
           <div class={s.info}>Loaded, but no suitable activities found</div>
         )}
         {nightfalls && nightfalls.length > 0 && (
-          <div class={s.info}>
-            Current assumption on how to get the After the Nightfall emblem is
-            to meet all time trials within the same season.
-          </div>
+          <div class={s.info}>Showing times since Forsaken.</div>
         )}
         <h3>
           {VIEWS.map((viewName) => (
@@ -474,7 +474,10 @@ class CompareDebug extends Component {
           isOpen={addPlayerModalVisible}
           onRequestClose={this.toggleAddPlayer}
         >
-          <SearchForPlayer className={s.addPlayerModal} url="compare-debug" />
+          <SearchForPlayer
+            className={s.addPlayerModal}
+            url="compare-nightfalls"
+          />
         </Modal>
       </div>
     );
@@ -522,7 +525,7 @@ function mapStateToProps(state, ownProps) {
     DestinyActivityDefinition: activityDefs,
   } = state.definitions;
 
-  const { sinceForsaken } = state.pgcr;
+  const { sinceCurrentSeason } = state.pgcr;
 
   const now = new Date();
   const currentSeason =
@@ -532,7 +535,6 @@ function mapStateToProps(state, ownProps) {
     );
 
   const currentSeasonStart = currentSeason && new Date(currentSeason.startDate);
-  // const currentSeasonEnd = currentSeason && new Date(currentSeason.endDate);
 
   const { players } = ownProps.router.location.query;
   const playersToCompare = players ? players.split(",") : [];
@@ -541,16 +543,16 @@ function mapStateToProps(state, ownProps) {
     (pKey) => state.clan.profiles[pKey]
   );
 
-  // Object.values(__definitions.DestinySeasonDefinition)
-
   const activities = mapToValues(playersToCompare, (pKey) => {
     const byCharacter = Object.values(state.pgcr.histories[pKey] || {});
     const allGames = [].concat(...byCharacter).filter(Boolean);
 
     const nightfalls = flow(
       filter(Boolean),
-      filter((pgcr) =>
-        sinceForsaken ? new Date(pgcr.period) > currentSeasonStart : true
+      filter(
+        (pgcr) =>
+          new Date(pgcr.period) >
+          (sinceCurrentSeason ? currentSeasonStart : FORSAKEN_ISH)
       ),
       filter(
         (pgcr) =>
@@ -599,14 +601,14 @@ function mapStateToProps(state, ownProps) {
     playersToCompare,
     profiles,
     activities,
-    sinceForsaken,
+    sinceCurrentSeason,
   };
 }
 
 const mapDispatchToActions = {
   getProfile,
   getCharacterPGCRHistory,
-  toggleSinceForsaken,
+  togglesinceCurrentSeason,
 };
 
 export default connect(mapStateToProps, mapDispatchToActions)(CompareDebug);

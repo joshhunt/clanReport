@@ -14,13 +14,10 @@ import {
   getPGCRDetails,
 } from "../../store/pgcr";
 import GamesTable from "../../components/GamesTable";
-import CurrentActivity from "../../components/CurrentActivity";
 import Stat from "../../components/Stat";
 import PrettyDate from "../../components/Date";
 
-import { getCurrentActivity } from "../../lib/destinyUtils";
-
-import s from "./styles.styl";
+import s from "./styles.module.css";
 
 const getOrdinal = (n) => {
   const s = ["th", "st", "nd", "rd"];
@@ -67,9 +64,8 @@ class UserPage extends Component {
   };
 
   render() {
-    const { gameHistory, profile, ranks, leaderboardStatus } = this.props;
+    const { gameHistory, ranks, leaderboardStatus } = this.props;
     const clans = this.props.clans || [];
-    const currentActivity = profile && getCurrentActivity(profile);
 
     return (
       <div className={s.root}>
@@ -99,9 +95,6 @@ class UserPage extends Component {
           </div>
         )}
 
-        {currentActivity && (
-          <CurrentActivity currentActivity={currentActivity} />
-        )}
         <h3>Recent games</h3>
 
         <GamesTable

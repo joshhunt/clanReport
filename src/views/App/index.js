@@ -7,7 +7,7 @@ import destinyAuth from "../../lib/destinyAuth";
 import { setAuth, getMembership } from "../../store/auth";
 import Icon from "../../components/Icon";
 
-import s from "./styles.styl";
+import s from "./styles.module.css";
 
 const CLIENT_ID = process.env.REACT_APP_BUNGIE_CLIENT_ID;
 const AUTH_URL = `https://www.bungie.net/en/OAuth/Authorize?client_id=${CLIENT_ID}&response_type=code`;
@@ -34,10 +34,7 @@ export default function App({ children }) {
       </p>
 
       <p className={s.footer}>
-        <Link to="/compare-nightfalls">Compare Nightfalls</Link> /{" "}
-        <Link to="/compare-triumphs">Compare triumphs</Link> / Looking for
-        leaderboards? They've moved to{" "}
-        <a href="https://destiny.report">destiny.report</a>
+        <Link to="/compare-nightfalls">Compare Nightfalls</Link>
       </p>
 
       <p className={s.footer}>

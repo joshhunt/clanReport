@@ -8,7 +8,7 @@ import PlayerLink from "../../components/PlayerLink";
 import destinyAuth from "../../lib/destinyAuth";
 import { setAuth, getMembership } from "../../store/auth";
 
-import s from "./styles.styl";
+import s from "./styles.module.css";
 
 const CLIENT_ID = process.env.REACT_APP_BUNGIE_CLIENT_ID;
 const AUTH_URL = `https://www.bungie.net/en/OAuth/Authorize?client_id=${CLIENT_ID}&response_type=code`;

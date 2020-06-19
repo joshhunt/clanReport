@@ -1,0 +1,52 @@
+.root {
+  background: #f1f1f1;
+  padding: 5px;
+  position: relative;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  border-radius: 3px;
+}
+.root:global(.dark-mode),
+:global(.dark-mode) .root {
+  background: #262a30;
+}
+.root:after {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 20px;
+  border: 10px solid transparent;
+  border-bottom-color: #f1f1f1;
+}
+.root:after:global(.dark-mode),
+:global(.dark-mode) .root:after {
+  border-bottom-color: #262a30;
+}
+.root table {
+  margin-bottom: 0;
+}
+.root thead td {
+  cursor: initial !important;
+}
+.root tbody:last-child tr:last-child td {
+  border-bottom: none;
+}
+.scrollable {
+  overflow: auto;
+  max-width: 100%;
+}
+.table td {
+  padding: 8px;
+}
+.team {
+  font-size: 1.2em;
+}
+.item {
+  width: 35px;
+  height: 35px;
+  margin: -6px 0;
+  display: inline-block;
+  border-radius: 3px;
+  margin-right: 5px;
+}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 // Hook
 function useLocalStorage(key, initialValue) {
@@ -19,7 +19,7 @@ function useLocalStorage(key, initialValue) {
 
   // Return a wrapped version of useState's setter function that ...
   // ... persists the new value to localStorage.
-  const setValue = value => {
+  const setValue = (value) => {
     try {
       // Allow value to be a function so we have same API as useState
       const valueToStore =
@@ -40,15 +40,15 @@ function useLocalStorage(key, initialValue) {
 // Hook
 export function useMedia(queries, values, defaultValue) {
   // Array containing a media query list for each query
-  const mediaQueryLists = queries.map(q => window.matchMedia(q));
+  const mediaQueryLists = queries.map((q) => window.matchMedia(q));
 
   // Function that gets value based on matching media query
-  const getValue = () => {
+  const getValue = useCallback(() => {
     // Get index of first media query that matches
-    const index = mediaQueryLists.findIndex(mql => mql.matches);
+    const index = mediaQueryLists.findIndex((mql) => mql.matches);
     // Return related value or defaultValue if none
     return typeof values[index] !== "undefined" ? values[index] : defaultValue;
-  };
+  }, [mediaQueryLists, values, defaultValue]);
 
   // State and setter for matched value
   const [value, setValue] = useState(getValue);
@@ -60,11 +60,12 @@ export function useMedia(queries, values, defaultValue) {
       // ... current values of hook args (as this hook callback is created once on mount).
       const handler = () => setValue(getValue);
       // Set a listener for each media query with above handler as callback.
-      mediaQueryLists.forEach(mql => mql.addListener(handler));
+      mediaQueryLists.forEach((mql) => mql.addListener(handler));
       // Remove listeners on cleanup
-      return () => mediaQueryLists.forEach(mql => mql.removeListener(handler));
+      return () =>
+        mediaQueryLists.forEach((mql) => mql.removeListener(handler));
     },
-    [] // Empty array ensures effect is only run on mount and unmount
+    [getValue, mediaQueryLists] // Empty array ensures effect is only run on mount and unmount
   );
 
   return value;

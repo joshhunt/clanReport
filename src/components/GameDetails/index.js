@@ -2,16 +2,11 @@ import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { isString, groupBy } from "lodash";
 
-import tableStyles from "../Table/styles.styl";
-import s from "./styles.styl";
+import tableStyles from "../Table/styles.module.css";
+import s from "./styles.module.css";
 import GAME_MODE_FIELDS, { stat } from "./fields";
 
-function TeamTable({
-  pgcr,
-  teamId,
-  teamMembers,
-  DestinyHistoricalStatsDefinition,
-}) {
+function TeamTable({ pgcr, teamId, teamMembers }) {
   const team = pgcr.teams.find(
     (t) => t.teamId === teamId || t.teamId === parseInt(teamId, 10)
   );
@@ -48,14 +43,7 @@ function TeamTable({
                     <td>
                       {isString(f.stat)
                         ? stat(stats, f.stat)
-                        : f.stat(
-                            stats,
-                            teamMember,
-                            teamMembers,
-                            pgcr,
-                            teamId,
-                            DestinyHistoricalStatsDefinition
-                          )}
+                        : f.stat(stats, teamMember, teamMembers, pgcr, teamId)}
                     </td>
                   );
                 })}
@@ -67,7 +55,7 @@ function TeamTable({
   );
 }
 
-function GameDetails({ pgcr, DestinyHistoricalStatsDefinition }) {
+function GameDetails({ pgcr }) {
   if (!pgcr) {
     return "Loading...";
   }
@@ -88,7 +76,6 @@ function GameDetails({ pgcr, DestinyHistoricalStatsDefinition }) {
             pgcr={pgcr}
             teamMembers={teamMembers}
             teamId={teamId}
-            DestinyHistoricalStatsDefinition={DestinyHistoricalStatsDefinition}
           />
         ))}
       </table>
@@ -96,11 +83,8 @@ function GameDetails({ pgcr, DestinyHistoricalStatsDefinition }) {
   );
 }
 
-function mapStateToProps(state) {
-  return {
-    DestinyHistoricalStatsDefinition:
-      state.definitions.DestinyHistoricalStatsDefinition,
-  };
+function mapStateToProps() {
+  return {};
 }
 
 export default connect(mapStateToProps)(GameDetails);

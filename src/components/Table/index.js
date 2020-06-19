@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { sortBy, reverse } from "lodash";
 
-import s from "./styles.styl";
+import s from "./styles.module.css";
 
 const ASC = "asc";
 const DSC = "dsc";

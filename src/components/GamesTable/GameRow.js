@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import PrettyDate from "../Date";
 import { PlatformIcon } from "../Icon";
 
-import s from "./styles.styl";
+import s from "./styles.module.css";
 
 const STANDING = {
   0: s.standingVictory,

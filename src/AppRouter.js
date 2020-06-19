@@ -19,6 +19,7 @@ export default class AppRouter extends Component {
             <Route path="/" component={Home} />
             <Route path="/clan/:groupId" component={ClanPage} />
             <Route path="/compare-nightfalls" component={CompareNightfalls} />
+            <Route path="/compare-nightfalls/" component={CompareNightfalls} />
             <Route path="/:membershipType/:membershipId" component={UserPage} />
           </Route>
         </Router>

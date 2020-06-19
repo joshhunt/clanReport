@@ -1,7 +1,7 @@
 import React from "react";
 import cx from "classnames";
 
-import s from "./styles.styl";
+import s from "./styles.module.css";
 
 export default function Stat({ className, name, value, extra }) {
   return (

@@ -2,9 +2,8 @@ import React from "react";
 import { memoize } from "lodash";
 
 import Item from "../Item";
-import Medal from "../Medal";
 
-import s from "./styles.styl";
+import s from "./styles.module.css";
 
 const getTotalPrimevalDamage = memoize((teamMembers) => {
   return teamMembers.reduce((acc, teamMember) => {
@@ -39,30 +38,6 @@ const WEAPONS_FIELD = field("weapons", (stats, teamMember) => {
   );
 });
 
-const MEDALS_FIELD = field(
-  "medals",
-  (
-    stats,
-    teamMember,
-    teamMembers,
-    pgcr,
-    teamId,
-    DestinyHistoricalStatsDefinition
-  ) => {
-    return Object.entries(stats)
-      .map(([statId, stat]) => {
-        const statDef = DestinyHistoricalStatsDefinition[statId];
-        return { statId, stat, statDef };
-      })
-      .filter(({ statDef }) => {
-        return statDef && statDef.medalTierHash;
-      })
-      .map(({ statDef, stat }) => (
-        <Medal className={s.item} statDef={statDef} count={stat.basic.value} />
-      ));
-  }
-);
-
 const GAMBIT_FIELDS = [
   field("most deposited", "motesDeposited"),
   field("picked up", "motesPickedUp"),
@@ -88,7 +63,6 @@ const GAMBIT_FIELDS = [
     ].join(" / ");
   }),
   WEAPONS_FIELD,
-  MEDALS_FIELD,
 ];
 
 const FALLBACK_FIELDS = [WEAPONS_FIELD];
@@ -105,7 +79,7 @@ export default [
 
   {
     test: (pgcr) => pgcr.activityDetails.modes.includes(5),
-    fields: [WEAPONS_FIELD, MEDALS_FIELD],
+    fields: [WEAPONS_FIELD],
   },
 
   { test: () => true, fields: FALLBACK_FIELDS },

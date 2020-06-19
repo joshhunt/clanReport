@@ -48,10 +48,19 @@ store.subscribe(() => (window.__state = store.getState()));
 
 const LANGUAGE = "en";
 
+const DEFINITION_TABLES = [
+  "DestinyInventoryItemDefinition",
+  "DestinyActivityDefinition",
+  "DestinyActivityModeDefinition",
+  "DestinyPresentationNodeDefinition",
+  "DestinyRecordDefinition",
+  "DestinySeasonDefinition",
+];
+
 staleThenRevalidate(
   process.env.REACT_APP_API_KEY,
   LANGUAGE,
-  [],
+  DEFINITION_TABLES,
   (err, result) => {
     console.log("definitions cb:", { err, result });
 

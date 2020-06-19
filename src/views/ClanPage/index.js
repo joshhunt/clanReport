@@ -22,7 +22,7 @@ import PrettyDate from "../../components/Date";
 import Table from "../../components/Table";
 import { ImageWithTooltip } from "../../components/Item";
 
-import s from "./styles.styl";
+import s from "./styles.module.css";
 
 const entities = new AllHtmlEntities();
 const decode = memoize((string) => entities.decode(string));
@@ -154,7 +154,6 @@ class ClanPage extends Component {
       activityModeDefs,
       presentationNodeDefs,
       recordDefs,
-      routeParams: { groupId },
     } = this.props;
     const data = members.map((m) => ({
       ...m,
@@ -301,8 +300,6 @@ class ClanPage extends Component {
             />
           )}
         </div>
-
-        <Link to="/compare-triumphs">Compare triumphs</Link>
       </div>
     );
   }

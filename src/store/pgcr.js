@@ -15,14 +15,14 @@ const defaultState = {
   histories: {},
   pgcr: {},
   viewDetails: {},
-  sinceForsaken: true,
+  sinceCurrentSeason: false,
 };
 
 export default function pgcrReducer(state = defaultState, { type, payload }) {
   return immer(state, (draft) => {
     switch (type) {
       case TOGGLE_SINCE_FORSAKEN:
-        draft.sinceForsaken = !draft.sinceForsaken;
+        draft.sinceCurrentSeason = !draft.sinceCurrentSeason;
         return draft;
 
       case TOGGLE_VIEW_PGCR_DETAILS:
@@ -86,7 +86,7 @@ export function getPGCRDetails(pgcrId) {
   };
 }
 
-export function toggleSinceForsaken() {
+export function togglesinceCurrentSeason() {
   return { type: TOGGLE_SINCE_FORSAKEN };
 }
 

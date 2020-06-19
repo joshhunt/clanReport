@@ -5,7 +5,7 @@ import { getCacheableSearch } from "../../lib/destiny";
 import { addRecentProfile, getRecentProfiles } from "../../lib/ls";
 import PlayerLink from "../PlayerLink";
 
-import s from "./styles.styl";
+import s from "./styles.module.css";
 
 const debouncedInput = debounce((cb) => {
   cb();
@@ -16,8 +16,9 @@ const ANIMATION_TIME = 1.5 * 1000;
 function ProfileResultsList({ results, url, saveRecentPlayer }) {
   return (
     <div>
-      {results.map((result) => (
+      {results.map((result, index) => (
         <PlayerLink
+          key={index}
           player={result}
           url={url}
           saveRecentPlayer={saveRecentPlayer}
