@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link } from "react-router";
 
 import { useDarkMode } from "../../lib/hooks";
 import destinyAuth from "../../lib/destinyAuth";
@@ -34,7 +33,7 @@ export default function App({ children }) {
       </p>
 
       <p className={s.footer}>
-        <Link to="/compare-nightfalls">Compare Nightfalls</Link>
+        <a href="https://destiny.report/nightfalls">Compare Nightfalls</a>
       </p>
 
       <p className={s.footer}>
