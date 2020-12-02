@@ -193,10 +193,10 @@ class ClanPage extends Component {
                 const currentSealsNode = presentationNodeDefs[PARENT_SEAL_NODE];
                 const legacySealsNode = presentationNodeDefs[LEGACY_PARENT_SEAL_NODE];
     
-                 code nodes = [
+                const nodes = [
                    ...(currentSealsNode ? currentSealsNode.children.presentationNodes : []),
-                   ...(legacySealsNode ? legacySealsNode.children.presentationNodes : []),
-                ]
+                   ...(legacySealsNode ? legacySealsNode.children.presentationNodes : [])
+                ];
     
                 return (
                   nodes
