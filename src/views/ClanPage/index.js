@@ -27,7 +27,7 @@ import s from "./styles.module.css";
 const entities = new AllHtmlEntities();
 const decode = memoize((string) => entities.decode(string));
 
-const PARENT_SEAL_NODE = 1652422747;
+const PARENT_SEAL_NODE = 616318467;
 
 const baseSort = (sortFn) => (member) =>
   member.profile ? sortFn(member) : -99999999999;
