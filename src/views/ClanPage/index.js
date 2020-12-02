@@ -28,6 +28,7 @@ const entities = new AllHtmlEntities();
 const decode = memoize((string) => entities.decode(string));
 
 const PARENT_SEAL_NODE = 616318467;
+const LEGACY_PARENT_SEAL_NODE = 1881970629;
 
 const baseSort = (sortFn) => (member) =>
   member.profile ? sortFn(member) : -99999999999;
@@ -185,11 +186,20 @@ class ClanPage extends Component {
             {
               name: "seals",
               cell: (d) => {
+                if (!presentationNodeDefs) {
+                  return null
+                }
+      
+                const currentSealsNode = presentationNodeDefs[PARENT_SEAL_NODE];
+                const legacySealsNode = presentationNodeDefs[LEGACY_PARENT_SEAL_NODE];
+    
+                 code nodes = [
+                   ...(currentSealsNode ? currentSealsNode.children.presentationNodes : []),
+                   ...(legacySealsNode ? legacySealsNode.children.presentationNodes : []),
+                ]
+    
                 return (
-                  presentationNodeDefs &&
-                  presentationNodeDefs[
-                    PARENT_SEAL_NODE
-                  ].children.presentationNodes
+                  nodes
                     .map((childNode) => {
                       const sealPresentationNode =
                         presentationNodeDefs[childNode.presentationNodeHash];
