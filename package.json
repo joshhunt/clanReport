@@ -6,7 +6,7 @@
     "@destiny-item-manager/zip.js": "github:DestinyItemManager/zip.js",
     "@destiny-plumbing/definitions": "^0.2.2",
     "async": "^2.6.1",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "classnames": "^2.2.5",
     "date-fns": "^2.0.0-alpha.11",
     "dexie": "^2.0.1",
