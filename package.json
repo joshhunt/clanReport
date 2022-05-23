@@ -9,7 +9,7 @@
     "axios": "^0.18.0",
     "classnames": "^2.2.5",
     "date-fns": "^2.0.0-alpha.11",
-    "dexie": "^2.0.1",
+    "dexie": "^3.2.2",
     "html-entities": "^1.2.1",
     "immer": "^1.7.2",
     "lodash": "^4.17.4",
